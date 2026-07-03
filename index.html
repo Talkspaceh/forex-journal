@@ -259,9 +259,9 @@ tr:hover td{background:rgba(255,255,255,.02)}
           <span data-i18n="nav.analysis">วิเคราะห์</span>
           <span id="analysis-nav-badge" style="display:none;margin-left:auto;background:var(--accent);color:#fff;font-size:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500;padding:1px 7px;border-radius:20px;min-width:18px;text-align:center"></span>
         </div>
-        <div class="nav-item nav-sub" data-page="calculator" onclick="showPage('calculator')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="10" y2="14"/><line x1="14" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="10" y2="18"/><line x1="14" y1="18" x2="16" y2="18"/></svg>
-          <span data-i18n="nav.calculator">คำนวณ Lot</span>
+        <div class="nav-item nav-sub" data-page="propfirm" onclick="showPage('propfirm')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/></svg>
+          <span data-i18n="nav.propfirm">PropFirm</span>
         </div>
       </div>
       <div class="nav-item" data-page="account" onclick="showPage('account')">
@@ -603,7 +603,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <div class="settings-block">
         <h3 style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;letter-spacing:.03em">Version</h3>
         <div style="display:flex;align-items:baseline;gap:10px">
-          <span style="font-size:20px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:var(--accent)">v5.13</span>
+          <span style="font-size:20px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:var(--accent)">v5.14</span>
           <span style="font-size:11px;color:var(--text3);font-family:-apple-system,BlinkMacSystemFont,sans-serif">FX Journal</span>
         </div>
       </div>
@@ -660,69 +660,47 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <div id="analysis-content"></div>
     </div>
 
-    <div id="page-calculator" class="page">
-      <div class="page-title" data-i18n="nav.calculator">คำนวณ Lot</div>
-      <div style="max-width:520px">
-        <div style="margin-bottom:20px">
-          <div class="stat-label" style="margin-bottom:10px" data-i18n="calc.symbol">Symbol</div>
-          <select id="calc-sym-select" onchange="calcSetSym(this.value)" style="width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);padding:9px 12px;font-size:13px;font-family:-apple-system,BlinkMacSystemFont,sans-serif">
-            <option value="XAUUSD">XAUUSD</option>
-            <option value="EURUSD">EURUSD</option>
-            <option value="GBPUSD">GBPUSD</option>
-            <option value="USDJPY">USDJPY</option>
-            <option value="NAS100">NAS100</option>
-            <option value="US30">US30</option>
-            <option value="BTCUSD">BTCUSD</option>
-          </select>
-        </div>
-        <div class="fg" style="margin-bottom:18px">
-          <label data-i18n="calc.balance">ทุนในบัญชี ($)</label>
-          <input type="number" id="calc-balance" placeholder="10000" min="0" step="100">
-        </div>
-        <div class="fg" style="margin-bottom:18px">
-          <label data-i18n="calc.risk">ความเสี่ยง %</label>
-          <input type="number" id="calc-risk-input" placeholder="1" min="0.01" max="100" step="0.1">
-        </div>
-        <div style="margin-bottom:6px">
-          <div style="display:flex;gap:6px;margin-bottom:12px">
-            <button id="calc-dist-price" onclick="calcSetDistMode('price')" style="flex:1;padding:7px 10px;border-radius:var(--radius);border:1px solid var(--border2);background:transparent;cursor:pointer;font-size:12px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;transition:all .15s;color:var(--text2)" data-i18n="calc.distprice">กรอกราคา</button>
-            <button id="calc-dist-pip" onclick="calcSetDistMode('pip')" style="flex:1;padding:7px 10px;border-radius:var(--radius);border:1px solid var(--border2);background:transparent;cursor:pointer;font-size:12px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;transition:all .15s;color:var(--text2)" data-i18n="calc.distpip">กรอก Pip/Point</button>
+    <div id="page-propfirm" class="page">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+        <div class="page-title" style="margin-bottom:0" data-i18n="nav.propfirm">PropFirm</div>
+        <select id="pf-facct" onchange="renderPropfirm()" style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);padding:8px 12px;font-size:12px;outline:none;font-family:-apple-system,BlinkMacSystemFont,sans-serif"><option value="" data-i18n="filter.allacct">ทุกบัญชี</option></select>
+      </div>
+      <div id="pf-empty" class="empty-state" style="display:none"></div>
+      <div id="pf-content">
+        <div class="overview-section">
+          <div class="overview-section-title" data-i18n="ov.tradesummary">สรุป Trade</div>
+          <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:14px">
+            <div class="stat-card"><div class="stat-label" data-i18n="stat.winrate">Win Rate</div><div class="stat-val" id="pf-wr">—</div></div>
+            <div class="stat-card"><div class="stat-label" data-i18n="stat.pnl">P&L รวม ($)</div><div class="stat-val" id="pf-pnl">—</div></div>
+            <div class="stat-card"><div class="stat-label" data-i18n="stat.total">Trade ทั้งหมด</div><div class="stat-val" id="pf-total">—</div></div>
+            <div class="stat-card"><div class="stat-label" data-i18n="stat.wl">ชนะ / แพ้</div><div class="stat-val" id="pf-wl">—</div></div>
           </div>
-          <div id="calc-dist-price-wrap" style="display:none">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
-              <div>
-                <label style="display:block;font-size:11px;color:var(--text2);letter-spacing:.04em;font-family:-apple-system,BlinkMacSystemFont,sans-serif;margin-bottom:6px" data-i18n="calc.entry">ราคาเข้า</label>
-                <input type="number" id="calc-open-price" placeholder="0.00" step="0.00001" style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);padding:9px 12px;font-size:13px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;width:100%;outline:none;box-sizing:border-box">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div style="background:var(--buy-box-bg);border:1px solid var(--buy-box-bdr);border-radius:var(--radius-lg);padding:14px">
+              <div style="font-size:11px;color:var(--green);font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500;margin-bottom:10px;text-align:center">BUY</div>
+              <div class="stats-grid" style="grid-template-columns:1fr 1fr;gap:8px">
+                <div class="stat-card"><div class="stat-label" data-i18n="stat.winrate">Win Rate</div><div class="stat-val" id="pf-wr-buy">—</div><div class="stat-sub" id="pf-wl-buy">—</div></div>
+                <div class="stat-card"><div class="stat-label" data-i18n="stat.pnlshort">P&L ($)</div><div class="stat-val" id="pf-pnl-buy">—</div></div>
+                <div class="stat-card"><div class="stat-label" data-i18n="stat.highwin">Highest Win</div><div class="stat-val pos" id="pf-win-buy">—</div></div>
+                <div class="stat-card"><div class="stat-label" data-i18n="stat.highloss">Highest Loss</div><div class="stat-val neg" id="pf-loss-buy">—</div></div>
               </div>
-              <div>
-                <label style="display:block;font-size:11px;color:var(--text2);letter-spacing:.04em;font-family:-apple-system,BlinkMacSystemFont,sans-serif;margin-bottom:6px" data-i18n="calc.sl">Stop Loss</label>
-                <input type="number" id="calc-sl-price" placeholder="0.00" step="0.00001" style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);padding:9px 12px;font-size:13px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;width:100%;outline:none;box-sizing:border-box">
+            </div>
+            <div style="background:var(--sell-box-bg);border:1px solid var(--sell-box-bdr);border-radius:var(--radius-lg);padding:14px">
+              <div style="font-size:11px;color:var(--red);font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500;margin-bottom:10px;text-align:center">SELL</div>
+              <div class="stats-grid" style="grid-template-columns:1fr 1fr;gap:8px">
+                <div class="stat-card"><div class="stat-label" data-i18n="stat.winrate">Win Rate</div><div class="stat-val" id="pf-wr-sell">—</div><div class="stat-sub" id="pf-wl-sell">—</div></div>
+                <div class="stat-card"><div class="stat-label" data-i18n="stat.pnlshort">P&L ($)</div><div class="stat-val" id="pf-pnl-sell">—</div></div>
+                <div class="stat-card"><div class="stat-label" data-i18n="stat.highwin">Highest Win</div><div class="stat-val pos" id="pf-win-sell">—</div></div>
+                <div class="stat-card"><div class="stat-label" data-i18n="stat.highloss">Highest Loss</div><div class="stat-val neg" id="pf-loss-sell">—</div></div>
               </div>
             </div>
           </div>
-          <div id="calc-dist-pip-wrap" style="display:none">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-              <label style="font-size:11px;color:var(--text2);letter-spacing:.04em;font-family:-apple-system,BlinkMacSystemFont,sans-serif" id="calc-sl-label">SL Distance (pip)</label>
-              <div style="display:flex;gap:4px">
-                <button id="calc-unit-pip" onclick="calcSetUnit('pip')" style="padding:5px 12px;border-radius:var(--radius);border:1px solid var(--border2);background:transparent;cursor:pointer;font-size:11px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;transition:all .15s;color:#fff;background:var(--accent);border-color:var(--accent)">Pip</button>
-                <button id="calc-unit-pt"  onclick="calcSetUnit('pt')"  style="padding:5px 12px;border-radius:var(--radius);border:1px solid var(--border2);background:transparent;cursor:pointer;font-size:11px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;transition:all .15s;color:var(--text2)">Point</button>
-              </div>
-            </div>
-            <span id="calc-pip-info" style="display:block;font-size:11px;color:var(--text3);font-family:-apple-system,BlinkMacSystemFont,sans-serif;margin-bottom:8px"></span>
-            <input type="number" id="calc-sl-pips" placeholder="50" min="0" step="1" style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);padding:9px 12px;font-size:13px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;width:100%;outline:none;box-sizing:border-box">
-            <div id="calc-sl-presets" style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"></div>
-          </div>
         </div>
-        <div style="height:16px"></div>
-        <div style="background:var(--bg2);border:1px solid var(--card-bdr);border-radius:var(--radius-lg);padding:20px 20px 16px">
-          <div style="text-align:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)">
-            <div class="stat-label" style="margin-bottom:8px" data-i18n="calc.lotsize">Lot Size</div>
-            <div id="calc-lot" style="font-size:52px;font-weight:500;color:var(--accent);line-height:1;font-family:-apple-system,BlinkMacSystemFont,sans-serif">—</div>
-          </div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-            <div class="stat-card"><div class="stat-label" data-i18n="calc.riskamt">เงินที่เสี่ยง</div><div class="stat-val" id="calc-risk-amt" style="font-size:16px">—</div></div>
-            <div class="stat-card"><div class="stat-label" data-i18n="calc.sldist">ระยะ SL</div><div class="stat-val" id="calc-sl-dist" style="font-size:16px">—</div></div>
-            <div class="stat-card"><div class="stat-label" data-i18n="calc.perpip">$/pip/lot</div><div class="stat-val" id="calc-pip-val" style="font-size:16px">—</div></div>
+        <div class="overview-section">
+          <div class="overview-section-title" data-i18n="ov.charts">กราฟ</div>
+          <div class="stats-grid-2" style="grid-template-columns:minmax(0,1fr)">
+            <div class="chart-half" style="height:auto;overflow:hidden;width:100%;box-sizing:border-box;min-width:0"><div class="chart-half-title" id="pf-week-cal-title" data-i18n="ov.thisweek">สัปดาห์นี้</div><div id="pf-week-cal" style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr)) 52px;gap:4px;overflow:hidden;width:100%;box-sizing:border-box"></div></div>
+            <div class="chart-half"><div class="chart-half-title" data-i18n="ov.pairchart">P&L แยกตามคู่เงิน</div><canvas id="pf-chart-pair"></canvas></div>
           </div>
         </div>
       </div>
@@ -1025,6 +1003,9 @@ const I18N = {
   th: {
     'nav.overview':'ภาพรวม','nav.history':'ประวัติการเทรด','nav.calendar':'ปฏิทิน',
     'nav.missed':'เทรดที่พลาด','nav.account':'บัญชี','nav.settings':'การตั้งค่า','nav.analysis':'วิเคราะห์',
+    'nav.propfirm':'PropFirm',
+    'pf.empty':'ยังไม่มีเทรดที่ติด tag PropFirm',
+    'pf.emptysub':'รันสคริปต์ sync ใหม่ แล้วเลือก PropFirm ในหน้า input ที่ขึ้นมา',
     'an.sel':'เลือก','an.items':'รายการ','an.insert':'➕ เพิ่มเข้าสถิติ','an.viewstats':'ดูสถิติ',
     'an.added':'เพิ่มเข้าสถิติแล้ว','an.back':'← กลับ','an.clearpool':'🗑 ล้าง pool',
     'an.empty':'ยังไม่ได้เพิ่มเทรดเข้าสถิติ',
@@ -1124,20 +1105,13 @@ const I18N = {
     'js.backupdone':'Backup ลง Browser แล้ว!','js.backupfail':'Backup ไม่ได้:',
     'js.expjson':'Export JSON สำเร็จ!','js.expcsv':'Export CSV สำเร็จ!','acc.monthlabel':'สรุปเดือน',
     'set.language':'ภาษา / Language','ov.title':'ภาพรวม',
-    'nav.calculator':'คำนวณ Lot','calc.symbol':'Symbol','calc.balance':'ทุนในบัญชี ($)',
-    'calc.risk':'ความเสี่ยง %','calc.entry':'ราคาเข้า','calc.sl':'Stop Loss',
-    'calc.lotsize':'Lot Size','calc.riskamt':'เงินที่เสี่ยง','calc.sldist':'ระยะ SL','calc.perpip':'$/pip/lot',
-    'calc.distprice':'กรอกราคา','calc.distpip':'กรอก Pip/Point',
-    'calc.ppvlabelpip':'$ ต่อ pip ต่อ 1.00 lot (ค่าจริงต่างกันได้ตามโบรก — ปรับให้ตรงก่อนใช้)',
-    'calc.ppvlabelpt':'$ ต่อ point ต่อ 1.00 lot (ค่าจริงต่างกันได้ตามโบรก — ปรับให้ตรงก่อนใช้)',
-    'calc.hintjpy':'ค่านี้ขึ้นกับเรท USDJPY ปัจจุบัน (≈1000 ÷ เรท) เช็คราคาล่าสุดแล้วปรับเลขนี้ก่อนใช้จริง',
-    'calc.hintidx':'ดัชนี (Index) ค่านี้ต่างกันได้มากตามโบรก พบตั้งแต่ $0.1 ถึง $10/point เช็คจาก MT5: คลิกขวา symbol → Specification → ดู Contract Size',
-    'calc.hintbtc':'คริปโต contract size ต่างกันมากตามโบรกและปรับบ่อย เช็คจาก MT5: คลิกขวา symbol → Specification → ดู Contract Size',
-    'calc.hintstd':'ค่านี้เป็นมาตรฐานเดียวกันแทบทุกโบรกอยู่แล้ว ปกติไม่ต้องแก้ แต่เช็คได้จาก MT5: คลิกขวา symbol → Specification → ดู Contract Size ถ้าไม่แน่ใจ',
   },
   en: {
     'nav.overview':'Overview','nav.history':'Trade History','nav.calendar':'Calendar',
     'nav.missed':'Missed Trade','nav.account':'Account','nav.settings':'Settings','nav.analysis':'Analysis',
+    'nav.propfirm':'PropFirm',
+    'pf.empty':'No PropFirm-tagged trades yet',
+    'pf.emptysub':'Re-run the sync script and pick PropFirm in the input dialog',
     'an.sel':'Selected','an.items':'items','an.insert':'➕ Add to Stats','an.viewstats':'View Stats',
     'an.added':'Added to stats','an.back':'← Back','an.clearpool':'🗑 Clear pool',
     'an.empty':'No trades in stats pool',
@@ -1237,16 +1211,6 @@ const I18N = {
     'js.backupdone':'Backup to Browser done!','js.backupfail':'Cannot backup:',
     'js.expjson':'Export JSON done!','js.expcsv':'Export CSV done!','acc.monthlabel':'Monthly Summary',
     'set.language':'Language','ov.title':'Overview',
-    'nav.calculator':'Lot Calculator','calc.symbol':'Symbol','calc.balance':'Account Balance ($)',
-    'calc.risk':'Risk %','calc.entry':'Entry Price','calc.sl':'Stop Loss',
-    'calc.lotsize':'Lot Size','calc.riskamt':'Risk Amount','calc.sldist':'SL Distance','calc.perpip':'$/pip/lot',
-    'calc.distprice':'Enter Price','calc.distpip':'Enter Pip/Point',
-    'calc.ppvlabelpip':'$ per pip per 1.00 lot (varies by broker — verify before using)',
-    'calc.ppvlabelpt':'$ per point per 1.00 lot (varies by broker — verify before using)',
-    'calc.hintjpy':'This depends on the current USDJPY rate (≈1000 ÷ rate). Check the latest price and adjust this number before relying on it.',
-    'calc.hintidx':'Index contract value varies a lot by broker — seen anywhere from $0.1 to $10/point. Check in MT5: right-click symbol → Specification → Contract Size',
-    'calc.hintbtc':'Crypto contract size varies widely by broker and changes often. Check in MT5: right-click symbol → Specification → Contract Size',
-    'calc.hintstd':'This value is standard across almost every broker, so you normally don\'t need to change it — but you can verify in MT5: right-click symbol → Specification → Contract Size if unsure.',
   }
 };
 
@@ -1355,7 +1319,7 @@ async function loadAll() {
     const strategies = [...new Set(trades.map(t => t.strategy).filter(Boolean))];
 
     // render หน้าที่กำลังแสดงอยู่หลังโหลดเสร็จ
-    const activePage = localStorage.getItem('lastPage') || 'add';
+    const activePage = localStorage.getItem('lastPage') || 'overview';
     if (activePage === 'overview') renderOverview();
     if (activePage === 'history') { if (histTab === 'mt5') renderHistory(); else renderTable(); }
     if (activePage === 'missed') renderMissed();
@@ -1363,6 +1327,7 @@ async function loadAll() {
     if (activePage === 'calendar') renderCalendar();
     if (activePage === 'analysis') renderAnalysis();
     if (activePage === 'settings') { renderPairTags(); renderStrategyTags(); renderAccountTags(); }
+    if (activePage === 'propfirm') renderPropfirm();
   } catch (e) {
     setS('err', 'connection error');
     toast(T('js.connfail'));
@@ -1893,6 +1858,14 @@ function applySettings() {
     calAcctSel.innerHTML = `<option value="">${T('filter.allacct')}</option>` + accts2.map(a => `<option>${a}</option>`).join('');
     if (curCal) calAcctSel.value = curCal;
   }
+  // sync PropFirm account dropdown (เฉพาะบัญชีที่ account_type === 'propfirm')
+  const pfAcctSel = document.getElementById('pf-facct');
+  if (pfAcctSel) {
+    const accts3 = [...new Set(trades.filter(t => t.account_type === 'propfirm' && t.source_account).map(t => t.source_account))];
+    const curPf = pfAcctSel.value;
+    pfAcctSel.innerHTML = `<option value="">${T('filter.allacct')}</option>` + accts3.map(a => `<option>${a}</option>`).join('');
+    if (curPf) pfAcctSel.value = curPf;
+  }
   // sync hist pair dropdown
   const histPairSel = document.getElementById('hist-fp');
   if (histPairSel) histPairSel.innerHTML = `<option value="">${T('filter.allpairs')}</option>` + uniquePairs().map(p => `<option>${p}</option>`).join('');
@@ -1983,7 +1956,7 @@ function showPage(n) {
   document.getElementById('page-' + n).classList.add('active');
   const navEl = document.querySelector('.nav-item[data-page="'+n+'"]');
   if (navEl) { navEl.classList.add('active'); }
-  if (['history','calendar','missed','analysis','calculator'].includes(n)) openNavGroup();
+  if (['history','calendar','missed','analysis','propfirm'].includes(n)) openNavGroup();
   localStorage.setItem('lastPage', n);
   if (n === 'overview') renderOverview();
   if (n === 'history') { if (histTab === 'mt5') renderHistory(); else renderTable(); }
@@ -1991,7 +1964,7 @@ function showPage(n) {
   if (n === 'account') renderAccount();
   if (n === 'calendar') renderCalendar();
   if (n === 'analysis') renderAnalysis();
-  if (n === 'calculator') renderCalculator();
+  if (n === 'propfirm') renderPropfirm();
   if (n === 'settings') {
     renderPairTags(); renderStrategyTags(); renderAccountTags();
     const bt = localStorage.getItem('fx_journal_backup_time');
@@ -2523,177 +2496,6 @@ function makeChart(canvasId, type, labels, datasets, opts={}) {
   });
 }
 
-const CALC_SYMS = {
-  'XAUUSD':{ pip:1,      ppv:100, unit:'pip', pts:100, hintKey:'calc.hintstd' },
-  'EURUSD':{ pip:0.0001, ppv:10,  unit:'pip', pts:10,  hintKey:'calc.hintstd' },
-  'GBPUSD':{ pip:0.0001, ppv:10,  unit:'pip', pts:10,  hintKey:'calc.hintstd' },
-  'USDJPY':{ pip:0.01,   ppv:6.2, unit:'pip', pts:10,  variable:true, hintKey:'calc.hintjpy' },
-  'NAS100':{ pip:1,      ppv:0.01,unit:'pt',  pts:1,   variable:true, hintKey:'calc.hintidx' },
-  'US30':  { pip:1,      ppv:0.01,unit:'pt',  pts:1,   variable:true, hintKey:'calc.hintidx' },
-  'BTCUSD':{ pip:1,      ppv:1,   unit:'pt',  pts:1,   variable:true, hintKey:'calc.hintbtc' },
-};
-function calcGetPpv(sym) {
-  const spec = CALC_SYMS[sym];
-  return spec ? spec.ppv : 1;
-}
-function renderCalculator() {
-  const balEl = document.getElementById('calc-balance');
-  if (balEl && !balEl.dataset.init) {
-    balEl.value = localStorage.getItem('calc_balance') || '';
-    balEl.addEventListener('input', () => { localStorage.setItem('calc_balance', balEl.value); calcUpdate(); });
-    balEl.dataset.init = '1';
-  }
-  const riskInp = document.getElementById('calc-risk-input');
-  if (riskInp && !riskInp.dataset.init) {
-    riskInp.value = localStorage.getItem('calc_risk') || '1';
-    riskInp.addEventListener('input', () => { localStorage.setItem('calc_risk', riskInp.value); calcUpdate(); });
-    riskInp.dataset.init = '1';
-  }
-  const slPipsEl = document.getElementById('calc-sl-pips');
-  if (slPipsEl && !slPipsEl.dataset.init) {
-    slPipsEl.addEventListener('input', calcUpdate);
-    slPipsEl.dataset.init = '1';
-  }
-  const slPresetsEl = document.getElementById('calc-sl-presets');
-  if (slPresetsEl && !slPresetsEl.dataset.init) {
-    [10,15,20,25,30,50,75,100].forEach(v => {
-      const btn = document.createElement('button');
-      btn.textContent = v;
-      btn.style.cssText = 'padding:4px 10px;border-radius:var(--radius);border:1px solid var(--border2);background:transparent;cursor:pointer;font-size:11px;color:var(--text2);font-family:-apple-system,BlinkMacSystemFont,sans-serif;transition:all .15s';
-      btn.onmouseover = () => { btn.style.borderColor='var(--accent)'; btn.style.color='var(--accent)'; };
-      btn.onmouseout  = () => { btn.style.borderColor='var(--border2)'; btn.style.color='var(--text2)'; };
-      btn.onclick = () => { const el=document.getElementById('calc-sl-pips'); if(el){el.value=v; calcUpdate();} };
-      slPresetsEl.appendChild(btn);
-    });
-    slPresetsEl.dataset.init = '1';
-  }
-  const openPriceEl = document.getElementById('calc-open-price');
-  if (openPriceEl && !openPriceEl.dataset.init) {
-    openPriceEl.addEventListener('input', calcUpdate);
-    openPriceEl.dataset.init = '1';
-  }
-  const slPriceEl = document.getElementById('calc-sl-price');
-  if (slPriceEl && !slPriceEl.dataset.init) {
-    slPriceEl.addEventListener('input', calcUpdate);
-    slPriceEl.dataset.init = '1';
-  }
-  calcSetSym(localStorage.getItem('calc_sym') || 'XAUUSD');
-  calcSetDistMode(localStorage.getItem('calc_dist_mode') || 'price');
-}
-function calcSetSym(s) {
-  if (!CALC_SYMS[s]) return;
-  localStorage.setItem('calc_sym', s);
-  const selEl = document.getElementById('calc-sym-select');
-  if (selEl) selEl.value = s;
-  calcUpdateLabel();
-  calcUpdate();
-}
-
-function calcUpdateLabel() {
-  const sym  = localStorage.getItem('calc_sym') || 'XAUUSD';
-  const unit = localStorage.getItem('calc_unit') || 'pip';
-  const spec = CALC_SYMS[sym];
-  if (!spec) return;
-  const ppv = calcGetPpv(sym);
-  const pipExamples = {
-    'XAUUSD':'1 pip = $1 · 10 pips = 1000 points',
-    'EURUSD':'0.0001 = 1 pip · 10 points/pip',
-    'GBPUSD':'0.0001 = 1 pip · 10 points/pip',
-    'USDJPY':'0.01 = 1 pip · 10 points/pip',
-    'NAS100':'1 index point = 1 pt',
-    'US30':'1 index point = 1 pt',
-    'BTCUSD':'$1 move = 1 pt',
-  };
-  const ptExamples = {
-    'XAUUSD':'1 point = $0.01 · 100 points/pip',
-    'EURUSD':'1 point = 0.00001 (pipette) · 10/pip',
-    'GBPUSD':'1 point = 0.00001 (pipette) · 10/pip',
-    'USDJPY':'1 point = 0.001 (pipette) · 10/pip',
-    'NAS100':'= pip (indices ไม่แยก)',
-    'US30':'= pip (indices ไม่แยก)',
-    'BTCUSD':'= pip (BTC ไม่แยก)',
-  };
-  const isPoint  = unit === 'pt' && spec.pts > 1;
-  const unitLabel = isPoint ? 'point' : spec.unit;
-  const ppvDisp   = isPoint ? (ppv / spec.pts) + '$' : ppv + '$';
-  const lbl  = document.getElementById('calc-sl-label');
-  const info = document.getElementById('calc-pip-info');
-  if (lbl)  lbl.textContent  = 'SL Distance (' + unitLabel + ')';
-  if (info) info.textContent = (isPoint ? ptExamples[sym] : pipExamples[sym]) + ' · ' + ppvDisp + '/' + unitLabel + '/lot';
-  ['pip','pt'].forEach(u => {
-    const btn = document.getElementById('calc-unit-' + u);
-    if (!btn) return;
-    const on = u === unit;
-    btn.style.background  = on ? 'var(--accent)' : 'transparent';
-    btn.style.color       = on ? '#fff' : 'var(--text2)';
-    btn.style.borderColor = on ? 'var(--accent)' : 'var(--border2)';
-  });
-}
-function calcSetUnit(u) {
-  localStorage.setItem('calc_unit', u);
-  calcUpdateLabel();
-  calcUpdate();
-}
-function calcSetDistMode(mode) {
-  localStorage.setItem('calc_dist_mode', mode);
-  const priceWrap = document.getElementById('calc-dist-price-wrap');
-  const pipWrap   = document.getElementById('calc-dist-pip-wrap');
-  if (priceWrap) priceWrap.style.display = mode === 'price' ? '' : 'none';
-  if (pipWrap)   pipWrap.style.display   = mode === 'pip'   ? '' : 'none';
-  ['price','pip'].forEach(m => {
-    const btn = document.getElementById('calc-dist-' + m);
-    if (!btn) return;
-    const on = m === mode;
-    btn.style.background  = on ? 'var(--accent)' : 'transparent';
-    btn.style.color       = on ? '#fff' : 'var(--text2)';
-    btn.style.borderColor = on ? 'var(--accent)' : 'var(--border2)';
-  });
-  calcUpdate();
-}
-function calcUpdate() {
-  const sym = localStorage.getItem('calc_sym') || 'XAUUSD';
-  const spec = CALC_SYMS[sym];
-  if (!spec) return;
-  const ppv = calcGetPpv(sym);
-  const balance  = parseFloat(document.getElementById('calc-balance')?.value) || 0;
-  const riskPct  = parseFloat(document.getElementById('calc-risk-input')?.value) || 0;
-  const distMode = localStorage.getItem('calc_dist_mode') || 'price';
-  const unit     = localStorage.getItem('calc_unit') || 'pip';
-  let slPips, dispVal, dispUnit;
-  if (distMode === 'price') {
-    const openPrice = parseFloat(document.getElementById('calc-open-price')?.value) || 0;
-    const slPrice   = parseFloat(document.getElementById('calc-sl-price')?.value) || 0;
-    slPips   = (openPrice && slPrice) ? Math.abs(openPrice - slPrice) / spec.pip : 0;
-    dispVal  = slPips;
-    dispUnit = spec.unit;
-  } else {
-    const slVal = parseFloat(document.getElementById('calc-sl-pips')?.value) || 0;
-    slPips   = (unit === 'pt' && spec.pts > 1) ? slVal / spec.pts : slVal;
-    dispVal  = (unit === 'pt' && spec.pts > 1) ? slVal : slPips;
-    dispUnit = (unit === 'pt' && spec.pts > 1) ? 'pt' : spec.unit;
-  }
-  const riskAmt  = balance * (riskPct / 100);
-  const riskAmtEl = document.getElementById('calc-risk-amt');
-  const slDistEl  = document.getElementById('calc-sl-dist');
-  const pipValEl  = document.getElementById('calc-pip-val');
-  const lotEl     = document.getElementById('calc-lot');
-  if (riskAmtEl) riskAmtEl.textContent = balance > 0 && riskPct > 0 ? riskAmt.toFixed(2) + '$' : '—';
-  const ppvDisp = (distMode === 'pip' && unit === 'pt' && spec.pts > 1) ? (ppv / spec.pts) + '$' : ppv + '$';
-  if (pipValEl)  pipValEl.textContent  = ppvDisp;
-  if (!balance || !riskPct || !slPips) {
-    if (lotEl)    lotEl.textContent = '—';
-    if (slDistEl) slDistEl.textContent = '—';
-    return;
-  }
-  const riskPerLot = slPips * ppv;
-  const lot        = riskAmt / riskPerLot;
-  if (lotEl) {
-    lotEl.textContent = (lot > 0 && lot < 1000) ? lot.toFixed(2) : '—';
-    lotEl.style.color = 'var(--accent)';
-  }
-  if (slDistEl) slDistEl.textContent = (Math.round(dispVal * 100) / 100) + ' ' + dispUnit;
-}
-
 function normalizePair(sym) {
   if (!sym) return sym;
   const s = sym.toUpperCase().trim();
@@ -2861,6 +2663,134 @@ function renderOverview() {
   const n2=document.getElementById('ov-acc-net-thb2'); if(n2) n2.textContent=(anThb>=0?'+฿':'฿')+anThb.toLocaleString();
 }
 
+function renderPropfirm() {
+  const facct = document.getElementById('pf-facct')?.value || '';
+  const emptyEl = document.getElementById('pf-empty');
+  const contentEl = document.getElementById('pf-content');
+  if (!emptyEl || !contentEl) return;
+  let pfTrades = trades.filter(t => t.account_type === 'propfirm');
+  if (facct) pfTrades = pfTrades.filter(t => t.source_account === facct);
+
+  if (!pfTrades.length) {
+    contentEl.style.display = 'none'; emptyEl.style.display = '';
+    emptyEl.innerHTML = '<div style="padding:48px 0;text-align:center">'
+      + '<div style="font-size:32px;margin-bottom:12px">&#x1F3DB;</div>'
+      + '<div style="font-size:14px;color:var(--text2);margin-bottom:6px">' + T('pf.empty') + '</div>'
+      + '<div style="font-size:12px;color:var(--text3)">' + T('pf.emptysub') + '</div></div>';
+    renderPropfirmWeekCal([]);
+    return;
+  }
+  emptyEl.style.display = 'none'; contentEl.style.display = '';
+
+  const s = calcStats(pfTrades);
+  const setEl = (id, val, cls) => { const el = document.getElementById(id); if (el) { el.textContent = val; if (cls) el.className = 'stat-val ' + cls; } };
+  setEl('pf-total', pfTrades.length);
+  if (!s) { ['pf-wr','pf-wl','pf-pnl'].forEach(id => setEl(id,'—')); renderPropfirmWeekCal(pfTrades); return; }
+
+  setEl('pf-wr', ((s.wins.length/s.withPnl.length)*100).toFixed(1)+'%');
+  setEl('pf-wl', `${s.wins.length} / ${s.losses.length}`);
+  setEl('pf-pnl', (s.total>=0?'+':'')+s.total.toFixed(2)+'$', s.total>=0?'pos':'neg');
+
+  const buyTrades = pfTrades.filter(t => t.side === 'BUY' && t.pnl !== null && t.pnl !== '');
+  const sellTrades = pfTrades.filter(t => t.side === 'SELL' && t.pnl !== null && t.pnl !== '');
+  const buyWins = buyTrades.filter(t => parseFloat(t.pnl) > 0);
+  const sellWins = sellTrades.filter(t => parseFloat(t.pnl) > 0);
+  const buyPnl = buyTrades.reduce((a, t) => a + parseFloat(t.pnl || 0), 0);
+  const sellPnl = sellTrades.reduce((a, t) => a + parseFloat(t.pnl || 0), 0);
+
+  const wrBuyEl = document.getElementById('pf-wr-buy');
+  const wrSellEl = document.getElementById('pf-wr-sell');
+  if (buyTrades.length) {
+    const wrBuy = (buyWins.length / buyTrades.length * 100).toFixed(1);
+    if (wrBuyEl) { wrBuyEl.textContent = wrBuy + '%'; wrBuyEl.className = 'stat-val ' + (parseFloat(wrBuy) >= 50 ? 'pos' : 'neg'); }
+    const wlBuy = document.getElementById('pf-wl-buy'); if (wlBuy) wlBuy.textContent = buyWins.length + 'W / ' + (buyTrades.length - buyWins.length) + 'L';
+  }
+  if (sellTrades.length) {
+    const wrSell = (sellWins.length / sellTrades.length * 100).toFixed(1);
+    if (wrSellEl) { wrSellEl.textContent = wrSell + '%'; wrSellEl.className = 'stat-val ' + (parseFloat(wrSell) >= 50 ? 'pos' : 'neg'); }
+    const wlSell = document.getElementById('pf-wl-sell'); if (wlSell) wlSell.textContent = sellWins.length + 'W / ' + (sellTrades.length - sellWins.length) + 'L';
+  }
+  const pnlBuyEl = document.getElementById('pf-pnl-buy');
+  const pnlSellEl = document.getElementById('pf-pnl-sell');
+  if (pnlBuyEl) { pnlBuyEl.textContent = (buyPnl >= 0 ? '+' : '') + buyPnl.toFixed(2) + '$'; pnlBuyEl.className = 'stat-val ' + (buyPnl >= 0 ? 'pos' : 'neg'); }
+  if (pnlSellEl) { pnlSellEl.textContent = (sellPnl >= 0 ? '+' : '') + sellPnl.toFixed(2) + '$'; pnlSellEl.className = 'stat-val ' + (sellPnl >= 0 ? 'pos' : 'neg'); }
+
+  const buyPnls  = buyTrades.map(t => parseFloat(t.pnl || 0));
+  const sellPnls = sellTrades.map(t => parseFloat(t.pnl || 0));
+  const buyMaxWin   = buyPnls.filter(p => p > 0).length  ? Math.max(...buyPnls.filter(p => p > 0))   : 0;
+  const buyMaxLoss  = buyPnls.filter(p => p <= 0).length ? Math.min(...buyPnls.filter(p => p <= 0))  : 0;
+  const sellMaxWin  = sellPnls.filter(p => p > 0).length  ? Math.max(...sellPnls.filter(p => p > 0)) : 0;
+  const sellMaxLoss = sellPnls.filter(p => p <= 0).length ? Math.min(...sellPnls.filter(p => p <= 0)): 0;
+  setEl('pf-win-buy',   buyMaxWin  > 0 ? '+' + buyMaxWin.toFixed(2) + '$'  : '—');
+  setEl('pf-loss-buy',  buyMaxLoss < 0 ? buyMaxLoss.toFixed(2) + '$'        : '—');
+  setEl('pf-win-sell',  sellMaxWin > 0 ? '+' + sellMaxWin.toFixed(2) + '$' : '—');
+  setEl('pf-loss-sell', sellMaxLoss< 0 ? sellMaxLoss.toFixed(2) + '$'       : '—');
+
+  const pairMap = {};
+  pfTrades.filter(t=>t.symbol&&t.pnl).forEach(t=>{const ps=normalizePair(t.symbol);if(!pairMap[ps])pairMap[ps]=0;pairMap[ps]+=parseFloat(t.pnl||0);});
+  const pairLabels=Object.keys(pairMap).sort((a,b)=>Math.abs(pairMap[b])-Math.abs(pairMap[a])).slice(0,8);
+  makeChart('pf-chart-pair','bar',pairLabels,[{data:pairLabels.map(k=>pairMap[k]),backgroundColor:pairLabels.map(k=>pairMap[k]>=0?'rgba(0,217,126,0.6)':'rgba(255,77,106,0.6)'),borderRadius:4,label:'P&L'}]);
+
+  renderPropfirmWeekCal(pfTrades);
+}
+
+function renderPropfirmWeekCal(pfTrades) {
+  const calEl = document.getElementById('pf-week-cal');
+  const titleEl = document.getElementById('pf-week-cal-title');
+  if (!calEl) return;
+  const today = new Date();
+  const todayStr = today.toISOString().split('T')[0];
+  const sun = new Date(today);
+  sun.setDate(today.getDate() - today.getDay());
+  const DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(sun);
+    d.setDate(sun.getDate() + i);
+    const ds = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    days.push({ ds, d, name: DAY_NAMES[i] });
+  }
+  if (titleEl) {
+    const fmt = d => d.getDate() + '/' + (d.getMonth()+1);
+    titleEl.textContent = T('ov.thisweek') + '  ' + fmt(days[0].d) + ' \u2013 ' + fmt(days[6].d);
+  }
+  const dayMap = {};
+  pfTrades.forEach(t => {
+    if (!t.date || t.pnl === null || t.pnl === '') return;
+    if (!dayMap[t.date]) dayMap[t.date] = { count: 0, pnl: 0 };
+    dayMap[t.date].count++;
+    dayMap[t.date].pnl += parseFloat(t.pnl || 0);
+  });
+  let wPnl = 0, wCount = 0;
+  days.forEach(({ ds }) => { if (dayMap[ds]) { wPnl += dayMap[ds].pnl; wCount += dayMap[ds].count; } });
+  const cellBase = 'border-radius:6px;padding:8px 3px;display:flex;flex-direction:column;align-items:center;gap:3px;min-height:116px;min-width:0;overflow:hidden;box-sizing:border-box';
+  const dayCells = days.map(({ ds, d, name }) => {
+    const data = dayMap[ds];
+    const isToday = ds === todayStr;
+    const bg = data ? (data.pnl >= 0 ? 'var(--cal-pos-bg)' : 'var(--cal-neg-bg)') : 'var(--bg3)';
+    const pc = data ? (data.pnl >= 0 ? 'var(--green)' : 'var(--red)') : '';
+    const dateStyle = isToday
+      ? 'font-size:13px;font-weight:600;color:var(--accent);background:var(--accent-bg);border-radius:4px;padding:0 4px;line-height:1.7'
+      : 'font-size:13px;font-weight:500;color:var(--text);line-height:1.7';
+    return '<div style="background:' + bg + ';' + cellBase + '">'
+      + '<div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-top:2px">' + name + '</div>'
+      + '<div style="' + dateStyle + '">' + d.getDate() + '</div>'
+      + (data
+          ? '<div style="font-size:10px;color:var(--text2);margin-top:2px">' + data.count + ' tr</div>'
+          + '<div style="font-size:11px;font-weight:500;color:' + pc + '">' + calFmtPnl(data.pnl) + '</div>'
+          : '')
+      + '</div>';
+  }).join('');
+  const sumCell = '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:6px;padding:8px 3px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:116px;min-width:0;box-sizing:border-box">'
+    + '<div style="font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.04em">\u03a3</div>'
+    + (wCount
+        ? '<div style="font-size:10px;color:var(--text2)">' + wCount + ' tr</div>'
+        + '<div style="font-size:12px;font-weight:600;color:' + (wPnl >= 0 ? 'var(--green)' : 'var(--red)') + '">' + calFmtPnl(wPnl) + '</div>'
+        : '<div style="font-size:13px;color:var(--text3)">\u2014</div>')
+    + '</div>';
+  calEl.innerHTML = dayCells + sumCell;
+}
+
 function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
 
 document.addEventListener('keydown', e => {
@@ -2886,9 +2816,9 @@ document.getElementById('f-date').value = new Date().toISOString().split('T')[0]
 document.getElementById('new-pair').addEventListener('keydown', e => { if (e.key === 'Enter') addPair(); });
 document.getElementById('new-strategy').addEventListener('keydown', e => { if (e.key === 'Enter') addStrategy(); });
 document.getElementById('new-account').addEventListener('keydown', e => { if (e.key === 'Enter') addAccountSetting(); });
-const validPages = ['overview','history','calendar','missed','account','settings','analysis','calculator'];
+const validPages = ['overview','history','calendar','missed','account','settings','analysis','propfirm'];
 const _lp = localStorage.getItem('lastPage');
-const lastPage = IS_VIEW ? 'overview' : (validPages.includes(_lp) ? _lp : 'table');
+const lastPage = IS_VIEW ? 'overview' : (validPages.includes(_lp) ? _lp : 'overview');
 showPage(lastPage);
 applyLang();
 loadAll();
@@ -3205,13 +3135,14 @@ function setGlobalLang(lang) {
   localStorage.setItem('lang', lang);
   applyLang();
   applySettings();
-  const active = localStorage.getItem('lastPage') || 'table';
+  const active = localStorage.getItem('lastPage') || 'overview';
   if (active === 'overview') renderOverview();
   else if (active === 'history') { if (histTab === 'mt5') renderHistory(); else renderTable(); }
   else if (active === 'missed') renderMissed();
   else if (active === 'account') renderAccount();
   else if (active === 'settings') { renderPairTags(); renderStrategyTags(); renderAccountTags(); }
   else if (active === 'analysis') renderAnalysis();
+  else if (active === 'propfirm') renderPropfirm();
 }
 
 // ═══════════════════════════════════════════════════
