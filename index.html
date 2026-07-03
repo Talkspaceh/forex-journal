@@ -195,7 +195,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .toast{position:fixed;bottom:24px;right:24px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:10px 18px;border-radius:var(--radius);font-size:12px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:9999;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
 .toast.show{opacity:1}
 .cal-day-cell:hover{filter:brightness(1.15)}
-.cal-day-cell.cal-day-active,.cal-day-cell.pfcal-day-active{outline:2px solid var(--accent);outline-offset:-2px;z-index:1;position:relative}
+.cal-day-cell.cal-day-active{outline:2px solid var(--accent);outline-offset:-2px;z-index:1;position:relative}
 @media(max-width:640px){
   .sidebar{width:56px}
   .logo-text,.logo-sub,.nav-item span,.sync-status span,.sync-btn{display:none}
@@ -259,24 +259,9 @@ tr:hover td{background:rgba(255,255,255,.02)}
           <span data-i18n="nav.analysis">วิเคราะห์</span>
           <span id="analysis-nav-badge" style="display:none;margin-left:auto;background:var(--accent);color:#fff;font-size:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500;padding:1px 7px;border-radius:20px;min-width:18px;text-align:center"></span>
         </div>
-      </div>
-      <div class="nav-group-header" onclick="togglePfNavGroup()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/></svg>
-        <span data-i18n="nav.propfirm">PropFirm</span>
-        <svg id="pf-nav-group-chevron" class="nav-group-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-      </div>
-      <div class="nav-group-body" id="pf-nav-group-body">
         <div class="nav-item nav-sub" data-page="propfirm" onclick="showPage('propfirm')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-          <span data-i18n="nav.overview">ภาพรวม</span>
-        </div>
-        <div class="nav-item nav-sub" data-page="pfhistory" onclick="showPage('pfhistory')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4"/><polyline points="3 16 3 11 8 11"/></svg>
-          <span data-i18n="nav.history">ประวัติการเทรด</span>
-        </div>
-        <div class="nav-item nav-sub" data-page="pfcalendar" onclick="showPage('pfcalendar')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          <span data-i18n="nav.calendar">ปฏิทิน</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/></svg>
+          <span data-i18n="nav.propfirm">PropFirm</span>
         </div>
       </div>
       <div class="nav-item" data-page="account" onclick="showPage('account')">
@@ -721,102 +706,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
       </div>
     </div>
 
-    <div id="page-pfhistory" class="page">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-        <div class="page-title" style="margin-bottom:0" data-i18n="nav.history">ประวัติการเทรด</div>
-      </div>
-      <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:14px">
-        <div class="stat-card"><div class="stat-label" data-i18n="stat.winrate">Win Rate</div><div class="stat-val" id="pfhist-wr">—</div></div>
-        <div class="stat-card"><div class="stat-label" data-i18n="stat.pnl">P&L รวม ($)</div><div class="stat-val" id="pfhist-pnl">—</div></div>
-        <div class="stat-card"><div class="stat-label" data-i18n="stat.total">Trade ทั้งหมด</div><div class="stat-val" id="pfhist-total">—</div></div>
-        <div class="stat-card"><div class="stat-label" data-i18n="stat.wl">ชนะ / แพ้</div><div class="stat-val" id="pfhist-wl">—</div></div>
-      </div>
-      <div id="pfhist-session-breakdown" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-        <div style="background:var(--buy-box-bg);border:1px solid var(--buy-box-bdr);border-radius:var(--radius-lg);padding:14px">
-          <div style="font-size:11px;color:var(--green);font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500;margin-bottom:10px;text-align:center">BUY</div>
-          <div class="stats-grid" style="grid-template-columns:1fr 1fr;gap:8px">
-            <div class="stat-card"><div class="stat-label">Win Rate</div><div class="stat-val" id="pfhist-wr-buy">—</div><div class="stat-sub" id="pfhist-wl-buy">—</div></div>
-            <div class="stat-card"><div class="stat-label" data-i18n="stat.pnlshort">P&L ($)</div><div class="stat-val" id="pfhist-pnl-buy">—</div></div>
-            <div class="stat-card"><div class="stat-label" data-i18n="stat.highwin">Highest Win</div><div class="stat-val pos" id="pfhist-win-buy">—</div></div>
-            <div class="stat-card"><div class="stat-label" data-i18n="stat.highloss">Highest Loss</div><div class="stat-val neg" id="pfhist-loss-buy">—</div></div>
-          </div>
-        </div>
-        <div style="background:var(--sell-box-bg);border:1px solid var(--sell-box-bdr);border-radius:var(--radius-lg);padding:14px">
-          <div style="font-size:11px;color:var(--red);font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500;margin-bottom:10px;text-align:center">SELL</div>
-          <div class="stats-grid" style="grid-template-columns:1fr 1fr;gap:8px">
-            <div class="stat-card"><div class="stat-label">Win Rate</div><div class="stat-val" id="pfhist-wr-sell">—</div><div class="stat-sub" id="pfhist-wl-sell">—</div></div>
-            <div class="stat-card"><div class="stat-label" data-i18n="stat.pnlshort">P&L ($)</div><div class="stat-val" id="pfhist-pnl-sell">—</div></div>
-            <div class="stat-card"><div class="stat-label" data-i18n="stat.highwin">Highest Win</div><div class="stat-val pos" id="pfhist-win-sell">—</div></div>
-            <div class="stat-card"><div class="stat-label" data-i18n="stat.highloss">Highest Loss</div><div class="stat-val neg" id="pfhist-loss-sell">—</div></div>
-          </div>
-        </div>
-      </div>
-      <div class="filter-row" style="margin-bottom:16px">
-        <div style="display:flex;align-items:center;gap:6px">
-          <input type="date" id="pfhist-from" onchange="renderPfHistory()" style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);padding:7px 10px;font-size:12px;font-family:-apple-system,BlinkMacSystemFont,sans-serif"/>
-          <span style="color:var(--text3);font-size:12px">—</span>
-          <input type="date" id="pfhist-to" onchange="renderPfHistory()" style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);padding:7px 10px;font-size:12px;font-family:-apple-system,BlinkMacSystemFont,sans-serif"/>
-          <button onclick="resetPfHistDateRange()" style="padding:7px 10px;background:transparent;border:1px solid var(--border2);border-radius:var(--radius);color:var(--text2);font-size:11px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,sans-serif"><span data-i18n="btn.reset">รีเซ็ต</span></button>
-        </div>
-        <select id="pfhist-fp" onchange="renderPfHistory()"><option value="" data-i18n="filter.allpairs">ทุกคู่เงิน</option></select>
-        <select id="pfhist-fs" onchange="renderPfHistory()"><option value="" data-i18n="filter.alldir">ทุกทิศทาง</option><option value="BUY">Buy</option><option value="SELL">Sell</option></select>
-        <select id="pfhist-fstr" onchange="renderPfHistory()"><option value="" data-i18n="filter.allstrat">ทุกกลยุทธ์</option></select>
-        <select id="pfhist-fses" onchange="renderPfHistory()"><option value="" data-i18n="filter.allsession">ทุก Session</option><option>Asia</option><option>London</option><option>New York</option><option>Overlap</option></select>
-        <select id="pfhist-facct" onchange="renderPfHistory()"><option value="" data-i18n="filter.allacct">ทุกบัญชี</option></select>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr>
-            <th style="width:36px;padding:10px 8px"><input type="checkbox" class="trade-cb" id="pfhist-cb-all" onchange="toggleHistSelectAll(this)" title=""/></th>
-            <th data-i18n="th.date">วันที่</th><th>Pair</th><th>Side</th>
-            <th>Entry</th><th>Exit</th><th>Lot</th><th data-i18n="th.pips">จุด</th>
-            <th>P&L ($)</th><th>R:R</th><th data-i18n="th.strategy">กลยุทธ์</th><th>Session</th><th data-i18n="th.img">รูป</th><th></th>
-          </tr></thead>
-          <tbody id="pfhist-tbody"></tbody>
-        </table>
-        <div id="pfhist-empty" class="empty-state" style="display:none"><span data-i18n="empty.history">ยังไม่มีข้อมูล</span></div>
-        <div class="pagination" id="pfhist-pagination" style="display:none">
-          <button class="pg-btn" id="pfhist-prev" onclick="changePfHistPage(-1)"><span data-i18n="pg.prev">← ก่อนหน้า</span></button>
-          <span class="pg-info" id="pfhist-info"></span>
-          <button class="pg-btn" id="pfhist-next" onclick="changePfHistPage(1)"><span data-i18n="pg.next">ถัดไป →</span></button>
-        </div>
-      </div>
-    </div>
-
-    <div id="page-pfcalendar" class="page">
-      <div class="page-title" style="margin-bottom:20px" data-i18n="nav.calendar">ปฏิทิน</div>
-      <div style="background:var(--bg2);border:1px solid var(--card-bdr);border-radius:var(--radius-lg);overflow:hidden">
-        <div style="display:flex;align-items:center;padding:11px 16px;border-bottom:1px solid var(--border)">
-          <button onclick="changePfCalendarMonth(-1)" style="background:none;border:1px solid var(--border2);border-radius:var(--radius);color:var(--text2);width:28px;height:28px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">&#8249;</button>
-          <span id="pfcal-month-title" style="margin:0 12px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:500;min-width:160px;text-align:center">—</span>
-          <button onclick="changePfCalendarMonth(1)" style="background:none;border:1px solid var(--border2);border-radius:var(--radius);color:var(--text2);width:28px;height:28px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">&#8250;</button>
-          <select id="pfcal-facct" onchange="renderPfCalendar()" style="margin-left:14px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);padding:8px 12px;font-size:12px;outline:none;font-family:-apple-system,BlinkMacSystemFont,sans-serif"><option value="" data-i18n="filter.allacct">ทุกบัญชี</option></select>
-          <div style="margin-left:auto;display:flex;align-items:center;gap:22px">
-            <div style="display:flex;align-items:baseline;gap:5px">
-              <span style="font-size:11px;color:var(--text2);font-family:-apple-system,BlinkMacSystemFont,sans-serif">P/L:</span>
-              <span id="pfcal-total-pnl" style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:500;color:var(--text2)">—</span>
-            </div>
-            <div style="display:flex;align-items:baseline;gap:5px">
-              <span style="font-size:11px;color:var(--text2);font-family:-apple-system,BlinkMacSystemFont,sans-serif">Trades:</span>
-              <span id="pfcal-total-trades" style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:500;color:var(--text)">0</span>
-            </div>
-          </div>
-        </div>
-        <div id="pfcal-day-headers" style="display:grid;grid-template-columns:repeat(7,1fr) 110px;border-bottom:1px solid var(--border)"></div>
-        <div id="pfcal-grid" style="display:grid;grid-template-columns:repeat(7,1fr) 110px"></div>
-        <div id="pfcal-day-panel" style="display:none;border-top:1px solid var(--border);padding:16px 20px">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
-            <span id="pfcal-day-panel-date" style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;font-weight:500;color:var(--text)"></span>
-            <span id="pfcal-day-panel-count" style="font-size:11px;color:var(--text3);font-family:-apple-system,BlinkMacSystemFont,sans-serif"></span>
-            <span id="pfcal-day-panel-pnl" style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;font-weight:500"></span>
-            <button onclick="closePfDayPanel()" style="margin-left:auto;background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;line-height:1;padding:2px 6px;border-radius:4px;transition:color .15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">✕</button>
-          </div>
-          <div id="pfcal-day-panel-table"></div>
-        </div>
-      </div>
-    </div>
-
   </main>
 </div>
 
@@ -1109,9 +998,6 @@ let histTab = 'mt5';
 let calLang = 'en';
 let globalLang = 'th';
 let selectedCalDay = null;
-let pfHistPage = 1;
-let pfCalendarYear = new Date().getFullYear(), pfCalendarMonth = new Date().getMonth();
-let selectedPfCalDay = null;
 
 const I18N = {
   th: {
@@ -1442,8 +1328,6 @@ async function loadAll() {
     if (activePage === 'analysis') renderAnalysis();
     if (activePage === 'settings') { renderPairTags(); renderStrategyTags(); renderAccountTags(); }
     if (activePage === 'propfirm') renderPropfirm();
-    if (activePage === 'pfhistory') renderPfHistory();
-    if (activePage === 'pfcalendar') renderPfCalendar();
   } catch (e) {
     setS('err', 'connection error');
     toast(T('js.connfail'));
@@ -1974,23 +1858,13 @@ function applySettings() {
     calAcctSel.innerHTML = `<option value="">${T('filter.allacct')}</option>` + accts2.map(a => `<option>${a}</option>`).join('');
     if (curCal) calAcctSel.value = curCal;
   }
-  // sync PropFirm account dropdowns (เฉพาะบัญชีที่ account_type === 'propfirm')
-  // ใช้ list เดียวกันทั้ง 3 หน้าย่อยของกลุ่ม PropFirm (Overview/Trade History/Calendar)
-  const pfAccts = [...new Set(trades.filter(t => t.account_type === 'propfirm' && t.source_account).map(t => t.source_account))];
-  [['pf-facct', null], ['pfhist-facct', null], ['pfcal-facct', null]].forEach(([id]) => {
-    const sel = document.getElementById(id);
-    if (!sel) return;
-    const cur = sel.value;
-    sel.innerHTML = `<option value="">${T('filter.allacct')}</option>` + pfAccts.map(a => `<option>${a}</option>`).join('');
-    if (cur) sel.value = cur;
-  });
-  // sync PropFirm history pair dropdown
-  const pfHistPairSel = document.getElementById('pfhist-fp');
-  if (pfHistPairSel) {
-    const pfPairs = [...new Set(trades.filter(t => t.account_type === 'propfirm' && t.symbol).map(t => normalizePair(t.symbol)))];
-    const curPfp = pfHistPairSel.value;
-    pfHistPairSel.innerHTML = `<option value="">${T('filter.allpairs')}</option>` + pfPairs.map(p => `<option>${p}</option>`).join('');
-    if (curPfp) pfHistPairSel.value = curPfp;
+  // sync PropFirm account dropdown (เฉพาะบัญชีที่ account_type === 'propfirm')
+  const pfAcctSel = document.getElementById('pf-facct');
+  if (pfAcctSel) {
+    const accts3 = [...new Set(trades.filter(t => t.account_type === 'propfirm' && t.source_account).map(t => t.source_account))];
+    const curPf = pfAcctSel.value;
+    pfAcctSel.innerHTML = `<option value="">${T('filter.allacct')}</option>` + accts3.map(a => `<option>${a}</option>`).join('');
+    if (curPf) pfAcctSel.value = curPf;
   }
   // sync hist pair dropdown
   const histPairSel = document.getElementById('hist-fp');
@@ -2076,33 +1950,13 @@ function loadNavGroup() {
   const saved = localStorage.getItem('navGroupOpen');
   if (saved !== '0') openNavGroup();
 }
-
-function openPfNavGroup() {
-  const body = document.getElementById('pf-nav-group-body');
-  const chev = document.getElementById('pf-nav-group-chevron');
-  if (body) body.classList.add('open');
-  if (chev) chev.style.transform = 'rotate(90deg)';
-}
-function togglePfNavGroup() {
-  const body = document.getElementById('pf-nav-group-body');
-  const chev = document.getElementById('pf-nav-group-chevron');
-  const isOpen = body.classList.contains('open');
-  body.classList.toggle('open', !isOpen);
-  chev.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(90deg)';
-  localStorage.setItem('pfNavGroupOpen', isOpen ? '0' : '1');
-}
-function loadPfNavGroup() {
-  const saved = localStorage.getItem('pfNavGroupOpen');
-  if (saved !== '0') openPfNavGroup();
-}
 function showPage(n) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
   document.getElementById('page-' + n).classList.add('active');
   const navEl = document.querySelector('.nav-item[data-page="'+n+'"]');
   if (navEl) { navEl.classList.add('active'); }
-  if (['history','calendar','missed','analysis'].includes(n)) openNavGroup();
-  if (['propfirm','pfhistory','pfcalendar'].includes(n)) openPfNavGroup();
+  if (['history','calendar','missed','analysis','propfirm'].includes(n)) openNavGroup();
   localStorage.setItem('lastPage', n);
   if (n === 'overview') renderOverview();
   if (n === 'history') { if (histTab === 'mt5') renderHistory(); else renderTable(); }
@@ -2111,8 +1965,6 @@ function showPage(n) {
   if (n === 'calendar') renderCalendar();
   if (n === 'analysis') renderAnalysis();
   if (n === 'propfirm') renderPropfirm();
-  if (n === 'pfhistory') renderPfHistory();
-  if (n === 'pfcalendar') renderPfCalendar();
   if (n === 'settings') {
     renderPairTags(); renderStrategyTags(); renderAccountTags();
     const bt = localStorage.getItem('fx_journal_backup_time');
@@ -2939,327 +2791,6 @@ function renderPropfirmWeekCal(pfTrades) {
   calEl.innerHTML = dayCells + sumCell;
 }
 
-// ==================== PropFirm > Trade History ====================
-
-function renderPfSessionBreakdown(trades) {
-  const container = document.getElementById('pfhist-session-breakdown');
-  if (!container) return;
-  const SESSIONS = [
-    { name: 'Asia',     color: '#ff1493', bg: 'rgba(255,20,147,0.08)',  border: 'rgba(255,20,147,0.2)'  },
-    { name: 'London',   color: '#4f8eff', bg: 'rgba(79,142,255,0.08)', border: 'rgba(79,142,255,0.2)'  },
-    { name: 'New York', color: '#ff8c00', bg: 'rgba(255,140,0,0.08)',  border: 'rgba(255,140,0,0.2)'   },
-    { name: 'Overlap',  color: '#a855f7', bg: 'rgba(168,85,247,0.08)', border: 'rgba(168,85,247,0.2)'  },
-  ];
-  container.innerHTML = SESSIONS.map(s => {
-    const t = trades.filter(x => x.session === s.name);
-    const withPnl = t.filter(x => x.pnl !== null && x.pnl !== '');
-    const buys  = t.filter(x => x.side === 'BUY').length;
-    const sells = t.filter(x => x.side === 'SELL').length;
-    const pnl   = withPnl.reduce((a, x) => a + parseFloat(x.pnl || 0), 0);
-    const wins  = withPnl.filter(x => parseFloat(x.pnl) > 0).length;
-    const wr    = withPnl.length ? ((wins / withPnl.length) * 100).toFixed(0) + '%' : '—';
-    const pnlStr = withPnl.length ? (pnl >= 0 ? '+' : '') + pnl.toFixed(2) + '$' : '—';
-    const pnlColor = pnl >= 0 ? 'var(--green)' : 'var(--red)';
-    return `<div style="background:${s.bg};border:1px solid ${s.border};border-radius:var(--radius-lg);padding:12px">
-      <div style="font-size:11px;font-weight:500;color:${s.color};text-align:center;font-family:-apple-system,BlinkMacSystemFont,sans-serif;margin-bottom:10px">${s.name}</div>
-      <div style="font-size:18px;font-weight:500;text-align:center;margin-bottom:8px">${t.length} <span style="font-size:11px;color:var(--text2)">trades</span></div>
-      <div style="display:flex;justify-content:center;gap:10px;margin-bottom:8px">
-        <span style="font-size:11px;color:var(--green)">B ${buys}</span>
-        <span style="font-size:11px;color:var(--text3)">|</span>
-        <span style="font-size:11px;color:var(--red)">S ${sells}</span>
-      </div>
-      <div style="text-align:center;font-size:13px;font-weight:500;color:${pnlColor};margin-bottom:4px">${pnlStr}</div>
-      <div style="text-align:center;font-size:11px;color:var(--text2)">Win ${wr}</div>
-    </div>`;
-  }).join('');
-}
-
-function resetPfHistDateRange() {
-  const f = document.getElementById('pfhist-from');
-  const t = document.getElementById('pfhist-to');
-  if (f) f.value = '';
-  if (t) t.value = '';
-  renderPfHistory();
-}
-
-function changePfHistPage(dir) { pfHistPage += dir; renderPfHistory(); }
-
-function renderPfHistory() {
-  const histFrom = document.getElementById('pfhist-from')?.value || '';
-  const histTo   = document.getElementById('pfhist-to')?.value   || '';
-  const fp   = document.getElementById('pfhist-fp')?.value   || '';
-  const fs   = document.getElementById('pfhist-fs')?.value   || '';
-  const fstr = document.getElementById('pfhist-fstr')?.value || '';
-  const fses  = document.getElementById('pfhist-fses')?.value  || '';
-  const facct  = document.getElementById('pfhist-facct')?.value || '';
-
-  const strSel = document.getElementById('pfhist-fstr');
-  if (strSel && strSel.options.length <= 1) {
-    const strats = [...new Set(trades.filter(t => t.account_type === 'propfirm').map(t => t.strategy).filter(Boolean))];
-    strSel.innerHTML = `<option value="">${T('filter.allstrat')}</option>` + strats.map(s => `<option>${s}</option>`).join('');
-    if (fstr) strSel.value = fstr;
-  }
-
-  const filtered = trades.filter(t =>
-    t.account_type === 'propfirm' &&
-    (!histFrom || (t.date && t.date >= histFrom)) &&
-    (!histTo   || (t.date && t.date <= histTo)) &&
-    (!fp   || normalizePair(t.symbol) === fp) &&
-    (!fs   || t.side     === fs) &&
-    (!fstr || t.strategy === fstr) &&
-    (!fses  || t.session  === fses) &&
-    (!facct || t.source_account === facct)
-  ).sort((a, b) => new Date(b.date) - new Date(a.date));
-
-  const s = calcStats(filtered);
-  const setH = (id, val, cls) => { const el = document.getElementById(id); if (el) { el.textContent = val; if (cls) el.className = 'stat-val ' + cls; } };
-  setH('pfhist-total', filtered.length);
-  renderPfSessionBreakdown(filtered);
-  if (!s) {
-    ['pfhist-wr','pfhist-pnl','pfhist-wl',
-     'pfhist-wr-buy','pfhist-pnl-buy','pfhist-win-buy','pfhist-loss-buy',
-     'pfhist-wr-sell','pfhist-pnl-sell','pfhist-win-sell','pfhist-loss-sell'].forEach(id => setH(id, '—'));
-  } else {
-    setH('pfhist-wr',  ((s.wins.length / s.withPnl.length) * 100).toFixed(1) + '%');
-    setH('pfhist-pnl', (s.total >= 0 ? '+' : '') + s.total.toFixed(2) + '$', s.total >= 0 ? 'pos' : 'neg');
-    setH('pfhist-wl',  s.wins.length + ' / ' + s.losses.length);
-    const buyT  = filtered.filter(t => t.side === 'BUY'  && t.pnl !== null && t.pnl !== '');
-    const sellT = filtered.filter(t => t.side === 'SELL' && t.pnl !== null && t.pnl !== '');
-    const buyW  = buyT.filter(t => parseFloat(t.pnl) > 0);
-    const sellW = sellT.filter(t => parseFloat(t.pnl) > 0);
-    const buyPnl  = buyT.reduce((a, t) => a + parseFloat(t.pnl || 0), 0);
-    const sellPnl = sellT.reduce((a, t) => a + parseFloat(t.pnl || 0), 0);
-    if (buyT.length) {
-      const wrB = (buyW.length / buyT.length * 100).toFixed(1);
-      setH('pfhist-wr-buy',  wrB + '%', parseFloat(wrB) >= 50 ? 'pos' : 'neg');
-      setH('pfhist-wl-buy',  buyW.length + 'W / ' + (buyT.length - buyW.length) + 'L');
-      setH('pfhist-pnl-buy', (buyPnl >= 0 ? '+' : '') + buyPnl.toFixed(2) + '$', buyPnl >= 0 ? 'pos' : 'neg');
-      const buyPs = buyT.map(t => parseFloat(t.pnl || 0));
-      setH('pfhist-win-buy',  buyPs.filter(p=>p>0).length  ? '+'+Math.max(...buyPs.filter(p=>p>0)).toFixed(2)+'$'  : '—');
-      setH('pfhist-loss-buy', buyPs.filter(p=>p<=0).length ? Math.min(...buyPs.filter(p=>p<=0)).toFixed(2)+'$' : '—');
-    }
-    if (sellT.length) {
-      const wrS = (sellW.length / sellT.length * 100).toFixed(1);
-      setH('pfhist-wr-sell',  wrS + '%', parseFloat(wrS) >= 50 ? 'pos' : 'neg');
-      setH('pfhist-wl-sell',  sellW.length + 'W / ' + (sellT.length - sellW.length) + 'L');
-      setH('pfhist-pnl-sell', (sellPnl >= 0 ? '+' : '') + sellPnl.toFixed(2) + '$', sellPnl >= 0 ? 'pos' : 'neg');
-      const sellPs = sellT.map(t => parseFloat(t.pnl || 0));
-      setH('pfhist-win-sell',  sellPs.filter(p=>p>0).length  ? '+'+Math.max(...sellPs.filter(p=>p>0)).toFixed(2)+'$'  : '—');
-      setH('pfhist-loss-sell', sellPs.filter(p=>p<=0).length ? Math.min(...sellPs.filter(p=>p<=0)).toFixed(2)+'$' : '—');
-    }
-  }
-
-  const tbody      = document.getElementById('pfhist-tbody');
-  const empty      = document.getElementById('pfhist-empty');
-  const pagination = document.getElementById('pfhist-pagination');
-  if (!filtered.length) { tbody.innerHTML = ''; empty.style.display = ''; pagination.style.display = 'none'; return; }
-  empty.style.display = 'none';
-  const totalPages = Math.ceil(filtered.length / HIST_PAGE_SIZE);
-  pfHistPage = Math.max(1, Math.min(pfHistPage, totalPages));
-  const paginated = filtered.slice((pfHistPage - 1) * HIST_PAGE_SIZE, pfHistPage * HIST_PAGE_SIZE);
-  if (filtered.length > HIST_PAGE_SIZE) {
-    pagination.style.display = '';
-    document.getElementById('pfhist-info').textContent = `${T('js.page')} ${pfHistPage} / ${totalPages} (${filtered.length} ${T('js.records')})`;
-    document.getElementById('pfhist-prev').disabled = pfHistPage === 1;
-    document.getElementById('pfhist-next').disabled = pfHistPage === totalPages;
-  } else { pagination.style.display = 'none'; }
-
-  tbody.innerHTML = paginated.map(t => {
-    const pnl    = parseFloat(t.pnl);
-    const pnlStr = t.pnl ? (pnl >= 0 ? `<span class="pnl-pos">+${pnl.toFixed(2)}$</span>` : `<span class="pnl-neg">${pnl.toFixed(2)}$</span>`) : '—';
-    const pipsColor = t.pips > 0 ? 'var(--green)' : t.pips < 0 ? 'var(--red)' : 'var(--text2)';
-    const imgs   = t.images || [];
-    let imgCell  = '<span style="color:var(--text3)">—</span>';
-    if (imgs.length) {
-      const src = imgs[0].url || imgs[0].data || '';
-      imgCell = `<div class="img-cell">${src ? `<img class="cell-thumb" src="${src}" onclick="openDetail(${t.id})">` : ''}
-        <button class="zoom-btn" onclick="openDetail(${t.id})">⊕ ${imgs.length > 1 ? imgs.length + ' ' + T('js.imgs') : T('js.viewimg')}</button></div>`;
-    }
-    return `<tr data-trade-id="${t.id}">
-      <td style="padding:9px 8px;width:36px" onclick="event.stopPropagation()">${statsPool.includes(t.id) ? '<input type="checkbox" class="trade-cb" checked disabled style="opacity:.55;cursor:not-allowed">' : '<input type="checkbox" class="trade-cb" onchange="toggleTradeSel('+t.id+',this.checked)" '+(selectedForAnalysis.includes(t.id)?'checked':'')+'>'}</td>
-      <td class="mono" style="font-size:11px;cursor:pointer;color:var(--accent)" onclick="openDetail(${t.id})">${t.date}</td>
-      <td style="font-weight:500;cursor:pointer" onclick="openDetail(${t.id})">${t.symbol}</td>
-      <td><span class="badge badge-${t.side.toLowerCase()}">${t.side}</span></td>
-      <td class="mono" style="font-size:11px">${t.entry ? parseFloat(t.entry).toFixed(2) : '—'}</td>
-      <td class="mono" style="font-size:11px">${t.exit  ? parseFloat(t.exit).toFixed(2)  : '—'}</td>
-      <td class="mono" style="font-size:11px">${t.lot   || '—'}</td>
-      <td class="mono" style="font-size:11px;color:${pipsColor}">${t.pips || '—'}</td>
-      <td>${pnlStr}</td>
-      <td class="mono" style="font-size:11px;color:var(--text2)">${t.rr || '—'}</td>
-      <td style="font-size:11px;color:var(--text2)">${t.strategy || '—'}</td>
-      <td>${sessionBadge(t.session)}</td>
-      <td>${imgCell}</td>
-      <td style="white-space:nowrap">
-        <button class="tbl-btn edit" onclick="openEdit(${t.id})" title="${T('det.edit')}">✎</button>
-        <button class="tbl-btn del" data-del-trade="${t.id}" onclick="delTrade(${t.id})" title="ลบ">✕</button>
-      </td>
-    </tr>`;
-  }).join('');
-  const allCbPf = document.getElementById('pfhist-cb-all');
-  if (allCbPf) {
-    const visIdsPf = paginated.map(t => t.id);
-    const selPf = visIdsPf.filter(id => selectedForAnalysis.includes(id)).length;
-    allCbPf.checked = visIdsPf.length > 0 && selPf === visIdsPf.length;
-    allCbPf.indeterminate = selPf > 0 && selPf < visIdsPf.length;
-  }
-}
-
-// ==================== PropFirm > Calendar ====================
-
-function closePfDayPanel() {
-  selectedPfCalDay = null;
-  document.getElementById('pfcal-day-panel').style.display = 'none';
-  document.querySelectorAll('#pfcal-grid .pfcal-day-active').forEach(el => el.classList.remove('pfcal-day-active'));
-}
-
-function _showPfPanel(label, count, totalPnl, rows, showDate) {
-  const pnlColor = totalPnl >= 0 ? 'var(--green)' : 'var(--red)';
-  document.getElementById('pfcal-day-panel-date').textContent = label;
-  document.getElementById('pfcal-day-panel-count').textContent = count + ' trades';
-  const pnlEl = document.getElementById('pfcal-day-panel-pnl');
-  pnlEl.textContent = calFmtPnl(totalPnl);
-  pnlEl.style.color = pnlColor;
-  document.getElementById('pfcal-day-panel-table').innerHTML = _buildTradeTable(rows, showDate);
-  document.getElementById('pfcal-day-panel').style.display = '';
-}
-
-function showPfDayTrades(date) {
-  if (selectedPfCalDay === date) { closePfDayPanel(); return; }
-  selectedPfCalDay = date;
-  document.querySelectorAll('#pfcal-grid .pfcal-day-active').forEach(el => el.classList.remove('pfcal-day-active'));
-  const activeCell = document.querySelector(`#pfcal-grid [data-cal-date="${date}"]`);
-  if (activeCell) activeCell.classList.add('pfcal-day-active');
-  const facct = document.getElementById('pfcal-facct')?.value || '';
-  const dayTrades = trades.filter(t => t.account_type === 'propfirm' && t.date === date && t.pnl !== null && t.pnl !== '' && (!facct || t.source_account === facct));
-  if (!dayTrades.length) { closePfDayPanel(); return; }
-  const totalPnl = dayTrades.reduce((a, t) => a + parseFloat(t.pnl || 0), 0);
-  _showPfPanel(date, dayTrades.length, totalPnl, dayTrades, false);
-}
-
-function showPfWeekTrades(dates) {
-  const key = 'week:' + dates[0];
-  if (selectedPfCalDay === key) { closePfDayPanel(); return; }
-  selectedPfCalDay = key;
-  document.querySelectorAll('#pfcal-grid .pfcal-day-active').forEach(el => el.classList.remove('pfcal-day-active'));
-  const facct = document.getElementById('pfcal-facct')?.value || '';
-  const weekTrades = trades
-    .filter(t => t.account_type === 'propfirm' && t.date && dates.includes(t.date) && t.pnl !== null && t.pnl !== '' && (!facct || t.source_account === facct))
-    .sort((a, b) => a.date.localeCompare(b.date));
-  if (!weekTrades.length) { closePfDayPanel(); return; }
-  const totalPnl = weekTrades.reduce((a, t) => a + parseFloat(t.pnl || 0), 0);
-  const label = dates[0] + ' – ' + dates[dates.length - 1];
-  _showPfPanel(label, weekTrades.length, totalPnl, weekTrades, true);
-}
-
-function buildPfCalHeaders() {
-  const L = CAL_L[calLang];
-  const el = document.getElementById('pfcal-day-headers');
-  if (!el) return;
-  const s = "padding:7px 6px;font-size:11px;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,sans-serif;text-align:center;border-right:1px solid var(--border);letter-spacing:.04em;line-height:1.5";
-  el.innerHTML = L.days.map(d => `<div style="${s}">${d}</div>`).join('')
-    + `<div style="padding:7px 6px;font-size:10px;color:var(--accent);font-family:-apple-system,BlinkMacSystemFont,sans-serif;text-align:center;letter-spacing:.04em;line-height:1.5">${L.summary}</div>`;
-}
-
-function changePfCalendarMonth(dir) {
-  pfCalendarMonth += dir;
-  if (pfCalendarMonth > 11) { pfCalendarMonth = 0; pfCalendarYear++; }
-  if (pfCalendarMonth < 0) { pfCalendarMonth = 11; pfCalendarYear--; }
-  renderPfCalendar();
-}
-
-function renderPfCalendar() {
-  const year = pfCalendarYear, month = pfCalendarMonth;
-  const L = CAL_L[calLang];
-  buildPfCalHeaders();
-
-  let mTitle = L.months[month] + '-' + year;
-  if (calLang === 'both') mTitle = L.months[month] + ' · ' + L.monthsTh[month] + ' ' + year;
-  document.getElementById('pfcal-month-title').textContent = mTitle;
-
-  const monthStr = year + '-' + String(month + 1).padStart(2, '0');
-  const facct = document.getElementById('pfcal-facct')?.value || '';
-  const mTrades = trades.filter(t => t.account_type === 'propfirm' && t.date && t.date.startsWith(monthStr) && t.pnl !== null && t.pnl !== '' && (!facct || t.source_account === facct));
-  const totalPnl = mTrades.reduce((a, t) => a + parseFloat(t.pnl || 0), 0);
-  const totalCount = mTrades.length;
-
-  const pnlEl = document.getElementById('pfcal-total-pnl');
-  pnlEl.textContent = calFmtPnl(totalPnl);
-  pnlEl.style.color = totalPnl > 0 ? 'var(--green)' : totalPnl < 0 ? 'var(--red)' : 'var(--text2)';
-  document.getElementById('pfcal-total-trades').textContent = totalCount;
-
-  const dayMap = {};
-  mTrades.forEach(t => {
-    if (!t.date) return;
-    if (!dayMap[t.date]) dayMap[t.date] = { count: 0, pnl: 0 };
-    dayMap[t.date].count++;
-    dayMap[t.date].pnl += parseFloat(t.pnl || 0);
-  });
-
-  const firstDay = new Date(year, month, 1);
-  const lastDay  = new Date(year, month + 1, 0);
-  let startSunday = new Date(firstDay);
-  startSunday.setDate(startSunday.getDate() - startSunday.getDay());
-
-  const grid = document.getElementById('pfcal-grid');
-  grid.innerHTML = '';
-  closePfDayPanel();
-
-  const todayStr = new Date().toISOString().split('T')[0];
-  let cur = new Date(startSunday);
-
-  while (cur <= lastDay) {
-    let wPnl = 0, wCount = 0;
-    const weekDates = [];
-
-    for (let d = 0; d < 7; d++) {
-      const ds = cur.getFullYear() + '-' + String(cur.getMonth() + 1).padStart(2, '0') + '-' + String(cur.getDate()).padStart(2, '0');
-      const inMonth = cur.getMonth() === month;
-      const data = dayMap[ds] || null;
-
-      if (inMonth) weekDates.push(ds);
-      if (inMonth && data) { wPnl += data.pnl; wCount += data.count; }
-
-      const cell = document.createElement('div');
-      cell.className = 'cal-day-cell';
-      cell.setAttribute('data-cal-date', ds);
-      if (inMonth) cell.onclick = () => showPfDayTrades(ds);
-      let bg = 'transparent';
-      if (inMonth && data) bg = data.pnl > 0 ? 'var(--cal-pos-bg)' : 'var(--cal-neg-bg)';
-
-      cell.style.cssText = 'background:' + bg + ';border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:8px 10px;aspect-ratio:2;box-sizing:border-box;position:relative;display:flex;align-items:center;justify-content:center' + (inMonth ? ';cursor:pointer' : '');
-
-      const dayColor = inMonth ? 'var(--text)' : 'var(--text3)';
-      const isToday = ds === todayStr;
-      let html = '<div style="position:absolute;top:6px;left:8px;font-size:13px;color:' + dayColor + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;display:flex;align-items:center;gap:5px">' + cur.getDate() + (isToday ? ' <span style="font-size:9px;background:var(--accent);color:#fff;padding:1px 5px;border-radius:3px;font-weight:500">Today</span>' : '') + '</div>';
-
-      if (inMonth && data) {
-        const pc = data.pnl >= 0 ? 'var(--green)' : 'var(--red)';
-        const tradeLabel = data.count === 1 ? 'trade' : 'trades';
-        html += '<div style="text-align:center">'
-          + '<div style="font-size:13px;color:' + pc + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500">' + data.count + ' ' + tradeLabel + '</div>'
-          + '<div style="font-size:15px;color:' + pc + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500">' + calFmtPnl(data.pnl) + '</div>'
-          + '</div>';
-      }
-
-      cell.innerHTML = html;
-      grid.appendChild(cell);
-      cur.setDate(cur.getDate() + 1);
-    }
-
-    const sumCell = document.createElement('div');
-    sumCell.className = 'cal-day-cell';
-    sumCell.style.cssText = 'border-bottom:1px solid var(--border);padding:8px 10px;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg3);box-sizing:border-box' + (wCount > 0 ? ';cursor:pointer' : '');
-    if (wCount > 0) {
-      const wc = wPnl >= 0 ? 'var(--green)' : 'var(--red)';
-      sumCell.innerHTML = '<div style="font-size:13px;color:var(--text);margin-bottom:4px;text-align:center;font-family:-apple-system,BlinkMacSystemFont,sans-serif">' + wCount + ' ' + L.trades + '</div>'
-        + '<div style="font-size:18px;font-weight:500;color:' + wc + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;text-align:center">' + calFmtPnl(wPnl) + '</div>';
-      const captured = weekDates.slice();
-      sumCell.onclick = () => showPfWeekTrades(captured);
-    }
-    grid.appendChild(sumCell);
-  }
-}
-
 function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
 
 document.addEventListener('keydown', e => {
@@ -3279,14 +2810,13 @@ const _vb = document.getElementById('view-badge');
 if (_vb) _vb.style.display = IS_VIEW ? '' : 'none';
 loadTheme();
 loadNavGroup();
-loadPfNavGroup();
 globalLang = localStorage.getItem('lang') || 'th';
 loadPool();
 document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
 document.getElementById('new-pair').addEventListener('keydown', e => { if (e.key === 'Enter') addPair(); });
 document.getElementById('new-strategy').addEventListener('keydown', e => { if (e.key === 'Enter') addStrategy(); });
 document.getElementById('new-account').addEventListener('keydown', e => { if (e.key === 'Enter') addAccountSetting(); });
-const validPages = ['overview','history','calendar','missed','account','settings','analysis','propfirm','pfhistory','pfcalendar'];
+const validPages = ['overview','history','calendar','missed','account','settings','analysis','propfirm'];
 const _lp = localStorage.getItem('lastPage');
 const lastPage = IS_VIEW ? 'overview' : (validPages.includes(_lp) ? _lp : 'overview');
 showPage(lastPage);
@@ -3613,8 +3143,6 @@ function setGlobalLang(lang) {
   else if (active === 'settings') { renderPairTags(); renderStrategyTags(); renderAccountTags(); }
   else if (active === 'analysis') renderAnalysis();
   else if (active === 'propfirm') renderPropfirm();
-  else if (active === 'pfhistory') renderPfHistory();
-  else if (active === 'pfcalendar') renderPfCalendar();
 }
 
 // ═══════════════════════════════════════════════════
