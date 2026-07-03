@@ -603,7 +603,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <div class="settings-block">
         <h3 style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;letter-spacing:.03em">Version</h3>
         <div style="display:flex;align-items:baseline;gap:10px">
-          <span style="font-size:20px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:var(--accent)">v5.12</span>
+          <span style="font-size:20px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:var(--accent)">v5.13</span>
           <span style="font-size:11px;color:var(--text3);font-family:-apple-system,BlinkMacSystemFont,sans-serif">FX Journal</span>
         </div>
       </div>
@@ -675,11 +675,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
             <option value="BTCUSD">BTCUSD</option>
           </select>
         </div>
-        <div id="calc-ppv-override-wrap" style="margin-bottom:18px;display:none">
-          <label style="display:block;font-size:11px;color:var(--text2);letter-spacing:.04em;font-family:-apple-system,BlinkMacSystemFont,sans-serif;margin-bottom:6px" id="calc-ppv-label"></label>
-          <input type="number" id="calc-ppv-override" min="0" step="0.01" style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);padding:9px 12px;font-size:13px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;width:100%;outline:none;box-sizing:border-box">
-          <span id="calc-ppv-hint" style="display:block;font-size:11px;color:var(--amber);font-family:-apple-system,BlinkMacSystemFont,sans-serif;margin-top:6px"></span>
-        </div>
         <div class="fg" style="margin-bottom:18px">
           <label data-i18n="calc.balance">ทุนในบัญชี ($)</label>
           <input type="number" id="calc-balance" placeholder="10000" min="0" step="100">
@@ -689,16 +684,34 @@ tr:hover td{background:rgba(255,255,255,.02)}
           <input type="number" id="calc-risk-input" placeholder="1" min="0.01" max="100" step="0.1">
         </div>
         <div style="margin-bottom:6px">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-            <label style="font-size:11px;color:var(--text2);letter-spacing:.04em;font-family:-apple-system,BlinkMacSystemFont,sans-serif" id="calc-sl-label">SL Distance (pip)</label>
-            <div style="display:flex;gap:4px">
-              <button id="calc-unit-pip" onclick="calcSetUnit('pip')" style="padding:5px 12px;border-radius:var(--radius);border:1px solid var(--border2);background:transparent;cursor:pointer;font-size:11px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;transition:all .15s;color:#fff;background:var(--accent);border-color:var(--accent)">Pip</button>
-              <button id="calc-unit-pt"  onclick="calcSetUnit('pt')"  style="padding:5px 12px;border-radius:var(--radius);border:1px solid var(--border2);background:transparent;cursor:pointer;font-size:11px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;transition:all .15s;color:var(--text2)">Point</button>
+          <div style="display:flex;gap:6px;margin-bottom:12px">
+            <button id="calc-dist-price" onclick="calcSetDistMode('price')" style="flex:1;padding:7px 10px;border-radius:var(--radius);border:1px solid var(--border2);background:transparent;cursor:pointer;font-size:12px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;transition:all .15s;color:var(--text2)" data-i18n="calc.distprice">กรอกราคา</button>
+            <button id="calc-dist-pip" onclick="calcSetDistMode('pip')" style="flex:1;padding:7px 10px;border-radius:var(--radius);border:1px solid var(--border2);background:transparent;cursor:pointer;font-size:12px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;transition:all .15s;color:var(--text2)" data-i18n="calc.distpip">กรอก Pip/Point</button>
+          </div>
+          <div id="calc-dist-price-wrap" style="display:none">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
+              <div>
+                <label style="display:block;font-size:11px;color:var(--text2);letter-spacing:.04em;font-family:-apple-system,BlinkMacSystemFont,sans-serif;margin-bottom:6px" data-i18n="calc.entry">ราคาเข้า</label>
+                <input type="number" id="calc-open-price" placeholder="0.00" step="0.00001" style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);padding:9px 12px;font-size:13px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;width:100%;outline:none;box-sizing:border-box">
+              </div>
+              <div>
+                <label style="display:block;font-size:11px;color:var(--text2);letter-spacing:.04em;font-family:-apple-system,BlinkMacSystemFont,sans-serif;margin-bottom:6px" data-i18n="calc.sl">Stop Loss</label>
+                <input type="number" id="calc-sl-price" placeholder="0.00" step="0.00001" style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);padding:9px 12px;font-size:13px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;width:100%;outline:none;box-sizing:border-box">
+              </div>
             </div>
           </div>
-          <span id="calc-pip-info" style="display:block;font-size:11px;color:var(--text3);font-family:-apple-system,BlinkMacSystemFont,sans-serif;margin-bottom:8px"></span>
-          <input type="number" id="calc-sl-pips" placeholder="50" min="0" step="1" style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);padding:9px 12px;font-size:13px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;width:100%;outline:none;box-sizing:border-box">
-          <div id="calc-sl-presets" style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"></div>
+          <div id="calc-dist-pip-wrap" style="display:none">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+              <label style="font-size:11px;color:var(--text2);letter-spacing:.04em;font-family:-apple-system,BlinkMacSystemFont,sans-serif" id="calc-sl-label">SL Distance (pip)</label>
+              <div style="display:flex;gap:4px">
+                <button id="calc-unit-pip" onclick="calcSetUnit('pip')" style="padding:5px 12px;border-radius:var(--radius);border:1px solid var(--border2);background:transparent;cursor:pointer;font-size:11px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;transition:all .15s;color:#fff;background:var(--accent);border-color:var(--accent)">Pip</button>
+                <button id="calc-unit-pt"  onclick="calcSetUnit('pt')"  style="padding:5px 12px;border-radius:var(--radius);border:1px solid var(--border2);background:transparent;cursor:pointer;font-size:11px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;transition:all .15s;color:var(--text2)">Point</button>
+              </div>
+            </div>
+            <span id="calc-pip-info" style="display:block;font-size:11px;color:var(--text3);font-family:-apple-system,BlinkMacSystemFont,sans-serif;margin-bottom:8px"></span>
+            <input type="number" id="calc-sl-pips" placeholder="50" min="0" step="1" style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);padding:9px 12px;font-size:13px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;width:100%;outline:none;box-sizing:border-box">
+            <div id="calc-sl-presets" style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"></div>
+          </div>
         </div>
         <div style="height:16px"></div>
         <div style="background:var(--bg2);border:1px solid var(--card-bdr);border-radius:var(--radius-lg);padding:20px 20px 16px">
@@ -1114,11 +1127,13 @@ const I18N = {
     'nav.calculator':'คำนวณ Lot','calc.symbol':'Symbol','calc.balance':'ทุนในบัญชี ($)',
     'calc.risk':'ความเสี่ยง %','calc.entry':'ราคาเข้า','calc.sl':'Stop Loss',
     'calc.lotsize':'Lot Size','calc.riskamt':'เงินที่เสี่ยง','calc.sldist':'ระยะ SL','calc.perpip':'$/pip/lot',
+    'calc.distprice':'กรอกราคา','calc.distpip':'กรอก Pip/Point',
     'calc.ppvlabelpip':'$ ต่อ pip ต่อ 1.00 lot (ค่าจริงต่างกันได้ตามโบรก — ปรับให้ตรงก่อนใช้)',
     'calc.ppvlabelpt':'$ ต่อ point ต่อ 1.00 lot (ค่าจริงต่างกันได้ตามโบรก — ปรับให้ตรงก่อนใช้)',
     'calc.hintjpy':'ค่านี้ขึ้นกับเรท USDJPY ปัจจุบัน (≈1000 ÷ เรท) เช็คราคาล่าสุดแล้วปรับเลขนี้ก่อนใช้จริง',
     'calc.hintidx':'ดัชนี (Index) ค่านี้ต่างกันได้มากตามโบรก พบตั้งแต่ $0.1 ถึง $10/point เช็คจาก MT5: คลิกขวา symbol → Specification → ดู Contract Size',
     'calc.hintbtc':'คริปโต contract size ต่างกันมากตามโบรกและปรับบ่อย เช็คจาก MT5: คลิกขวา symbol → Specification → ดู Contract Size',
+    'calc.hintstd':'ค่านี้เป็นมาตรฐานเดียวกันแทบทุกโบรกอยู่แล้ว ปกติไม่ต้องแก้ แต่เช็คได้จาก MT5: คลิกขวา symbol → Specification → ดู Contract Size ถ้าไม่แน่ใจ',
   },
   en: {
     'nav.overview':'Overview','nav.history':'Trade History','nav.calendar':'Calendar',
@@ -1225,11 +1240,13 @@ const I18N = {
     'nav.calculator':'Lot Calculator','calc.symbol':'Symbol','calc.balance':'Account Balance ($)',
     'calc.risk':'Risk %','calc.entry':'Entry Price','calc.sl':'Stop Loss',
     'calc.lotsize':'Lot Size','calc.riskamt':'Risk Amount','calc.sldist':'SL Distance','calc.perpip':'$/pip/lot',
+    'calc.distprice':'Enter Price','calc.distpip':'Enter Pip/Point',
     'calc.ppvlabelpip':'$ per pip per 1.00 lot (varies by broker — verify before using)',
     'calc.ppvlabelpt':'$ per point per 1.00 lot (varies by broker — verify before using)',
     'calc.hintjpy':'This depends on the current USDJPY rate (≈1000 ÷ rate). Check the latest price and adjust this number before relying on it.',
     'calc.hintidx':'Index contract value varies a lot by broker — seen anywhere from $0.1 to $10/point. Check in MT5: right-click symbol → Specification → Contract Size',
     'calc.hintbtc':'Crypto contract size varies widely by broker and changes often. Check in MT5: right-click symbol → Specification → Contract Size',
+    'calc.hintstd':'This value is standard across almost every broker, so you normally don\'t need to change it — but you can verify in MT5: right-click symbol → Specification → Contract Size if unsure.',
   }
 };
 
@@ -2507,20 +2524,17 @@ function makeChart(canvasId, type, labels, datasets, opts={}) {
 }
 
 const CALC_SYMS = {
-  'XAUUSD':{ pip:1,      ppv:100, unit:'pip', pts:100 },
-  'EURUSD':{ pip:0.0001, ppv:10,  unit:'pip', pts:10  },
-  'GBPUSD':{ pip:0.0001, ppv:10,  unit:'pip', pts:10  },
-  'USDJPY':{ pip:0.01,   ppv:6.15,unit:'pip', pts:10,  variable:true, hintKey:'calc.hintjpy' },
-  'NAS100':{ pip:1,      ppv:1,   unit:'pt',  pts:1,   variable:true, hintKey:'calc.hintidx' },
-  'US30':  { pip:1,      ppv:1,   unit:'pt',  pts:1,   variable:true, hintKey:'calc.hintidx' },
+  'XAUUSD':{ pip:1,      ppv:100, unit:'pip', pts:100, hintKey:'calc.hintstd' },
+  'EURUSD':{ pip:0.0001, ppv:10,  unit:'pip', pts:10,  hintKey:'calc.hintstd' },
+  'GBPUSD':{ pip:0.0001, ppv:10,  unit:'pip', pts:10,  hintKey:'calc.hintstd' },
+  'USDJPY':{ pip:0.01,   ppv:6.2, unit:'pip', pts:10,  variable:true, hintKey:'calc.hintjpy' },
+  'NAS100':{ pip:1,      ppv:0.01,unit:'pt',  pts:1,   variable:true, hintKey:'calc.hintidx' },
+  'US30':  { pip:1,      ppv:0.01,unit:'pt',  pts:1,   variable:true, hintKey:'calc.hintidx' },
   'BTCUSD':{ pip:1,      ppv:1,   unit:'pt',  pts:1,   variable:true, hintKey:'calc.hintbtc' },
 };
 function calcGetPpv(sym) {
   const spec = CALC_SYMS[sym];
-  if (!spec) return 1;
-  if (!spec.variable) return spec.ppv;
-  const saved = parseFloat(localStorage.getItem('calc_ppv_' + sym));
-  return isNaN(saved) ? spec.ppv : saved;
+  return spec ? spec.ppv : 1;
 }
 function renderCalculator() {
   const balEl = document.getElementById('calc-balance');
@@ -2553,33 +2567,24 @@ function renderCalculator() {
     });
     slPresetsEl.dataset.init = '1';
   }
-  const ppvInp = document.getElementById('calc-ppv-override');
-  if (ppvInp && !ppvInp.dataset.init) {
-    ppvInp.addEventListener('input', () => {
-      const sym = localStorage.getItem('calc_sym') || 'XAUUSD';
-      localStorage.setItem('calc_ppv_' + sym, ppvInp.value);
-      calcUpdate();
-    });
-    ppvInp.dataset.init = '1';
+  const openPriceEl = document.getElementById('calc-open-price');
+  if (openPriceEl && !openPriceEl.dataset.init) {
+    openPriceEl.addEventListener('input', calcUpdate);
+    openPriceEl.dataset.init = '1';
+  }
+  const slPriceEl = document.getElementById('calc-sl-price');
+  if (slPriceEl && !slPriceEl.dataset.init) {
+    slPriceEl.addEventListener('input', calcUpdate);
+    slPriceEl.dataset.init = '1';
   }
   calcSetSym(localStorage.getItem('calc_sym') || 'XAUUSD');
+  calcSetDistMode(localStorage.getItem('calc_dist_mode') || 'price');
 }
 function calcSetSym(s) {
   if (!CALC_SYMS[s]) return;
   localStorage.setItem('calc_sym', s);
   const selEl = document.getElementById('calc-sym-select');
   if (selEl) selEl.value = s;
-  const spec = CALC_SYMS[s];
-  const wrap = document.getElementById('calc-ppv-override-wrap');
-  if (wrap) wrap.style.display = spec.variable ? '' : 'none';
-  if (spec.variable) {
-    const inp = document.getElementById('calc-ppv-override');
-    if (inp) inp.value = calcGetPpv(s);
-    const lbl = document.getElementById('calc-ppv-label');
-    if (lbl) lbl.textContent = T(spec.unit === 'pip' ? 'calc.ppvlabelpip' : 'calc.ppvlabelpt');
-    const hint = document.getElementById('calc-ppv-hint');
-    if (hint) hint.textContent = T(spec.hintKey);
-  }
   calcUpdateLabel();
   calcUpdate();
 }
@@ -2629,6 +2634,22 @@ function calcSetUnit(u) {
   calcUpdateLabel();
   calcUpdate();
 }
+function calcSetDistMode(mode) {
+  localStorage.setItem('calc_dist_mode', mode);
+  const priceWrap = document.getElementById('calc-dist-price-wrap');
+  const pipWrap   = document.getElementById('calc-dist-pip-wrap');
+  if (priceWrap) priceWrap.style.display = mode === 'price' ? '' : 'none';
+  if (pipWrap)   pipWrap.style.display   = mode === 'pip'   ? '' : 'none';
+  ['price','pip'].forEach(m => {
+    const btn = document.getElementById('calc-dist-' + m);
+    if (!btn) return;
+    const on = m === mode;
+    btn.style.background  = on ? 'var(--accent)' : 'transparent';
+    btn.style.color       = on ? '#fff' : 'var(--text2)';
+    btn.style.borderColor = on ? 'var(--accent)' : 'var(--border2)';
+  });
+  calcUpdate();
+}
 function calcUpdate() {
   const sym = localStorage.getItem('calc_sym') || 'XAUUSD';
   const spec = CALC_SYMS[sym];
@@ -2636,17 +2657,28 @@ function calcUpdate() {
   const ppv = calcGetPpv(sym);
   const balance  = parseFloat(document.getElementById('calc-balance')?.value) || 0;
   const riskPct  = parseFloat(document.getElementById('calc-risk-input')?.value) || 0;
-  const unit    = localStorage.getItem('calc_unit') || 'pip';
-  const slVal   = parseFloat(document.getElementById('calc-sl-pips')?.value) || 0;
-  const slPips  = (unit === 'pt' && spec.pts > 1) ? slVal / spec.pts : slVal;
+  const distMode = localStorage.getItem('calc_dist_mode') || 'price';
+  const unit     = localStorage.getItem('calc_unit') || 'pip';
+  let slPips, dispVal, dispUnit;
+  if (distMode === 'price') {
+    const openPrice = parseFloat(document.getElementById('calc-open-price')?.value) || 0;
+    const slPrice   = parseFloat(document.getElementById('calc-sl-price')?.value) || 0;
+    slPips   = (openPrice && slPrice) ? Math.abs(openPrice - slPrice) / spec.pip : 0;
+    dispVal  = slPips;
+    dispUnit = spec.unit;
+  } else {
+    const slVal = parseFloat(document.getElementById('calc-sl-pips')?.value) || 0;
+    slPips   = (unit === 'pt' && spec.pts > 1) ? slVal / spec.pts : slVal;
+    dispVal  = (unit === 'pt' && spec.pts > 1) ? slVal : slPips;
+    dispUnit = (unit === 'pt' && spec.pts > 1) ? 'pt' : spec.unit;
+  }
   const riskAmt  = balance * (riskPct / 100);
   const riskAmtEl = document.getElementById('calc-risk-amt');
   const slDistEl  = document.getElementById('calc-sl-dist');
   const pipValEl  = document.getElementById('calc-pip-val');
   const lotEl     = document.getElementById('calc-lot');
   if (riskAmtEl) riskAmtEl.textContent = balance > 0 && riskPct > 0 ? riskAmt.toFixed(2) + '$' : '—';
-  const unit0   = localStorage.getItem('calc_unit') || 'pip';
-  const ppvDisp = (unit0 === 'pt' && spec.pts > 1) ? (ppv / spec.pts) + '$' : ppv + '$';
+  const ppvDisp = (distMode === 'pip' && unit === 'pt' && spec.pts > 1) ? (ppv / spec.pts) + '$' : ppv + '$';
   if (pipValEl)  pipValEl.textContent  = ppvDisp;
   if (!balance || !riskPct || !slPips) {
     if (lotEl)    lotEl.textContent = '—';
@@ -2659,10 +2691,7 @@ function calcUpdate() {
     lotEl.textContent = (lot > 0 && lot < 1000) ? lot.toFixed(2) : '—';
     lotEl.style.color = 'var(--accent)';
   }
-  const unit2   = localStorage.getItem('calc_unit') || 'pip';
-  const dispUnit = unit2 === 'pt' && spec.pts > 1 ? 'pt' : spec.unit;
-  const dispVal  = unit2 === 'pt' && spec.pts > 1 ? slVal : slPips;
-  if (slDistEl) slDistEl.textContent = dispVal + ' ' + dispUnit;
+  if (slDistEl) slDistEl.textContent = (Math.round(dispVal * 100) / 100) + ' ' + dispUnit;
 }
 
 function normalizePair(sym) {
