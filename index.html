@@ -232,16 +232,16 @@ tr:hover td{background:rgba(255,255,255,.02)}
       
     </div>
     <nav class="nav">
-      <div class="nav-item" data-page="overview" onclick="showPage('overview')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        <span data-i18n="nav.overview">ภาพรวม</span>
-      </div>
       <div class="nav-group-header" onclick="toggleNavGroup()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-        <span>Dashboard</span>
+        <span>Live Account</span>
         <svg id="nav-group-chevron" class="nav-group-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
       <div class="nav-group-body" id="nav-group-body">
+        <div class="nav-item nav-sub" data-page="overview" onclick="showPage('overview')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          <span data-i18n="nav.overview">ภาพรวม</span>
+        </div>
         <div class="nav-item nav-sub" data-page="history" onclick="showPage('history')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4"/><polyline points="3 16 3 11 8 11"/></svg>
           <span data-i18n="nav.history">ประวัติการเทรด</span>
@@ -618,7 +618,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <div class="settings-block">
         <h3 style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;letter-spacing:.03em">Version</h3>
         <div style="display:flex;align-items:baseline;gap:10px">
-          <span style="font-size:20px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:var(--accent)">v5.14</span>
+          <span style="font-size:20px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:var(--accent)">v5.18</span>
           <span style="font-size:11px;color:var(--text3);font-family:-apple-system,BlinkMacSystemFont,sans-serif">FX Journal</span>
         </div>
       </div>
@@ -1961,7 +1961,7 @@ function applySettings() {
   // sync hist account dropdown
   const histAcctSel = document.getElementById('hist-facct');
   if (histAcctSel) {
-    const accts = [...new Set(trades.filter(t => t.source_account).map(t => t.source_account))];
+    const accts = [...new Set(trades.filter(t => t.source_account && t.account_type !== 'propfirm').map(t => t.source_account))];
     const cur = histAcctSel.value;
     histAcctSel.innerHTML = `<option value="">${T('filter.allacct')}</option>` + accts.map(a => `<option>${a}</option>`).join('');
     if (cur) histAcctSel.value = cur;
@@ -1969,7 +1969,7 @@ function applySettings() {
   // sync calendar account dropdown (ใช้ accts list เดิมจาก hist-facct)
   const calAcctSel = document.getElementById('cal-facct');
   if (calAcctSel) {
-    const accts2 = [...new Set(trades.filter(t => t.source_account).map(t => t.source_account))];
+    const accts2 = [...new Set(trades.filter(t => t.source_account && t.account_type !== 'propfirm').map(t => t.source_account))];
     const curCal = calAcctSel.value;
     calAcctSel.innerHTML = `<option value="">${T('filter.allacct')}</option>` + accts2.map(a => `<option>${a}</option>`).join('');
     if (curCal) calAcctSel.value = curCal;
@@ -2101,7 +2101,7 @@ function showPage(n) {
   document.getElementById('page-' + n).classList.add('active');
   const navEl = document.querySelector('.nav-item[data-page="'+n+'"]');
   if (navEl) { navEl.classList.add('active'); }
-  if (['history','calendar','missed','analysis'].includes(n)) openNavGroup();
+  if (['overview','history','calendar','missed','analysis'].includes(n)) openNavGroup();
   if (['propfirm','pfhistory','pfcalendar'].includes(n)) openPfNavGroup();
   localStorage.setItem('lastPage', n);
   if (n === 'overview') renderOverview();
@@ -2289,6 +2289,7 @@ function renderHistory() {
 
   const filtered = trades.filter(t =>
     (t.source === 'mt5' || (!t.source && String(t.id).length < 13)) &&
+    t.account_type !== 'propfirm' &&
     (!histFrom || (t.date && t.date >= histFrom)) &&
     (!histTo   || (t.date && t.date <= histTo)) &&
     (!fp   || normalizePair(t.symbol) === fp) &&
@@ -2698,7 +2699,7 @@ function renderOverviewWeekCal() {
   }
   const dayMap = {};
   trades.forEach(t => {
-    if (!t.date || t.pnl === null || t.pnl === '') return;
+    if (!t.date || t.pnl === null || t.pnl === '' || t.account_type === 'propfirm') return;
     if (!dayMap[t.date]) dayMap[t.date] = { count: 0, pnl: 0 };
     dayMap[t.date].count++;
     dayMap[t.date].pnl += parseFloat(t.pnl || 0);
@@ -2734,7 +2735,7 @@ function renderOverviewWeekCal() {
 }
 
 function renderOverview() {
-  const mt5Trades = trades.filter(t => t.source === 'mt5' || (!t.source && String(t.id).length < 13));
+  const mt5Trades = trades.filter(t => (t.source === 'mt5' || (!t.source && String(t.id).length < 13)) && t.account_type !== 'propfirm');
   const s = calcStats(mt5Trades);
   const setEl = (id, val, cls) => { const el = document.getElementById(id); if (el) { el.textContent = val; if (cls) el.className = 'stat-val ' + cls; } };
   setEl('ov-total', mt5Trades.length);
@@ -3421,7 +3422,7 @@ function showDayTrades(date) {
   const activeCell = document.querySelector(`[data-cal-date="${date}"]`);
   if (activeCell) activeCell.classList.add('cal-day-active');
   const facct = document.getElementById('cal-facct')?.value || '';
-  const dayTrades = trades.filter(t => t.date === date && t.pnl !== null && t.pnl !== '' && (!facct || t.source_account === facct));
+  const dayTrades = trades.filter(t => t.date === date && t.pnl !== null && t.pnl !== '' && t.account_type !== 'propfirm' && (!facct || t.source_account === facct));
   if (!dayTrades.length) { closeDayPanel(); return; }
   const totalPnl = dayTrades.reduce((a, t) => a + parseFloat(t.pnl || 0), 0);
   _showPanel(date, dayTrades.length, totalPnl, dayTrades, false);
@@ -3434,7 +3435,7 @@ function showWeekTrades(dates) {
   document.querySelectorAll('.cal-day-active').forEach(el => el.classList.remove('cal-day-active'));
   const facct = document.getElementById('cal-facct')?.value || '';
   const weekTrades = trades
-    .filter(t => t.date && dates.includes(t.date) && t.pnl !== null && t.pnl !== '' && (!facct || t.source_account === facct))
+    .filter(t => t.date && dates.includes(t.date) && t.pnl !== null && t.pnl !== '' && t.account_type !== 'propfirm' && (!facct || t.source_account === facct))
     .sort((a, b) => a.date.localeCompare(b.date));
   if (!weekTrades.length) { closeDayPanel(); return; }
   const totalPnl = weekTrades.reduce((a, t) => a + parseFloat(t.pnl || 0), 0);
@@ -3486,7 +3487,7 @@ function renderCalendar() {
 
   const monthStr = year + '-' + String(month + 1).padStart(2, '0');
   const facct = document.getElementById('cal-facct')?.value || '';
-  const mTrades = trades.filter(t => t.date && t.date.startsWith(monthStr) && t.pnl !== null && t.pnl !== '' && (!facct || t.source_account === facct));
+  const mTrades = trades.filter(t => t.date && t.date.startsWith(monthStr) && t.pnl !== null && t.pnl !== '' && t.account_type !== 'propfirm' && (!facct || t.source_account === facct));
   const totalPnl = mTrades.reduce((a, t) => a + parseFloat(t.pnl || 0), 0);
   const totalCount = mTrades.length;
 
@@ -3608,6 +3609,7 @@ function setGlobalLang(lang) {
   const active = localStorage.getItem('lastPage') || 'overview';
   if (active === 'overview') renderOverview();
   else if (active === 'history') { if (histTab === 'mt5') renderHistory(); else renderTable(); }
+  else if (active === 'calendar') renderCalendar();
   else if (active === 'missed') renderMissed();
   else if (active === 'account') renderAccount();
   else if (active === 'settings') { renderPairTags(); renderStrategyTags(); renderAccountTags(); }
