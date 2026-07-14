@@ -1736,14 +1736,14 @@ function renderAccount() {
   });
 
   // metrics รวมทั้งหมด
-  const totalWithdrawal = sumWhere(accounts, isWithdrawal, 'amount_usd');
-  const totalDeposit = sumWhere(accounts, isDeposit, 'amount_usd');
-  const totalFunding = sumWhere(accounts, isFunding, 'amount_usd');
-  const totalExpenses = sumWhere(accounts, isExpense, 'amount_usd');
-  const totalWithdrawalThb = sumWhere(accounts, isWithdrawal, 'amount_thb');
-  const totalDepositThb = sumWhere(accounts, isDeposit, 'amount_thb');
-  const totalFundingThb = sumWhere(accounts, isFunding, 'amount_thb');
-  const totalExpensesThb = sumWhere(accounts, isExpense, 'amount_thb');
+  const totalWithdrawal = sumWhere(filtered, isWithdrawal, 'amount_usd');
+  const totalDeposit = sumWhere(filtered, isDeposit, 'amount_usd');
+  const totalFunding = sumWhere(filtered, isFunding, 'amount_usd');
+  const totalExpenses = sumWhere(filtered, isExpense, 'amount_usd');
+  const totalWithdrawalThb = sumWhere(filtered, isWithdrawal, 'amount_thb');
+  const totalDepositThb = sumWhere(filtered, isDeposit, 'amount_thb');
+  const totalFundingThb = sumWhere(filtered, isFunding, 'amount_thb');
+  const totalExpensesThb = sumWhere(filtered, isExpense, 'amount_thb');
   const net = totalWithdrawal + totalDeposit + totalFunding + totalExpenses;
   const netThb = totalWithdrawalThb + totalDepositThb + totalFundingThb + totalExpensesThb;
   document.getElementById('acc-profit').textContent = '+' + totalWithdrawal.toFixed(2) + '$';
@@ -1753,7 +1753,7 @@ function renderAccount() {
   const netEl = document.getElementById('acc-net');
   netEl.textContent = (net >= 0 ? '+' : '') + net.toFixed(2) + '$';
   netEl.className = 'metric-val ' + (net >= 0 ? 'pos' : 'neg');
-  document.getElementById('acc-count').textContent = accounts.length;
+  document.getElementById('acc-count').textContent = filtered.length;
   // ช่องรวมบาทแยก
   document.getElementById('acc-thb-profit').textContent = '+฿' + totalWithdrawalThb.toLocaleString();
   document.getElementById('acc-thb-deposit').textContent = '฿' + totalDepositThb.toLocaleString();
@@ -2198,8 +2198,9 @@ async function addTrade() {
   const avgEntryVal = document.getElementById('f-en').value;
   if (!date || !sym || !avgEntryVal || !lotPerEntry) { toast('กรุณากรอก วันที่, Pair, Entry, Lot'); return; }
   btn.disabled = true; btn.textContent = T('js.saving');
+  const id = Date.now();
   const newTrade = {
-    id: Date.now(),
+    id,
     date, symbol: sym, side: tradeSide,
     entry: avgEntryVal, exit: document.getElementById('f-ex').value,
     lot: totalLotVal, lot_per: lotPerEntry, entries: entriesNum, pips: document.getElementById('f-pips')?.value || null,
@@ -2209,11 +2210,18 @@ async function addTrade() {
     session: document.getElementById('f-session').value || null,
     pnl: document.getElementById('f-pnl').value || null,
     note: document.getElementById('f-note').value,
-    images: pending.map(p => ({ name: p.name, data: p.data })),
+    images: [],
     source: 'manual',
     source_account: 'Manual'
   };
   try {
+    // อัปโหลดรูปขึ้น Storage ก่อนเก็บ DB (ตาม pattern เดียวกับ saveEdit()/saveMissed())
+    let newImgs = [];
+    for (const p of pending) {
+      if (p.file) { const url = await uploadToStorage(p.file, 'trade_'+id); newImgs.push(url ? {name:p.name,url} : {name:p.name,data:p.data}); }
+      else newImgs.push({name:p.name,data:p.data});
+    }
+    newTrade.images = newImgs;
     await sbUpsert('trades', tradeToRow(newTrade));
     trades.unshift(newTrade);
     toast(T('js.saved'));
