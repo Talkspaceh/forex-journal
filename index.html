@@ -618,7 +618,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <div class="settings-block">
         <h3 style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;letter-spacing:.03em">Version</h3>
         <div style="display:flex;align-items:baseline;gap:10px">
-          <span style="font-size:20px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:var(--accent)">v5.21</span>
+          <span style="font-size:20px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:var(--accent)">v5.22</span>
           <span style="font-size:11px;color:var(--text3);font-family:-apple-system,BlinkMacSystemFont,sans-serif">FX Journal</span>
         </div>
       </div>
@@ -2596,7 +2596,14 @@ async function saveEdit() {
     trades[idx] = updated;
     closeEdit(); toast(T('js.edited'));
   } catch(e) { console.error('saveEdit error:', e); toast(T('js.editfail') + ': ' + (e?.message || e)); return; }
-  renderTable(); renderHistory();
+  const activePage = localStorage.getItem('lastPage') || 'overview';
+  if (activePage === 'overview') renderOverview();
+  if (activePage === 'history') { if (histTab === 'mt5') renderHistory(); else renderTable(); }
+  if (activePage === 'calendar') renderCalendar();
+  if (activePage === 'analysis') renderAnalysis();
+  if (activePage === 'propfirm') renderPropfirm();
+  if (activePage === 'pfhistory') renderPfHistory();
+  if (activePage === 'pfcalendar') renderPfCalendar();
 }
 function closeEdit() { document.getElementById('edit-modal').classList.remove('open'); editPending = []; editExistingImgs = []; }
 function editBgClick(e) { if (e.target === document.getElementById('edit-modal')) closeEdit(); }
