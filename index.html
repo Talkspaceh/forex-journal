@@ -618,7 +618,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <div class="settings-block">
         <h3 style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;letter-spacing:.03em">Version</h3>
         <div style="display:flex;align-items:baseline;gap:10px">
-          <span style="font-size:20px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:var(--accent)">v5.18</span>
+          <span style="font-size:20px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:var(--accent)">v5.21</span>
           <span style="font-size:11px;color:var(--text3);font-family:-apple-system,BlinkMacSystemFont,sans-serif">FX Journal</span>
         </div>
       </div>
@@ -2534,8 +2534,33 @@ function openEdit(id) {
   document.getElementById('e-pnl').value = t.pnl || '';
   document.getElementById('e-note').value = t.note || '';
   document.getElementById('e-session').value = t.session || '';
+  editExistingImgs = (Array.isArray(t.images) ? t.images : JSON.parse(t.images || '[]')).slice();
+  editPending = [];
+  renderEditPreviews();
   document.getElementById('edit-modal').classList.add('open');
 }
+function handleEditImgs(input) {
+  Array.from(input.files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      editPending.push({ id: Date.now() + Math.random(), name: file.name, data: e.target.result, file: file });
+      renderEditPreviews();
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+}
+function renderEditPreviews() {
+  const existingHtml = editExistingImgs.map((img, i) => {
+    const src = img.url || img.data || '';
+    return src ? `<div class="thumb"><img src="${src}" alt="preview"><button class="thumb-rm" onclick="removeExistingEditImg(${i})">✕</button></div>` : '';
+  }).join('');
+  const pendingHtml = editPending.map(img =>
+    `<div class="thumb"><img src="${img.data}" alt="preview"><button class="thumb-rm" onclick="removeEditImg(${img.id})">✕</button></div>`).join('');
+  document.getElementById('e-preview-row').innerHTML = existingHtml + pendingHtml;
+}
+function removeEditImg(id) { editPending = editPending.filter(i => i.id !== id); renderEditPreviews(); }
+function removeExistingEditImg(index) { editExistingImgs.splice(index, 1); renderEditPreviews(); }
 function setEditSide(s) {
   editSide = s;
   document.getElementById('e-btn-buy').classList.toggle('on', s === 'BUY');
