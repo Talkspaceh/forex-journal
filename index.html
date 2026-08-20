@@ -294,14 +294,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
     <div id="page-overview" class="page">
       <div class="page-title" data-i18n="ov.title">Overview</div>
       <div class="overview-section">
-        <div class="overview-section-title" data-i18n="ov.result">Account</div>
-        <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px">
-          <div class="stat-card"><div class="stat-label" data-i18n="ov.withdrawal">ถอนกำไรรวม</div><div class="stat-val pos" id="ov-acc-profit2">—</div><div class="stat-sub" id="ov-acc-profit-thb2">—</div></div>
-          <div class="stat-card"><div class="stat-label" data-i18n="ov.deposit">ฝากรวม</div><div class="stat-val neg" id="ov-acc-deposit2">—</div><div class="stat-sub" id="ov-acc-deposit-thb2">—</div></div>
-          <div class="stat-card"><div class="stat-label">Net</div><div class="stat-val" id="ov-acc-net2">—</div><div class="stat-sub" id="ov-acc-net-thb2">—</div></div>
-        </div>
-      </div>
-      <div class="overview-section">
         <div class="overview-section-title" data-i18n="ov.tradesummary">สรุป Trade</div>
         <!-- Overall -->
         <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:14px">
@@ -609,7 +601,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <div class="settings-block">
         <h3 style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;letter-spacing:.03em">Version</h3>
         <div style="display:flex;align-items:baseline;gap:10px">
-          <span style="font-size:20px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:var(--accent)">v5.25</span>
+          <span style="font-size:20px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:var(--accent)">v5.26</span>
           <span style="font-size:11px;color:var(--text3);font-family:-apple-system,BlinkMacSystemFont,sans-serif">FX Journal</span>
         </div>
       </div>
@@ -2767,24 +2759,6 @@ function renderOverview() {
 
   }
   renderOverviewWeekCal();
-  // บัญชี
-  const ap=accounts.filter(a=>a.type==='Profit'||a.type==='Withdrawal').reduce((s,a)=>s+(parseFloat(a.amount_usd)||0),0);
-  const ad=accounts.filter(a=>a.type==='Deposit').reduce((s,a)=>s+(parseFloat(a.amount_usd)||0),0);
-  const afund=accounts.filter(a=>a.type==='Funding Challenge').reduce((s,a)=>s+(parseFloat(a.amount_usd)||0),0);
-  const aexp=accounts.filter(a=>a.type==='Expenses').reduce((s,a)=>s+(parseFloat(a.amount_usd)||0),0);
-  const apThb=accounts.filter(a=>a.type==='Profit'||a.type==='Withdrawal').reduce((s,a)=>s+(parseFloat(a.amount_thb)||0),0);
-  const adThb=accounts.filter(a=>a.type==='Deposit').reduce((s,a)=>s+(parseFloat(a.amount_thb)||0),0);
-  const afundThb=accounts.filter(a=>a.type==='Funding Challenge').reduce((s,a)=>s+(parseFloat(a.amount_thb)||0),0);
-  const aexpThb=accounts.filter(a=>a.type==='Expenses').reduce((s,a)=>s+(parseFloat(a.amount_thb)||0),0);
-  // Result section
-  const setAcc = (id, val, cls) => { const el=document.getElementById(id); if(el){el.textContent=val; if(cls) el.className='stat-val '+cls;} };
-  setAcc('ov-acc-profit2','+'+ap.toFixed(2)+'$','pos'); 
-  const p2=document.getElementById('ov-acc-profit-thb2'); if(p2) p2.textContent='+฿'+apThb.toLocaleString();
-  setAcc('ov-acc-deposit2',ad.toFixed(2)+'$','neg');
-  const d2=document.getElementById('ov-acc-deposit-thb2'); if(d2) d2.textContent='฿'+adThb.toLocaleString();
-  const an=ap+ad+afund+aexp, anThb=apThb+adThb+afundThb+aexpThb;
-  setAcc('ov-acc-net2',(an>=0?'+':'')+an.toFixed(2)+'$',an>=0?'pos':'neg');
-  const n2=document.getElementById('ov-acc-net-thb2'); if(n2) n2.textContent=(anThb>=0?'+฿':'฿')+anThb.toLocaleString();
 }
 
 function renderPropfirm() {
