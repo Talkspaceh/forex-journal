@@ -609,7 +609,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <div class="settings-block">
         <h3 style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;letter-spacing:.03em">Version</h3>
         <div style="display:flex;align-items:baseline;gap:10px">
-          <span style="font-size:20px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:var(--accent)">v5.24</span>
+          <span style="font-size:20px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:var(--accent)">v5.25</span>
           <span style="font-size:11px;color:var(--text3);font-family:-apple-system,BlinkMacSystemFont,sans-serif">FX Journal</span>
         </div>
       </div>
@@ -742,6 +742,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
         <select id="pfhist-fstr" onchange="renderPfHistory()"><option value="" data-i18n="filter.allstrat">ทุกกลยุทธ์</option></select>
         <select id="pfhist-fses" onchange="renderPfHistory()"><option value="" data-i18n="filter.allsession">ทุก Session</option><option>Asia</option><option>London</option><option>New York</option><option>Overlap</option></select>
         <select id="pfhist-facct" onchange="renderPfHistory()"><option value="" data-i18n="filter.allacct">ทุกบัญชี</option></select>
+        <button onclick="openAddTradeModal('propfirm')" style="margin-left:auto;padding:7px 14px;background:var(--accent);border:none;border-radius:var(--radius);color:#fff;font-size:12px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500;white-space:nowrap;flex-shrink:0">Add Trade</button>
       </div>
       <div class="table-wrap">
         <table>
@@ -1064,6 +1065,7 @@ const H = {
 };
 
 let trades = [], tradeSide = 'BUY', pending = [], chartInst = null;
+let addTradeAcctType = null;
 let editId = null, editSide = 'BUY';
 let editPending = [], editExistingImgs = [];
 let detailId = null, detailImgs = [], detailIdx = 0;
@@ -1883,7 +1885,8 @@ function tradeToRow(t) {
     note: t.note || null,
     images: t.images && t.images.length ? JSON.stringify(t.images) : null,
     source_account: t.source_account || null,
-    source: t.source || null
+    source: t.source || null,
+    account_type: t.account_type || null
   };
 }
 
@@ -2055,7 +2058,10 @@ function showPage(n) {
     if (bel) bel.textContent = bt ? T('js.backuplast') + ' ' + new Date(bt).toLocaleString('th-TH') : T('js.backupnone');
   }
 }
-function openAddTradeModal() {
+function openAddTradeModal(acctType) {
+  addTradeAcctType = acctType === 'propfirm' ? 'propfirm' : null;
+  const titleEl = document.querySelector('#add-trade-modal .modal-title');
+  if (titleEl) titleEl.textContent = addTradeAcctType === 'propfirm' ? T('modal.addtrade2') + ' (PropFirm)' : T('modal.addtrade2');
   const fsym = document.getElementById('f-sym');
   if (fsym) { fsym.innerHTML = uniquePairs().map(p => `<option>${p}</option>`).join(''); }
   const fstr = document.getElementById('f-str');
@@ -2071,6 +2077,7 @@ function openAddTradeModal() {
 function closeAddTradeModal() {
   document.getElementById('add-trade-modal').classList.remove('open');
   pending = []; renderPreviews();
+  addTradeAcctType = null;
 }
 function addTradeBgClick(e) { if (e.target === document.getElementById('add-trade-modal')) closeAddTradeModal(); }
 
@@ -2147,7 +2154,8 @@ async function addTrade() {
     note: document.getElementById('f-note').value,
     images: [],
     source: 'manual',
-    source_account: 'Manual'
+    source_account: 'Manual',
+    account_type: addTradeAcctType || null
   };
   try {
     // อัปโหลดรูปขึ้น Storage ก่อนเก็บ DB (ตาม pattern เดียวกับ saveEdit()/saveMissed())
@@ -2162,8 +2170,9 @@ async function addTrade() {
     toast(T('js.saved'));
     setS('ok', `connected · ${trades.length} trades`);
   } catch { toast(T('js.savefailsync')); }
+  const wasAcctType = addTradeAcctType;
   closeAddTradeModal();
-  renderTable();
+  if (wasAcctType === 'propfirm') { renderPfHistory(); } else { renderTable(); }
   btn.disabled = false; btn.textContent = T('js.savetrade');
 }
 
