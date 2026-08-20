@@ -205,9 +205,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
   .metrics{grid-template-columns:1fr 1fr}
   .detail-grid{grid-template-columns:1fr}
 }
-.sel-bar{position:fixed;top:16px;right:24px;background:var(--bg3);border:1px solid var(--border2);border-radius:40px;padding:10px 20px;display:flex;align-items:center;gap:14px;z-index:500;font-size:13px;box-shadow:0 4px 24px rgba(0,0,0,.5);transition:opacity .2s,transform .2s}
-.sel-bar.hidden{opacity:0;pointer-events:none;transform:translateY(-8px)}
-.trade-cb{width:14px;height:14px;cursor:pointer;accent-color:var(--accent);flex-shrink:0;vertical-align:middle}
 
 
 #app-loader{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:9999;transition:opacity .35s,visibility .35s}
@@ -250,15 +247,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           <span data-i18n="nav.calendar">ปฏิทิน</span>
         </div>
-        <div class="nav-item nav-sub" data-page="missed" onclick="showPage('missed')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-          <span data-i18n="nav.missed">Missed Trade</span>
-        </div>
-        <div class="nav-item nav-sub" data-page="analysis" onclick="showPage('analysis')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-          <span data-i18n="nav.analysis">วิเคราะห์</span>
-          <span id="analysis-nav-badge" style="display:none;margin-left:auto;background:var(--accent);color:#fff;font-size:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500;padding:1px 7px;border-radius:20px;min-width:18px;text-align:center"></span>
-        </div>
       </div>
       <div class="nav-group-header" onclick="togglePfNavGroup()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/></svg>
@@ -278,6 +266,10 @@ tr:hover td{background:rgba(255,255,255,.02)}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           <span data-i18n="nav.calendar">ปฏิทิน</span>
         </div>
+      </div>
+      <div class="nav-item" data-page="missed" onclick="showPage('missed')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        <span data-i18n="nav.missed">Missed Trade</span>
       </div>
       <div class="nav-item" data-page="account" onclick="showPage('account')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
@@ -410,7 +402,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
         <div class="table-wrap">
           <table>
             <thead><tr>
-              <th style="width:36px;padding:10px 8px"><input type="checkbox" class="trade-cb" id="hist-cb-all" onchange="toggleHistSelectAll(this)" title=""/></th>
               <th data-i18n="th.date">วันที่</th><th>Pair</th><th>Side</th>
               <th>Entry</th><th>Exit</th><th>Lot</th><th data-i18n="th.pips">จุด</th>
               <th>P&L ($)</th><th>R:R</th><th data-i18n="th.strategy">กลยุทธ์</th><th>Session</th><th data-i18n="th.img">รูป</th><th></th>
@@ -618,7 +609,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <div class="settings-block">
         <h3 style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;letter-spacing:.03em">Version</h3>
         <div style="display:flex;align-items:baseline;gap:10px">
-          <span style="font-size:20px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:var(--accent)">v5.23</span>
+          <span style="font-size:20px;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,sans-serif;color:var(--accent)">v5.24</span>
           <span style="font-size:11px;color:var(--text3);font-family:-apple-system,BlinkMacSystemFont,sans-serif">FX Journal</span>
         </div>
       </div>
@@ -660,19 +651,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
           <div id="cal-day-panel-table"></div>
         </div>
       </div>
-    </div>
-
-    <div id="page-analysis" class="page">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
-        <div class="page-title" style="margin-bottom:0" data-i18n="nav.analysis">วิเคราะห์</div>
-        <div style="display:flex;align-items:center;gap:10px">
-          <span id="an-count-badge" style="font-size:11px;color:var(--text3);font-family:-apple-system,BlinkMacSystemFont,sans-serif"></span>
-          <button onclick="showPage('history')" style="padding:7px 14px;background:transparent;border:1px solid var(--border2);border-radius:var(--radius);color:var(--text2);font-size:12px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,sans-serif;transition:all .15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text2)'"><span data-i18n="an.back">← กลับ</span></button>
-          <button id="btn-clear-pool" onclick="clearStatsPool(this)" style="padding:7px 14px;background:transparent;border:1px solid rgba(255,77,106,.3);border-radius:var(--radius);color:var(--red);font-size:12px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,sans-serif;transition:all .15s" onmouseover="this.style.background='var(--red-bg)'" onmouseout="this.style.background='transparent'"><span data-i18n="an.clearpool">🗑 ล้าง pool</span></button>
-        </div>
-      </div>
-      <div id="analysis-empty" class="empty-state" style="display:none"></div>
-      <div id="analysis-content"></div>
     </div>
 
     <div id="page-propfirm" class="page">
@@ -768,7 +746,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <div class="table-wrap">
         <table>
           <thead><tr>
-            <th style="width:36px;padding:10px 8px"><input type="checkbox" class="trade-cb" id="pfhist-cb-all" onchange="toggleHistSelectAll(this)" title=""/></th>
             <th data-i18n="th.date">วันที่</th><th>Pair</th><th>Side</th>
             <th>Entry</th><th>Exit</th><th>Lot</th><th data-i18n="th.pips">จุด</th>
             <th>P&L ($)</th><th>R:R</th><th data-i18n="th.strategy">กลยุทธ์</th><th>Session</th><th data-i18n="th.img">รูป</th><th></th>
@@ -1026,16 +1003,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
 </div>
 
 
-<div id="sel-bar" class="sel-bar hidden">
-  <span data-i18n="an.sel" style="color:var(--text2);font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:11px">เลือก</span>
-  <span id="sel-count" style="font-weight:500;color:var(--accent);font-family:-apple-system,BlinkMacSystemFont,sans-serif;min-width:18px;text-align:center">0</span>
-  <span data-i18n="an.items" style="color:var(--text2);font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:11px">รายการ</span>
-  <div style="width:1px;height:14px;background:var(--border2)"></div>
-  <button onclick="insertToStats()" style="padding:6px 16px;background:var(--accent);border:none;border-radius:20px;color:#fff;font-size:12px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500;white-space:nowrap"><span data-i18n="an.insert">➕ เพิ่มเข้าสถิติ</span></button>
-  <button onclick="showPage('analysis')" style="padding:6px 12px;background:transparent;border:1px solid var(--border2);border-radius:20px;color:var(--text2);font-size:12px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,sans-serif;white-space:nowrap;transition:all .15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text2)'"><span data-i18n="an.viewstats">ดูสถิติ</span></button>
-  <button onclick="clearAnalysisSelection()" style="padding:4px 8px;background:transparent;border:none;cursor:pointer;color:var(--text3);font-size:14px;line-height:1;transition:color .15s" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text3)'" title="">✕</button>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1097,10 +1064,6 @@ const H = {
 };
 
 let trades = [], tradeSide = 'BUY', pending = [], chartInst = null;
-let selectedForAnalysis = [];
-let statsPool = [];
-let delPoolConfirm = null, delPoolTimer = null;
-let delClearConfirm = false, delClearTimer = null;
 let editId = null, editSide = 'BUY';
 let editPending = [], editExistingImgs = [];
 let detailId = null, detailImgs = [], detailIdx = 0;
@@ -1116,23 +1079,10 @@ let selectedPfCalDay = null;
 const I18N = {
   th: {
     'nav.overview':'ภาพรวม','nav.history':'ประวัติการเทรด','nav.calendar':'ปฏิทิน',
-    'nav.missed':'เทรดที่พลาด','nav.account':'บัญชี','nav.settings':'การตั้งค่า','nav.analysis':'วิเคราะห์',
+    'nav.missed':'เทรดที่พลาด','nav.account':'บัญชี','nav.settings':'การตั้งค่า',
     'nav.propfirm':'PropFirm',
     'pf.empty':'ยังไม่มีเทรดที่ติด tag PropFirm',
     'pf.emptysub':'รันสคริปต์ sync ใหม่ แล้วเลือก PropFirm ในหน้า input ที่ขึ้นมา',
-    'an.sel':'เลือก','an.items':'รายการ','an.insert':'➕ เพิ่มเข้าสถิติ','an.viewstats':'ดูสถิติ',
-    'an.added':'เพิ่มเข้าสถิติแล้ว','an.back':'← กลับ','an.clearpool':'🗑 ล้าง pool',
-    'an.empty':'ยังไม่ได้เพิ่มเทรดเข้าสถิติ',
-    'an.emptysub':'ไปหน้าประวัติ tick เทรดที่ต้องการ แล้วกด "เพิ่มเข้าสถิติ"',
-    'an.gotohist':'← ไปเลือกเทรด','an.poolcount':'รายการใน pool',
-    'an.trades':'เทรด','an.haspl':'มี P/L','an.haspips':'มีจุด',
-    'an.rractual':'Avg R:R จริง','an.rrplan':'Avg R:R แผน','an.rrcomp':'เทียบกับแผน',
-    'an.fromsl':'รายการ (คำนวณจาก SL)','an.fromrr':'รายการ (จาก field R:R)',
-    'an.needsl':'ต้องมีข้อมูล SL','an.metplan':'✓ ได้ตามแผน','an.belowplan':'✗ ต่ำกว่าแผน',
-    'an.actual':'จริง','an.plan':'แผน','an.loss':'ติดลบ',
-    'an.nodata':'ไม่มีข้อมูล','an.nosession':'ไม่มีข้อมูล session',
-    'an.sum':'สรุป','an.rrsect':'R:R จริง vs แผน',
-    'an.sessect':'แยกตาม Session','an.symsect':'แยกตาม Symbol','an.symbol':'Symbol','an.poollist':'เทรดใน pool','an.remove':'ลบออก',
     'sync.btn':'⟳ Sync',
     'tab.mt5':'MT5','tab.manual':'บันทึกเอง',
     'stat.winrate':'อัตราชนะ','stat.pnl':'กำไร/ขาดทุนรวม','stat.pnlshort':'กำไร/ขาดทุน',
@@ -1222,23 +1172,10 @@ const I18N = {
   },
   en: {
     'nav.overview':'Overview','nav.history':'Trade History','nav.calendar':'Calendar',
-    'nav.missed':'Missed Trade','nav.account':'Account','nav.settings':'Settings','nav.analysis':'Analysis',
+    'nav.missed':'Missed Trade','nav.account':'Account','nav.settings':'Settings',
     'nav.propfirm':'PropFirm',
     'pf.empty':'No PropFirm-tagged trades yet',
     'pf.emptysub':'Re-run the sync script and pick PropFirm in the input dialog',
-    'an.sel':'Selected','an.items':'items','an.insert':'➕ Add to Stats','an.viewstats':'View Stats',
-    'an.added':'Added to stats','an.back':'← Back','an.clearpool':'🗑 Clear pool',
-    'an.empty':'No trades in stats pool',
-    'an.emptysub':'Go to History, tick trades you want, then click "Add to Stats"',
-    'an.gotohist':'← Go Select Trades','an.poolcount':'items in pool',
-    'an.trades':'Trades','an.haspl':'have P/L','an.haspips':'have pips',
-    'an.rractual':'Avg Actual R:R','an.rrplan':'Avg Planned R:R','an.rrcomp':'vs Plan',
-    'an.fromsl':'items (calc from SL)','an.fromrr':'items (from R:R field)',
-    'an.needsl':'need SL data','an.metplan':'✓ Met plan','an.belowplan':'✗ Below plan',
-    'an.actual':'actual','an.plan':'plan','an.loss':'in loss',
-    'an.nodata':'No data','an.nosession':'No session data',
-    'an.sum':'Summary','an.rrsect':'R:R Actual vs Planned',
-    'an.sessect':'Session Breakdown','an.symsect':'Symbol Breakdown','an.symbol':'Symbol','an.poollist':'Trades in pool','an.remove':'Remove',
     'sync.btn':'⟳ Sync',
     'tab.mt5':'MT5','tab.manual':'Manual',
     'stat.winrate':'Win Rate','stat.pnl':'Total P&L','stat.pnlshort':'P&L',
@@ -1439,7 +1376,6 @@ async function loadAll() {
     if (activePage === 'missed') renderMissed();
     if (activePage === 'account') renderAccount();
     if (activePage === 'calendar') renderCalendar();
-    if (activePage === 'analysis') renderAnalysis();
     if (activePage === 'settings') { renderPairTags(); renderStrategyTags(); renderAccountTags(); }
     if (activePage === 'propfirm') renderPropfirm();
     if (activePage === 'pfhistory') renderPfHistory();
@@ -2101,7 +2037,7 @@ function showPage(n) {
   document.getElementById('page-' + n).classList.add('active');
   const navEl = document.querySelector('.nav-item[data-page="'+n+'"]');
   if (navEl) { navEl.classList.add('active'); }
-  if (['overview','history','calendar','missed','analysis'].includes(n)) openNavGroup();
+  if (['overview','history','calendar'].includes(n)) openNavGroup();
   if (['propfirm','pfhistory','pfcalendar'].includes(n)) openPfNavGroup();
   localStorage.setItem('lastPage', n);
   if (n === 'overview') renderOverview();
@@ -2109,7 +2045,6 @@ function showPage(n) {
   if (n === 'missed') renderMissed();
   if (n === 'account') renderAccount();
   if (n === 'calendar') renderCalendar();
-  if (n === 'analysis') renderAnalysis();
   if (n === 'propfirm') renderPropfirm();
   if (n === 'pfhistory') renderPfHistory();
   if (n === 'pfcalendar') renderPfCalendar();
@@ -2375,7 +2310,6 @@ function renderHistory() {
         <button class="zoom-btn" onclick="openDetail(${t.id})">⊕ ${imgs.length > 1 ? imgs.length + ' ' + T('js.imgs') : T('js.viewimg')}</button></div>`;
     }
     return `<tr data-trade-id="${t.id}">
-      <td style="padding:9px 8px;width:36px" onclick="event.stopPropagation()">${statsPool.includes(t.id) ? '<input type="checkbox" class="trade-cb" checked disabled style="opacity:.55;cursor:not-allowed">' : '<input type="checkbox" class="trade-cb" onchange="toggleTradeSel('+t.id+',this.checked)" '+(selectedForAnalysis.includes(t.id)?'checked':'')+'>'}</td>
       <td class="mono" style="font-size:11px;cursor:pointer;color:var(--accent)" onclick="openDetail(${t.id})">${t.date}</td>
       <td style="font-weight:500;cursor:pointer" onclick="openDetail(${t.id})">${t.symbol}</td>
       <td><span class="badge badge-${t.side.toLowerCase()}">${t.side}</span></td>
@@ -2394,13 +2328,6 @@ function renderHistory() {
       </td>
     </tr>`;
   }).join('');
-  const allCb2 = document.getElementById('hist-cb-all');
-  if (allCb2) {
-    const visIds2 = paginated.map(t => t.id);
-    const sel2 = visIds2.filter(id => selectedForAnalysis.includes(id)).length;
-    allCb2.checked = visIds2.length > 0 && sel2 === visIds2.length;
-    allCb2.indeterminate = sel2 > 0 && sel2 < visIds2.length;
-  }
 }
 
 let currentPage = 1;
@@ -2600,7 +2527,6 @@ async function saveEdit() {
   if (activePage === 'overview') renderOverview();
   if (activePage === 'history') { if (histTab === 'mt5') renderHistory(); else renderTable(); }
   if (activePage === 'calendar') renderCalendar();
-  if (activePage === 'analysis') renderAnalysis();
   if (activePage === 'propfirm') renderPropfirm();
   if (activePage === 'pfhistory') renderPfHistory();
   if (activePage === 'pfcalendar') renderPfCalendar();
@@ -3117,7 +3043,6 @@ function renderPfHistory() {
         <button class="zoom-btn" onclick="openDetail(${t.id})">⊕ ${imgs.length > 1 ? imgs.length + ' ' + T('js.imgs') : T('js.viewimg')}</button></div>`;
     }
     return `<tr data-trade-id="${t.id}">
-      <td style="padding:9px 8px;width:36px" onclick="event.stopPropagation()">${statsPool.includes(t.id) ? '<input type="checkbox" class="trade-cb" checked disabled style="opacity:.55;cursor:not-allowed">' : '<input type="checkbox" class="trade-cb" onchange="toggleTradeSel('+t.id+',this.checked)" '+(selectedForAnalysis.includes(t.id)?'checked':'')+'>'}</td>
       <td class="mono" style="font-size:11px;cursor:pointer;color:var(--accent)" onclick="openDetail(${t.id})">${t.date}</td>
       <td style="font-weight:500;cursor:pointer" onclick="openDetail(${t.id})">${t.symbol}</td>
       <td><span class="badge badge-${t.side.toLowerCase()}">${t.side}</span></td>
@@ -3136,13 +3061,6 @@ function renderPfHistory() {
       </td>
     </tr>`;
   }).join('');
-  const allCbPf = document.getElementById('pfhist-cb-all');
-  if (allCbPf) {
-    const visIdsPf = paginated.map(t => t.id);
-    const selPf = visIdsPf.filter(id => selectedForAnalysis.includes(id)).length;
-    allCbPf.checked = visIdsPf.length > 0 && selPf === visIdsPf.length;
-    allCbPf.indeterminate = selPf > 0 && selPf < visIdsPf.length;
-  }
 }
 
 // ==================== PropFirm > Calendar ====================
@@ -3322,12 +3240,11 @@ loadTheme();
 loadNavGroup();
 loadPfNavGroup();
 globalLang = localStorage.getItem('lang') || 'th';
-loadPool();
 document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
 document.getElementById('new-pair').addEventListener('keydown', e => { if (e.key === 'Enter') addPair(); });
 document.getElementById('new-strategy').addEventListener('keydown', e => { if (e.key === 'Enter') addStrategy(); });
 document.getElementById('new-account').addEventListener('keydown', e => { if (e.key === 'Enter') addAccountSetting(); });
-const validPages = ['overview','history','calendar','missed','account','settings','analysis','propfirm','pfhistory','pfcalendar'];
+const validPages = ['overview','history','calendar','missed','account','settings','propfirm','pfhistory','pfcalendar'];
 const _lp = localStorage.getItem('lastPage');
 const lastPage = IS_VIEW ? 'overview' : (validPages.includes(_lp) ? _lp : 'overview');
 showPage(lastPage);
@@ -3653,284 +3570,11 @@ function setGlobalLang(lang) {
   else if (active === 'missed') renderMissed();
   else if (active === 'account') renderAccount();
   else if (active === 'settings') { renderPairTags(); renderStrategyTags(); renderAccountTags(); }
-  else if (active === 'analysis') renderAnalysis();
   else if (active === 'propfirm') renderPropfirm();
   else if (active === 'pfhistory') renderPfHistory();
   else if (active === 'pfcalendar') renderPfCalendar();
 }
 
-// ═══════════════════════════════════════════════════
-// ── ANALYSIS — checkbox & statistics ──
-// ═══════════════════════════════════════════════════
-
-function savePool() {
-  localStorage.setItem('statsPool', JSON.stringify(statsPool));
-}
-
-function loadPool() {
-  try {
-    const saved = localStorage.getItem('statsPool');
-    if (saved) statsPool = JSON.parse(saved);
-  } catch(e) { statsPool = []; }
-  updateSelBar();
-}
-
-function insertToStats() {
-  const n = selectedForAnalysis.length;
-  if (!n) return;
-  const newIds = [];
-  selectedForAnalysis.forEach(id => { if (!statsPool.includes(id)) { statsPool.push(id); newIds.push(id); } });
-  selectedForAnalysis = [];
-  savePool();
-  updateSelBar();
-  // อัปเดต DOM row ที่เพิ่งเพิ่มเข้า pool ทันที
-  newIds.forEach(id => {
-    const row = document.querySelector('#hist-tbody tr[data-trade-id="' + id + '"]');
-    if (!row) return;
-    const td = row.querySelector('td:first-child');
-    if (td) td.innerHTML = '<input type="checkbox" class="trade-cb" checked disabled style="opacity:.55;cursor:not-allowed">';
-  });
-  // sync select-all state
-  const allCb2 = document.getElementById('hist-cb-all');
-  if (allCb2) { allCb2.checked = false; allCb2.indeterminate = false; }
-  toast(T('an.added') + ' · pool ' + statsPool.length + ' ' + T('an.items') + ' ✓');
-}
-
-function removeFromPool(id, btnEl) {
-  if (delPoolConfirm === id) {
-    clearTimeout(delPoolTimer);
-    delPoolConfirm = null;
-    statsPool = statsPool.filter(x => x !== id);
-    savePool();
-    updateSelBar();
-    const row = document.querySelector('#hist-tbody tr[data-trade-id="' + id + '"]');
-    if (row) {
-      const td = row.querySelector('td:first-child');
-      if (td) td.innerHTML = '<input type="checkbox" class="trade-cb" onchange="toggleTradeSel(' + id + ',this.checked)">';
-    }
-    renderAnalysis();
-  } else {
-    if (delPoolConfirm !== null) {
-      const prevBtn = document.querySelector('[data-del-pool-confirm]');
-      if (prevBtn) { prevBtn.textContent = '✕'; prevBtn.className = 'tbl-btn del'; prevBtn.removeAttribute('data-del-pool-confirm'); }
-      clearTimeout(delPoolTimer);
-    }
-    delPoolConfirm = id;
-    if (btnEl) { btnEl.textContent = T('js.confirm'); btnEl.className = 'tbl-btn del del-confirm'; btnEl.setAttribute('data-del-pool-confirm', '1'); }
-    delPoolTimer = setTimeout(() => {
-      delPoolConfirm = null;
-      if (btnEl) { btnEl.textContent = '✕'; btnEl.className = 'tbl-btn del'; btnEl.removeAttribute('data-del-pool-confirm'); }
-    }, 3000);
-  }
-}
-
-function toggleTradeSel(id, checked) {
-  if (checked) { if (!selectedForAnalysis.includes(id)) selectedForAnalysis.push(id); }
-  else { selectedForAnalysis = selectedForAnalysis.filter(x => x !== id); }
-  updateSelBar();
-}
-
-function toggleHistSelectAll(cbAll) {
-  const rows = document.querySelectorAll('#hist-tbody tr[data-trade-id]');
-  const ids = Array.from(rows).map(r => parseInt(r.dataset.tradeId));
-  if (cbAll.checked) { ids.forEach(id => { if (!selectedForAnalysis.includes(id)) selectedForAnalysis.push(id); }); }
-  else { selectedForAnalysis = selectedForAnalysis.filter(id => !ids.includes(id)); }
-  rows.forEach(r => {
-    const cb = r.querySelector('.trade-cb');
-    if (cb) cb.checked = selectedForAnalysis.includes(parseInt(r.dataset.tradeId));
-  });
-  updateSelBar();
-}
-
-function updateSelBar() {
-  const bar = document.getElementById('sel-bar');
-  const cnt = document.getElementById('sel-count');
-  const badge = document.getElementById('an-count-badge');
-  const navBadge = document.getElementById('analysis-nav-badge');
-  if (cnt) cnt.textContent = selectedForAnalysis.length;
-  if (bar) bar.classList.toggle('hidden', selectedForAnalysis.length === 0);
-  if (badge) badge.textContent = selectedForAnalysis.length ? selectedForAnalysis.length + ' ' + T('an.items') : '';
-  if (navBadge) {
-    navBadge.textContent = statsPool.length || '';
-    navBadge.style.display = statsPool.length ? '' : 'none';
-  }
-}
-
-function clearAnalysisSelection() {
-  selectedForAnalysis = [];
-  updateSelBar();
-  document.querySelectorAll('.trade-cb').forEach(cb => { cb.checked = false; cb.indeterminate = false; });
-}
-
-function clearStatsPool(btnEl) {
-  if (delClearConfirm) {
-    clearTimeout(delClearTimer);
-    delClearConfirm = false;
-    if (btnEl) { btnEl.innerHTML = '<span data-i18n="an.clearpool">🗑 ล้าง pool</span>'; btnEl.style.background = 'transparent'; applyLang(); }
-    statsPool = [];
-    savePool();
-    updateSelBar();
-    renderAnalysis();
-  } else {
-    delClearConfirm = true;
-    if (btnEl) { btnEl.textContent = T('js.confirm'); btnEl.style.background = 'var(--red-bg)'; }
-    delClearTimer = setTimeout(() => {
-      delClearConfirm = false;
-      if (btnEl) { btnEl.innerHTML = '<span data-i18n="an.clearpool">🗑 ล้าง pool</span>'; btnEl.style.background = 'transparent'; applyLang(); }
-    }, 3000);
-  }
-}
-
-function renderAnalysis() {
-  const selTrades = trades.filter(t => statsPool.includes(t.id));
-  const emptyEl = document.getElementById('analysis-empty');
-  const contentEl = document.getElementById('analysis-content');
-  if (!emptyEl || !contentEl) return;
-  updateSelBar();
-  if (!selTrades.length) {
-    contentEl.style.display = 'none'; emptyEl.style.display = '';
-    emptyEl.innerHTML = '<div style="padding:48px 0;text-align:center">'
-      + '<div style="font-size:32px;margin-bottom:12px">&#x1F4CA;</div>'
-      + '<div style="font-size:14px;color:var(--text2);margin-bottom:6px">' + T('an.empty') + '</div>'
-      + '<div style="font-size:12px;color:var(--text3)">' + T('an.emptysub') + '</div>'
-      + '<button onclick="showPage(\'history\')" style="margin-top:16px;padding:8px 18px;background:var(--accent);border:none;border-radius:var(--radius);color:#fff;font-size:13px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,sans-serif">' + T('an.gotohist') + '</button></div>';
-    return;
-  }
-  emptyEl.style.display = 'none'; contentEl.style.display = '';
-
-  // ── Trade List ──
-  const tradeListHTML = '<div class="overview-section-title" style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">'
-    + '<span>' + T('an.poollist') + '</span>'
-    + '<span style="font-size:11px;font-weight:400;color:var(--text3);font-family:-apple-system,BlinkMacSystemFont,sans-serif">' + selTrades.length + ' ' + T('an.items') + '</span>'
-    + '</div>'
-    + '<div class="table-wrap" style="margin-bottom:24px"><table>'
-    + '<thead><tr>'
-    + '<th>' + T('th.date') + '</th><th>Pair</th><th>Side</th>'
-    + '<th>' + T('th.entry') + '</th><th>' + T('th.exit') + '</th>'
-    + '<th>P&L ($)</th><th>R:R</th><th></th>'
-    + '</tr></thead><tbody>'
-    + selTrades.map(t => {
-        const pnl = parseFloat(t.pnl);
-        const pnlStr = (t.pnl !== null && t.pnl !== '')
-          ? (pnl >= 0 ? '<span class="pnl-pos">+' + pnl.toFixed(2) + '$</span>' : '<span class="pnl-neg">' + pnl.toFixed(2) + '$</span>')
-          : '—';
-        return '<tr>'
-          + '<td class="mono" style="font-size:11px">' + (t.date || '—') + '</td>'
-          + '<td style="font-weight:500">' + (t.symbol || '—') + '</td>'
-          + '<td><span class="badge badge-' + (t.side || 'buy').toLowerCase() + '">' + (t.side || '—') + '</span></td>'
-          + '<td class="mono" style="font-size:11px">' + (t.entry ? parseFloat(t.entry).toFixed(2) : '—') + '</td>'
-          + '<td class="mono" style="font-size:11px">' + (t.exit ? parseFloat(t.exit).toFixed(2) : '—') + '</td>'
-          + '<td>' + pnlStr + '</td>'
-          + '<td class="mono" style="font-size:11px;color:var(--text2)">' + (t.rr || '—') + '</td>'
-          + '<td><button class="tbl-btn del" onclick="removeFromPool(' + t.id + ', this)" title="' + T('an.remove') + '">✕</button></td>' + '</tr>';
-      }).join('')
-    + '</tbody></table></div>';
-
-  // ── Stats ──
-  const withPnl = selTrades.filter(t => t.pnl !== null && t.pnl !== '' && !isNaN(parseFloat(t.pnl)));
-  const wins = withPnl.filter(t => parseFloat(t.pnl) > 0);
-  const losses = withPnl.filter(t => parseFloat(t.pnl) <= 0);
-  const netPnl = withPnl.reduce((s, t) => s + parseFloat(t.pnl || 0), 0);
-  const avgPnl = withPnl.length ? netPnl / withPnl.length : 0;
-  const withPips = selTrades.filter(t => t.pips !== null && t.pips !== '' && !isNaN(parseFloat(t.pips)));
-  const avgPips = withPips.length ? withPips.reduce((s, t) => s + parseFloat(t.pips || 0), 0) / withPips.length : 0;
-  const winRate = withPnl.length ? wins.length / withPnl.length * 100 : 0;
-
-  const rrActuals = [], rrPlanned = [];
-  selTrades.forEach(t => {
-    const en = parseFloat(t.entry), ex = parseFloat(t.exit), sl = parseFloat(t.sl);
-    if (en && ex && sl && Math.abs(en - sl) > 0.00001) {
-      const sign = parseFloat(t.pnl || 0) >= 0 ? 1 : -1;
-      rrActuals.push(sign * Math.abs(ex - en) / Math.abs(en - sl));
-    }
-    if (t.rr) { const m = String(t.rr).match(/[\d.]+\s*[:/]\s*([\d.]+)/); if (m) rrPlanned.push(parseFloat(m[1])); }
-  });
-  const avgRRA = rrActuals.length ? rrActuals.reduce((a, v) => a + v, 0) / rrActuals.length : null;
-  const avgRRP = rrPlanned.length ? rrPlanned.reduce((a, v) => a + v, 0) / rrPlanned.length : null;
-
-  const SESS = [
-    {name:'Asia',    c:'#ff1493', bg:'rgba(255,20,147,0.08)',  bdr:'rgba(255,20,147,0.2)'},
-    {name:'London',  c:'#4f8eff', bg:'rgba(79,142,255,0.08)',  bdr:'rgba(79,142,255,0.2)'},
-    {name:'New York',c:'#ff8c00', bg:'rgba(255,140,0,0.08)',   bdr:'rgba(255,140,0,0.2)'},
-    {name:'Overlap', c:'#a855f7', bg:'rgba(168,85,247,0.08)',  bdr:'rgba(168,85,247,0.2)'}
-  ];
-  const sesRows = SESS.map(s => {
-    const tt = selTrades.filter(x => x.session === s.name);
-    const wp = tt.filter(x => x.pnl !== null && x.pnl !== '');
-    const w = wp.filter(x => parseFloat(x.pnl) > 0);
-    return {...s, cnt: tt.length, wins: w.length, tot: wp.length, pnl: wp.reduce((a, x) => a + parseFloat(x.pnl || 0), 0)};
-  }).filter(s => s.cnt > 0);
-
-  const syms = [...new Set(selTrades.map(t => normalizePair(t.symbol)).filter(Boolean))];
-  const symRows = syms.map(s => {
-    const tt = selTrades.filter(x => normalizePair(x.symbol) === s);
-    const wp = tt.filter(x => x.pnl !== null && x.pnl !== '');
-    const w = wp.filter(x => parseFloat(x.pnl) > 0);
-    return {name: s, cnt: tt.length, wins: w.length, tot: wp.length, pnl: wp.reduce((a, x) => a + parseFloat(x.pnl || 0), 0)};
-  }).sort((a, b) => b.cnt - a.cnt);
-
-  const fp = v => (v >= 0 ? '+' : '') + v.toFixed(2);
-  const fc = v => v.toFixed(1) + '%';
-  const gc = v => v >= 0 ? 'var(--green)' : 'var(--red)';
-
-  contentEl.innerHTML = `
-    ${tradeListHTML}
-
-    <div class="overview-section-title" style="margin-bottom:12px">${T('an.sum')}</div>
-    <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px">
-      <div class="stat-card"><div class="stat-label">${T('an.trades')}</div><div class="stat-val">${selTrades.length}</div><div class="stat-sub">${wins.length}W · ${losses.length}L</div></div>
-      <div class="stat-card"><div class="stat-label">Win Rate</div><div class="stat-val" style="color:${gc(winRate-50)}">${withPnl.length ? fc(winRate) : '—'}</div><div class="stat-sub">${withPnl.length} ${T('an.haspl')}</div></div>
-      <div class="stat-card"><div class="stat-label">Net P&L</div><div class="stat-val" style="color:${gc(netPnl)}">${withPnl.length ? fp(netPnl)+'$' : '—'}</div><div class="stat-sub">Avg ${withPnl.length ? fp(avgPnl)+'$' : '—'}/trade</div></div>
-      <div class="stat-card"><div class="stat-label">Avg Pips</div><div class="stat-val" style="color:${gc(avgPips)}">${withPips.length ? (avgPips>=0?'+':'')+avgPips.toFixed(1) : '—'}</div><div class="stat-sub">${withPips.length} ${T('an.haspips')}</div></div>
-    </div>
-
-    <div class="overview-section-title" style="margin-bottom:12px">${T('an.rrsect')}</div>
-    <div class="stats-grid" style="grid-template-columns:repeat(2,1fr);margin-bottom:24px">
-      <div class="stat-card">
-        <div class="stat-label">${T('an.rractual')}</div>
-        <div class="stat-val" style="color:${avgRRA!==null?(avgRRA>=1?'var(--green)':'var(--red)'):'var(--text)'}">${avgRRA!==null ? '1:'+Math.abs(avgRRA).toFixed(2) : '—'}</div>
-        <div class="stat-sub">${rrActuals.length} ${T('an.fromsl')}</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">${T('an.rrplan')}</div>
-        <div class="stat-val">${avgRRP!==null ? '1:'+avgRRP.toFixed(2) : '—'}</div>
-        <div class="stat-sub">${rrPlanned.length} ${T('an.fromrr')}</div>
-      </div>
-    </div>
-
-    <div class="overview-section-title" style="margin-bottom:12px">${T('an.sessect')}</div>
-    ${sesRows.length
-      ? '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px">'
-        + sesRows.map(s => '<div style="background:'+s.bg+';border:1px solid '+s.bdr+';border-radius:var(--radius-lg);padding:12px">'
-          + '<div style="font-size:11px;font-weight:500;color:'+s.c+';text-align:center;font-family:-apple-system,BlinkMacSystemFont,sans-serif;margin-bottom:8px">'+s.name+'</div>'
-          + '<div style="font-size:20px;font-weight:500;text-align:center;margin-bottom:4px">'+s.cnt+'</div>'
-          + '<div style="text-align:center;font-size:12px;color:'+gc(s.pnl)+';font-family:-apple-system,BlinkMacSystemFont,sans-serif;margin-bottom:3px">'+(s.tot?fp(s.pnl)+'$':'—')+'</div>'
-          + '<div style="text-align:center;font-size:11px;color:var(--text2)">Win '+(s.tot?fc(s.wins/s.tot*100):'—')+'</div>'
-          + '</div>').join('') + '</div>'
-      : '<div class="empty-state" style="margin-bottom:24px;padding:20px 0">'+T('an.nosession')+'</div>'}
-
-    <div class="overview-section-title" style="margin-bottom:12px">${T('an.symsect')}</div>
-    <div class="table-wrap" style="margin-bottom:24px">
-      <table>
-        <thead><tr><th>${T('an.symbol')}</th><th>${T('an.trades')}</th><th>Win</th><th>Loss</th><th>Win Rate</th><th>Net P&L ($)</th><th>Avg P&L ($)</th></tr></thead>
-        <tbody>${symRows.length
-          ? symRows.map(s => {
-              const wr3=s.tot?s.wins/s.tot*100:0, avg3=s.tot?s.pnl/s.tot:0;
-              return '<tr>'
-                +'<td style="font-weight:500">'+s.name+'</td>'
-                +'<td class="mono" style="font-size:12px">'+s.cnt+'</td>'
-                +'<td class="mono" style="font-size:12px;color:var(--green)">'+s.wins+'</td>'
-                +'<td class="mono" style="font-size:12px;color:var(--red)">'+(s.tot-s.wins)+'</td>'
-                +'<td><span class="mono" style="font-size:12px;color:'+gc(wr3-50)+'">'+fc(wr3)+'</span></td>'
-                +'<td>'+(s.tot?'<span class="'+(s.pnl>=0?'pnl-pos':'pnl-neg')+'">'+fp(s.pnl)+'</span>':'—')+'</td>'
-                +'<td>'+(s.tot?'<span class="'+(avg3>=0?'pnl-pos':'pnl-neg')+'">'+fp(avg3)+'</span>':'—')+'</td>'
-                +'</tr>';
-            }).join('')
-          : '<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:20px 0">'+T('an.nodata')+'</td></tr>'
-        }</tbody>
-      </table>
-    </div>`;
-}
 </script>
 <div id="app-loader">
   <div class="loader-spinner"></div>
