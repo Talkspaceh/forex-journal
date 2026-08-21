@@ -51,6 +51,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .thumb{position:relative;width:72px;height:56px}
 .thumb img{width:100%;height:100%;object-fit:cover;border-radius:6px;border:1px solid var(--border2)}
 .thumb-rm{position:absolute;top:-5px;right:-5px;background:var(--red);color:#fff;border:none;border-radius:50%;width:16px;height:16px;cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center}
+.note-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.note-card{background:var(--bg2);border:1px solid var(--card-bdr);border-radius:var(--radius-lg);padding:14px 16px;cursor:pointer;transition:border-color .15s;display:flex;flex-direction:column;gap:8px}
+.note-card:hover{border-color:var(--accent)}
+.note-card-thumb{width:100%;height:110px;object-fit:cover;border-radius:6px;border:1px solid var(--border2)}
+.note-card-title{font-size:14px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.note-card-date{font-size:11px;color:var(--text3)}
+.note-card-preview{font-size:12px;color:var(--text2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;line-height:1.5}
+.note-card-actions{display:flex;justify-content:flex-end;gap:6px;margin-top:auto}
 .save-btn{padding:11px 28px;background:var(--accent);border:none;border-radius:var(--radius);color:#fff;font-size:13px;font-weight:500;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,sans-serif;transition:opacity .15s}
 .export-btn{padding:9px 18px;border:none;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,sans-serif;transition:opacity .15s}
 .export-btn:hover{opacity:.85}
@@ -178,7 +186,11 @@ tr:hover td{background:rgba(255,255,255,.02)}
 [data-view='1'] [onclick*="openEdit"],
 [data-view='1'] [onclick*="delTrade"],
 [data-view='1'] [onclick*="delAccount"],
-[data-view='1'] [onclick*="delMissed"] { display:none !important; }
+[data-view='1'] [onclick*="delMissed"],
+[data-view='1'] [onclick*="openNoteModal"],
+[data-view='1'] [onclick*="delNote"],
+[data-view='1'] [onclick*="delNoteCard"],
+[data-view='1'] [onclick*="openNoteEditFromView"] { display:none !important; }
 
 
 [data-view='1'] .nav-item[onclick*="'add'"] { display:none !important; }
@@ -270,6 +282,10 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <div class="nav-item" data-page="missed" onclick="showPage('missed')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
         <span data-i18n="nav.missed">Missed Trade</span>
+      </div>
+      <div class="nav-item" data-page="notes" onclick="showPage('notes')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+        <span data-i18n="nav.notes">Note</span>
       </div>
       <div class="nav-item" data-page="account" onclick="showPage('account')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
@@ -452,6 +468,18 @@ tr:hover td{background:rgba(255,255,255,.02)}
         </table>
         <div id="missed-empty" class="empty-state" style="display:none"><span data-i18n="empty.missed">ยังไม่มีMissed Trade</span></div>
       </div>
+    </div>
+
+    <div id="page-notes" class="page">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+        <div class="page-title" style="margin-bottom:0" data-i18n="nav.notes">Note</div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <input type="text" id="note-search" data-i18n-ph="ph.notesearch" placeholder="ค้นหาโน้ต..." oninput="renderNotes()" style="padding:8px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);font-size:13px;width:200px"/>
+          <button onclick="openNoteModal()" style="padding:8px 16px;background:var(--accent);border:none;border-radius:var(--radius);color:#fff;font-size:13px;cursor:pointer"><span data-i18n="btn.addnote">+ เพิ่ม Note</span></button>
+        </div>
+      </div>
+      <div class="note-grid" id="note-grid"></div>
+      <div id="notes-empty" class="empty-state" style="display:none"><span data-i18n="empty.notes">ยังไม่มี Note</span></div>
     </div>
 
     <div id="page-account" class="page">
@@ -832,6 +860,56 @@ tr:hover td{background:rgba(255,255,255,.02)}
   </div>
 </div>
 
+<!-- Note Modal (Add/Edit) -->
+<div class="modal-bg" id="note-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal-box" style="max-width:520px">
+    <div class="modal-hdr">
+      <span class="modal-title" id="note-modal-title" data-i18n="modal.addnote">เพิ่ม Note</span>
+      <button class="modal-close" onclick="document.getElementById('note-modal').classList.remove('open')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="fg"><label data-i18n="lbl.date">วันที่</label><input type="date" id="n-date"/></div>
+      <div class="fg full"><label data-i18n="lbl.notetitle">หัวข้อ</label><input type="text" id="n-title" data-i18n-ph="ph.notetitle" placeholder="เช่น แผนเทรดสัปดาห์นี้"/></div>
+      <div class="fg full"><label data-i18n="lbl.notecontent">เนื้อหา</label><textarea id="n-content" data-i18n-ph="ph.notecontent" placeholder="เขียนโน้ต, ไอเดีย, แผนเทรด..." style="min-height:140px"></textarea></div>
+      <div class="fg full">
+        <label data-i18n="det.img">รูป Chart</label>
+        <div class="upload-area" onclick="document.getElementById('n-img-in').click()">
+          <div style="font-size:24px;margin-bottom:6px">↑</div>
+          <span data-i18n="upload.text">คลิกเพื่อเลือกรูป หรือลากวาง</span>
+        </div>
+        <input type="file" id="n-img-in" accept="image/*" multiple style="display:none" onchange="handleNoteImgs(this)"/>
+        <div class="preview-row" id="n-preview-row"></div>
+      </div>
+      <div class="fg full"><button class="save-btn" onclick="saveNote()"><span data-i18n="btn.savenote">บันทึก Note</span></button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Note View Modal -->
+<div class="modal-bg" id="note-view-modal" onclick="if(event.target===this)closeNoteView()">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <span class="modal-title" id="note-view-title"></span>
+      <button class="modal-close" onclick="closeNoteView()">✕</button>
+    </div>
+    <div style="color:var(--text3);font-size:12px;margin-bottom:14px" id="note-view-date"></div>
+    <div id="note-view-img-wrap" style="display:none;margin-bottom:16px">
+      <div class="detail-strip" id="note-view-strip"></div>
+      <img class="detail-main-img" id="note-view-main-img" src="" alt="note img"/>
+      <div class="detail-counter" id="note-view-counter"></div>
+      <div class="detail-img-nav">
+        <button onclick="noteViewPrev()"><span data-i18n="pg.prev">← ก่อนหน้า</span></button>
+        <button onclick="noteViewNext()"><span data-i18n="pg.next">ถัดไป →</span></button>
+      </div>
+    </div>
+    <div class="detail-note" id="note-view-content" style="white-space:pre-wrap"></div>
+    <div style="margin-top:20px;display:flex;gap:10px">
+      <button class="save-btn" onclick="openNoteEditFromView()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2)"><span data-i18n="det.edit">✎ แก้ไข</span></button>
+      <button class="save-btn" id="note-view-del-btn" data-del-note="" onclick="delNote(noteViewId)" style="background:rgba(255,77,106,0.08);border:1px solid var(--red);color:var(--red)"><span data-i18n="btn.delete">🗑 ลบ</span></button>
+    </div>
+  </div>
+</div>
+
 <!-- Account Modal -->
 <div class="modal-bg" id="acc-modal" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="modal-box" style="max-width:480px">
@@ -1074,7 +1152,7 @@ const I18N = {
   th: {
     'nav.overview':'ภาพรวม','nav.history':'ประวัติการเทรด','nav.calendar':'ปฏิทิน',
     'nav.missed':'เทรดที่พลาด','nav.account':'บัญชี','nav.settings':'การตั้งค่า',
-    'nav.propfirm':'PropFirm',
+    'nav.propfirm':'PropFirm','nav.notes':'Note',
     'pf.empty':'ยังไม่มีเทรดที่ติด tag PropFirm',
     'pf.emptysub':'รันสคริปต์ sync ใหม่ แล้วเลือก PropFirm ในหน้า input ที่ขึ้นมา',
     'sync.btn':'⟳ Sync',
@@ -1087,6 +1165,7 @@ const I18N = {
     'filter.allmonths':'ทุกเดือน','filter.alltype':'ทุกประเภท',
     'btn.reset':'รีเซ็ต','btn.addtrade':'เพิ่มเทรด','btn.savetrade':'บันทึกเทรด',
     'btn.addplan':'เพิ่มแผน','btn.addrecord':'เพิ่มรายการ',
+    'btn.addnote':'+ เพิ่ม Note','btn.savenote':'บันทึก Note','btn.delete':'ลบ',
     'btn.saveset':'บันทึกการตั้งค่า',
     'th.date':'วันที่','th.pips':'จุด','th.strategy':'กลยุทธ์','th.img':'รูป',
     'th.pnl2':'กำไร/ขาดทุน','th.reason':'หมายเหตุ','th.reasonacc':'เหตุผล',
@@ -1102,6 +1181,7 @@ const I18N = {
     'empty.history':'ยังไม่มีข้อมูล',
     'empty.table':'ยังไม่มีข้อมูล — เริ่มบันทึกเทรดแรกได้เลย',
     'empty.missed':'ยังไม่มีเทรดที่พลาด',
+    'empty.notes':'ยังไม่มี Note',
     'pg.prev':'← ก่อนหน้า','pg.next':'ถัดไป →',
     'acc.withdrawal':'กำไรถอนรวม','acc.deposit':'ฝากรวม','acc.net':'สุทธิ',
     'acc.count':'รายการทั้งหมด','acc.withdrawalthb':'ถอนรวม (฿)',
@@ -1126,9 +1206,12 @@ const I18N = {
     'set.themetip':'กดวงกลมเพื่อเปลี่ยนธีม — จำค่าไว้อัตโนมัติ',
     'set.backupbtn':'💾 Backup ลง Browser',
     'modal.addmissed':'เพิ่ม Missed Trade','modal.editmissed':'แก้ไขแผน',
+    'modal.addnote':'เพิ่ม Note','modal.editnote':'แก้ไข Note',
     'modal.misseddesc':'แผนที่เห็นแต่เข้าไม่ทัน — ไม่มีกำไร/ขาดทุน บันทึกไว้เพื่อเรียนรู้',
     'lbl.pipsexp':'จุดที่คาดว่าได้','ph.pipsexp':'เช่น 110','ph.rr':'เช่น 1:2.5',
     'lbl.missedreason':'เหตุผลที่พลาด','ph.missedreason':'เช่น เข้าไม่ทัน, ลังเล, ไม่อยู่หน้าจอ',
+    'lbl.notetitle':'หัวข้อ','lbl.notecontent':'เนื้อหา',
+    'ph.notetitle':'เช่น แผนเทรดสัปดาห์นี้','ph.notecontent':'เขียนโน้ต, ไอเดีย, แผนเทรด...','ph.notesearch':'ค้นหาโน้ต...',
     'ph.missednote':'รายละเอียดแผน, สิ่งที่เรียนรู้...','btn.savemissed':'บันทึกแผน',
     'modal.addacc':'เพิ่มรายการ','modal.editacc':'แก้ไขรายการ',
     'lbl.acctype':'ประเภท','opt.withdrawal':'Withdrawal (ถอนกำไร)','opt.deposit':'Deposit (ฝาก)',
@@ -1154,6 +1237,7 @@ const I18N = {
     'js.edited':'แก้ไขแล้ว!','js.editfail':'แก้ไขไม่ได้',
     'js.deleted':'ลบแล้ว','js.delfail':'ลบไม่ได้','js.del':'ลบ',
     'js.plansaved':'บันทึกแผนแล้ว!','js.fillname':'กรุณากรอกวันที่และชื่อ',
+    'js.notesaved':'บันทึก Note แล้ว!','js.fillnotetitle':'กรุณากรอกวันที่และหัวข้อ',
     'js.fillfields':'กรุณากรอก วันที่, Pair, Entry, Lot',
     'js.accadded':'เพิ่มรายการแล้ว!','js.settingssaved':'บันทึกการตั้งค่าแล้ว!',
     'js.pairexists':'มีคู่เงินนี้แล้ว','js.pairfill':'กรุณากรอกชื่อ','js.pairmin':'ต้องมีอย่างน้อย 1 คู่',
@@ -1166,7 +1250,7 @@ const I18N = {
   },
   en: {
     'nav.overview':'Overview','nav.history':'Trade History','nav.calendar':'Calendar',
-    'nav.missed':'Missed Trade','nav.account':'Account','nav.settings':'Settings',
+    'nav.missed':'Missed Trade','nav.account':'Account','nav.settings':'Settings','nav.notes':'Note',
     'nav.propfirm':'PropFirm',
     'pf.empty':'No PropFirm-tagged trades yet',
     'pf.emptysub':'Re-run the sync script and pick PropFirm in the input dialog',
@@ -1180,6 +1264,7 @@ const I18N = {
     'filter.allmonths':'All Months','filter.alltype':'All Types',
     'btn.reset':'Reset','btn.addtrade':'Add Trade','btn.savetrade':'Save Trade',
     'btn.addplan':'Add Plan','btn.addrecord':'Add Record',
+    'btn.addnote':'+ Add Note','btn.savenote':'Save Note','btn.delete':'Delete',
     'btn.saveset':'Save Settings',
     'th.date':'Date','th.pips':'Pips','th.strategy':'Strategy','th.img':'Image',
     'th.pnl2':'Profit/Loss','th.reason':'Note','th.reasonacc':'Reason',
@@ -1195,6 +1280,7 @@ const I18N = {
     'empty.history':'No data',
     'empty.table':'No data — start recording your first trade',
     'empty.missed':'No missed trades',
+    'empty.notes':'No notes yet',
     'pg.prev':'← Previous','pg.next':'Next →',
     'acc.withdrawal':'Total Withdrawal','acc.deposit':'Total Deposit','acc.net':'Net',
     'acc.count':'Total Records','acc.withdrawalthb':'Withdrawal (฿)',
@@ -1219,9 +1305,12 @@ const I18N = {
     'set.themetip':'Click circle to change theme — saved automatically',
     'set.backupbtn':'💾 Backup to Browser',
     'modal.addmissed':'Add Missed Trade','modal.editmissed':'Edit Plan',
+    'modal.addnote':'Add Note','modal.editnote':'Edit Note',
     'modal.misseddesc':'Plans you saw but could not take — no P&L, recorded for learning',
     'lbl.pipsexp':'Expected Pips','ph.pipsexp':'e.g. 110','ph.rr':'e.g. 1:2.5',
     'lbl.missedreason':'Reason for Missing','ph.missedreason':'e.g. too late, hesitated, not at screen',
+    'lbl.notetitle':'Title','lbl.notecontent':'Content',
+    'ph.notetitle':'e.g. This week\'s trading plan','ph.notecontent':'Write a note, idea, trading plan...','ph.notesearch':'Search notes...',
     'ph.missednote':'Plan details, lessons learned...','btn.savemissed':'Save Plan',
     'modal.addacc':'Add Record','modal.editacc':'Edit Record',
     'lbl.acctype':'Type','opt.withdrawal':'Withdrawal','opt.deposit':'Deposit',
@@ -1247,6 +1336,7 @@ const I18N = {
     'js.edited':'Edited!','js.editfail':'Cannot edit',
     'js.deleted':'Deleted','js.delfail':'Cannot delete','js.del':'Delete',
     'js.plansaved':'Plan saved!','js.fillname':'Please fill in date and name',
+    'js.notesaved':'Note saved!','js.fillnotetitle':'Please fill in date and title',
     'js.fillfields':'Please fill in Date, Pair, Entry, Lot',
     'js.accadded':'Record added!','js.settingssaved':'Settings saved!',
     'js.pairexists':'This pair already exists','js.pairfill':'Please enter a name','js.pairmin':'Must have at least 1 pair',
@@ -1341,11 +1431,12 @@ let accounts = [];
 async function loadAll() {
   setS('spin', 'loading...');
   try {
-    const [tRows, sRows, aRows, mRows] = await Promise.all([
+    const [tRows, sRows, aRows, mRows, nRows] = await Promise.all([
       sbGet('trades', 'order=id.desc'),
       sbGet('settings', 'id=eq.1'),
       sbGet('accounts', 'order=date.desc'),
-      sbGet('missed_trades', 'order=id.desc')
+      sbGet('missed_trades', 'order=id.desc'),
+      sbGet('notes', 'order=id.desc')
     ]);
     trades = (tRows || []).map(r => ({ ...r, images: r.images ? JSON.parse(r.images) : [] }));
     if (sRows && sRows.length) {
@@ -1356,6 +1447,7 @@ async function loadAll() {
     }
     accounts = aRows || [];
     missedTrades = (mRows || []).map(r => ({ ...r, images: r.images ? JSON.parse(r.images) : [] }));
+    notes = (nRows || []).map(r => ({ ...r, images: r.images ? JSON.parse(r.images) : [] }));
     setS('ok', `connected · ${trades.length} trades`);
     autoBackup();
     applySettings();
@@ -1368,6 +1460,7 @@ async function loadAll() {
     if (activePage === 'overview') renderOverview();
     if (activePage === 'history') { if (histTab === 'mt5') renderHistory(); else renderTable(); }
     if (activePage === 'missed') renderMissed();
+    if (activePage === 'notes') renderNotes();
     if (activePage === 'account') renderAccount();
     if (activePage === 'calendar') renderCalendar();
     if (activePage === 'settings') { renderPairTags(); renderStrategyTags(); renderAccountTags(); }
@@ -1606,6 +1699,195 @@ async function delMissed(id) {
     delMissedTimer = setTimeout(() => {
       delMissedConfirm = null;
       if (btn) { btn.textContent = '✕'; btn.className = 'tbl-btn del'; }
+    }, 3000);
+  }
+}
+
+// ---- Notes (journal ทั่วไป ไม่ผูกกับเทรด) ----
+let notes = [], notePending = [], noteExistingImgs = [], noteEditId = null;
+let noteViewId = null, noteViewImgs = [], noteViewIdx = 0;
+
+function handleNoteImgs(input) {
+  Array.from(input.files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => { notePending.push({ id: Date.now() + Math.random(), name: file.name, data: e.target.result, file: file }); renderNotePreviews(); };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+}
+
+function renderNotePreviews() {
+  const row = document.getElementById('n-preview-row');
+  if (!row) return;
+  const existingHtml = noteExistingImgs.map((img, i) => {
+    const src = img.url || img.data || '';
+    return src ? `<div class="thumb"><img src="${src}" alt="preview"><button class="thumb-rm" onclick="removeExistingNoteImg(${i})">✕</button></div>` : '';
+  }).join('');
+  const pendingHtml = notePending.map(img =>
+    `<div class="thumb"><img src="${img.data}" alt="preview"><button class="thumb-rm" onclick="removeNoteImg(${img.id})">✕</button></div>`).join('');
+  row.innerHTML = existingHtml + pendingHtml;
+}
+function removeNoteImg(id) { notePending = notePending.filter(i => i.id !== id); renderNotePreviews(); }
+function removeExistingNoteImg(index) { noteExistingImgs.splice(index, 1); renderNotePreviews(); }
+
+function openNoteModal(id) {
+  noteEditId = id || null;
+  document.getElementById('note-modal-title').textContent = id ? T('modal.editnote') : T('modal.addnote');
+  if (id) {
+    const n = notes.find(x => x.id == id);
+    if (!n) return;
+    document.getElementById('n-date').value = n.date || '';
+    document.getElementById('n-title').value = n.title || '';
+    document.getElementById('n-content').value = n.content || '';
+    noteExistingImgs = (Array.isArray(n.images) ? n.images : []).slice();
+  } else {
+    document.getElementById('n-date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('n-title').value = '';
+    document.getElementById('n-content').value = '';
+    noteExistingImgs = [];
+  }
+  notePending = [];
+  renderNotePreviews();
+  document.getElementById('note-view-modal').classList.remove('open');
+  document.getElementById('note-modal').classList.add('open');
+}
+function closeNoteModal() { document.getElementById('note-modal').classList.remove('open'); notePending = []; noteExistingImgs = []; }
+
+async function saveNote() {
+  const row = {
+    id: noteEditId || Date.now(),
+    date: document.getElementById('n-date').value,
+    title: document.getElementById('n-title').value,
+    content: document.getElementById('n-content').value,
+  };
+  if (!row.date || !row.title) { toast(T('js.fillnotetitle')); return; }
+  try {
+    let newImgs = [];
+    for (const p of notePending) {
+      if (p.file) { const url = await uploadToStorage(p.file, 'note_'+row.id); newImgs.push(url ? {name:p.name,url} : {name:p.name,data:p.data}); }
+      else newImgs.push({name:p.name,data:p.data});
+    }
+    const allImgs = [...noteExistingImgs, ...newImgs];
+    row.images = JSON.stringify(allImgs);
+    const rowWithArrayImgs = { ...row, images: allImgs };
+    if (noteEditId) {
+      await sbUpdate('notes', noteEditId, row);
+      const idx = notes.findIndex(x => x.id == noteEditId);
+      if (idx >= 0) notes[idx] = rowWithArrayImgs;
+    } else {
+      await sbInsert('notes', row);
+      notes.unshift(rowWithArrayImgs);
+    }
+    closeNoteModal();
+    renderNotes();
+    toast(noteEditId ? T('js.edited') : T('js.notesaved'));
+  } catch(e) { toast(T('js.savefail2') + ': ' + e.message); }
+}
+
+function renderNotes() {
+  const grid = document.getElementById('note-grid');
+  const empty = document.getElementById('notes-empty');
+  if (!grid) return;
+  const q = (document.getElementById('note-search')?.value || '').trim().toLowerCase();
+  const list = q ? notes.filter(n => (n.title||'').toLowerCase().includes(q) || (n.content||'').toLowerCase().includes(q)) : notes;
+  if (!list.length) { grid.innerHTML = ''; empty.style.display = ''; return; }
+  empty.style.display = 'none';
+  grid.innerHTML = list.map(n => {
+    const imgs = Array.isArray(n.images) ? n.images : [];
+    const thumbSrc = imgs.length ? (imgs[0].url || imgs[0].data || '') : '';
+    const preview = (n.content || '').replace(/</g,'&lt;');
+    return `<div class="note-card" onclick="openNoteView(${n.id})">
+      ${thumbSrc ? `<img class="note-card-thumb" src="${thumbSrc}" alt="">` : ''}
+      <div class="note-card-title">${(n.title||'').replace(/</g,'&lt;')}</div>
+      <div class="note-card-date">${n.date||''}${imgs.length ? ' · 🖼 '+imgs.length : ''}</div>
+      <div class="note-card-preview">${preview}</div>
+      <div class="note-card-actions">
+        <button class="tbl-btn edit" title="${T('det.edit')}" onclick="event.stopPropagation();openNoteModal(${n.id})">✎</button>
+        <button class="tbl-btn del" data-delc-note="${n.id}" onclick="event.stopPropagation();delNoteCard(${n.id})">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+let delNoteCardConfirm = null, delNoteCardTimer = null;
+async function delNoteCard(id) {
+  if (delNoteCardConfirm === id) {
+    clearTimeout(delNoteCardTimer); delNoteCardConfirm = null;
+    try {
+      await sbDelete('notes', id);
+      notes = notes.filter(n => n.id !== id);
+      renderNotes(); toast(T('js.deleted'));
+    } catch { toast(T('js.delfail')); }
+  } else {
+    if (delNoteCardConfirm !== null) {
+      const prev = document.querySelector(`[data-delc-note="${delNoteCardConfirm}"]`);
+      if (prev) { prev.textContent = '✕'; prev.className = 'tbl-btn del'; }
+    }
+    delNoteCardConfirm = id;
+    const btn = document.querySelector(`[data-delc-note="${id}"]`);
+    if (btn) { btn.textContent = T('js.confirm'); btn.className = 'tbl-btn del del-confirm'; }
+    delNoteCardTimer = setTimeout(() => {
+      delNoteCardConfirm = null;
+      if (btn) { btn.textContent = '✕'; btn.className = 'tbl-btn del'; }
+    }, 3000);
+  }
+}
+
+// ---- Note View Modal (เปิดดูรายละเอียด + gallery รูป) ----
+function openNoteView(id) {
+  const n = notes.find(x => x.id == id); if (!n) return;
+  noteViewId = id;
+  document.getElementById('note-view-title').textContent = n.title || '';
+  document.getElementById('note-view-date').textContent = n.date || '';
+  document.getElementById('note-view-content').textContent = n.content || '';
+  const imgs = Array.isArray(n.images) ? n.images : [];
+  const imgWrap = document.getElementById('note-view-img-wrap');
+  if (imgs.length) {
+    noteViewImgs = imgs; noteViewIdx = 0;
+    document.getElementById('note-view-strip').innerHTML = imgs.map((img,i)=>{
+      const src=img.url||img.data||'';
+      return src?`<img class="detail-strip-thumb${i===0?' active':''}" src="${src}" onclick="noteSetImg(${i})">`:''
+    }).join('');
+    noteSetImg(0);
+    imgWrap.style.display = '';
+  } else {
+    imgWrap.style.display = 'none';
+  }
+  const delBtn = document.getElementById('note-view-del-btn');
+  if (delBtn) { delBtn.setAttribute('data-del-note', id); delBtn.textContent = '🗑 ' + T('btn.delete'); delBtn.className = 'save-btn'; delBtn.style.cssText = 'background:rgba(255,77,106,0.08);border:1px solid var(--red);color:var(--red)'; }
+  document.getElementById('note-view-modal').classList.add('open');
+}
+function closeNoteView() { document.getElementById('note-view-modal').classList.remove('open'); }
+function noteSetImg(idx) {
+  if (!noteViewImgs.length) return;
+  noteViewIdx = (idx + noteViewImgs.length) % noteViewImgs.length;
+  const img = noteViewImgs[noteViewIdx];
+  document.getElementById('note-view-main-img').src = img.url || img.data || '';
+  document.getElementById('note-view-counter').textContent = (noteViewIdx+1) + ' / ' + noteViewImgs.length;
+  document.querySelectorAll('#note-view-strip .detail-strip-thumb').forEach((el,i)=>el.classList.toggle('active', i===noteViewIdx));
+}
+function noteViewPrev() { noteSetImg(noteViewIdx - 1); }
+function noteViewNext() { noteSetImg(noteViewIdx + 1); }
+function openNoteEditFromView() { const id = noteViewId; closeNoteView(); openNoteModal(id); }
+
+let delNoteViewConfirm = null, delNoteViewTimer = null;
+async function delNote(id) {
+  const btn = document.getElementById('note-view-del-btn');
+  if (delNoteViewConfirm === id) {
+    clearTimeout(delNoteViewTimer); delNoteViewConfirm = null;
+    try {
+      await sbDelete('notes', id);
+      notes = notes.filter(n => n.id !== id);
+      closeNoteView();
+      renderNotes();
+      toast(T('js.deleted'));
+    } catch { toast(T('js.delfail')); }
+  } else {
+    delNoteViewConfirm = id;
+    if (btn) btn.textContent = T('js.confirm');
+    delNoteViewTimer = setTimeout(() => {
+      delNoteViewConfirm = null;
+      if (btn) btn.textContent = '🗑 ' + T('btn.delete');
     }, 3000);
   }
 }
@@ -2038,6 +2320,7 @@ function showPage(n) {
   if (n === 'overview') renderOverview();
   if (n === 'history') { if (histTab === 'mt5') renderHistory(); else renderTable(); }
   if (n === 'missed') renderMissed();
+  if (n === 'notes') renderNotes();
   if (n === 'account') renderAccount();
   if (n === 'calendar') renderCalendar();
   if (n === 'propfirm') renderPropfirm();
@@ -3227,7 +3510,7 @@ document.getElementById('f-date').value = new Date().toISOString().split('T')[0]
 document.getElementById('new-pair').addEventListener('keydown', e => { if (e.key === 'Enter') addPair(); });
 document.getElementById('new-strategy').addEventListener('keydown', e => { if (e.key === 'Enter') addStrategy(); });
 document.getElementById('new-account').addEventListener('keydown', e => { if (e.key === 'Enter') addAccountSetting(); });
-const validPages = ['overview','history','calendar','missed','account','settings','propfirm','pfhistory','pfcalendar'];
+const validPages = ['overview','history','calendar','missed','notes','account','settings','propfirm','pfhistory','pfcalendar'];
 const _lp = localStorage.getItem('lastPage');
 const lastPage = IS_VIEW ? 'overview' : (validPages.includes(_lp) ? _lp : 'overview');
 showPage(lastPage);
