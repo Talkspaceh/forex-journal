@@ -1771,11 +1771,13 @@ async function saveNote() {
     row.images = JSON.stringify(allImgs);
     const rowWithArrayImgs = { ...row, images: allImgs };
     if (noteEditId) {
-      await sbUpdate('notes', noteEditId, row);
+      const ok = await sbUpdate('notes', noteEditId, row);
+      if (!ok) throw new Error('sbUpdate failed');
       const idx = notes.findIndex(x => x.id == noteEditId);
       if (idx >= 0) notes[idx] = rowWithArrayImgs;
     } else {
-      await sbInsert('notes', row);
+      const inserted = await sbInsert('notes', row);
+      if (!inserted) throw new Error('sbInsert failed');
       notes.unshift(rowWithArrayImgs);
     }
     closeNoteModal();
