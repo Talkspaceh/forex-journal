@@ -2254,39 +2254,28 @@ function applySettings() {
   const str = document.getElementById('f-str'), scur = str.value;
   str.innerHTML = `<option value="">${T('sel.choose')}</option>` + settings.strategies.map(s => `<option>${s}</option>`).join('');
   if (settings.strategies.includes(scur)) str.value = scur;
-  // sync overview account dropdown (Live) — เพิ่มใหม่ ให้ Overview กรองรายบัญชีได้เหมือน History/Calendar
-  const ovAcctSel = document.getElementById('ov-facct');
-  if (ovAcctSel) {
-    const accts3 = [...new Set(trades.filter(t => t.source_account && t.account_type !== 'propfirm').map(t => t.source_account))];
-    const curOv = ovAcctSel.value;
-    ovAcctSel.innerHTML = `<option value="">${T('filter.allacct')}</option>` + accts3.map(a => `<option>${a}</option>`).join('');
-    if (curOv) ovAcctSel.value = curOv;
-  }
-  // sync hist account dropdown
-  const histAcctSel = document.getElementById('hist-facct');
-  if (histAcctSel) {
-    const accts = [...new Set(trades.filter(t => t.source_account && t.account_type !== 'propfirm').map(t => t.source_account))];
-    const cur = histAcctSel.value;
-    histAcctSel.innerHTML = `<option value="">${T('filter.allacct')}</option>` + accts.map(a => `<option>${a}</option>`).join('');
-    if (cur) histAcctSel.value = cur;
-  }
-  // sync calendar account dropdown (ใช้ accts list เดิมจาก hist-facct)
-  const calAcctSel = document.getElementById('cal-facct');
-  if (calAcctSel) {
-    const accts2 = [...new Set(trades.filter(t => t.source_account && t.account_type !== 'propfirm').map(t => t.source_account))];
-    const curCal = calAcctSel.value;
-    calAcctSel.innerHTML = `<option value="">${T('filter.allacct')}</option>` + accts2.map(a => `<option>${a}</option>`).join('');
-    if (curCal) calAcctSel.value = curCal;
-  }
+  // sync overview/history/calendar account dropdowns (Live) — v5.29: จำค่าที่เลือกไว้ผ่าน localStorage ให้รอดรีเฟรช
+  let savedLiveAcct = '';
+  try { savedLiveAcct = localStorage.getItem('liveAcctFilter') || ''; } catch(e) { /* storage unavailable */ }
+  const liveAccts = [...new Set(trades.filter(t => t.source_account && t.account_type !== 'propfirm').map(t => t.source_account))];
+  ['ov-facct','hist-facct','cal-facct'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const cur = sel.value || savedLiveAcct;
+    sel.innerHTML = `<option value="">${T('filter.allacct')}</option>` + liveAccts.map(a => `<option>${a}</option>`).join('');
+    if (cur && liveAccts.includes(cur)) sel.value = cur;
+  });
   // sync PropFirm account dropdowns (เฉพาะบัญชีที่ account_type === 'propfirm')
-  // ใช้ list เดียวกันทั้ง 3 หน้าย่อยของกลุ่ม PropFirm (Overview/Trade History/Calendar)
+  // ใช้ list เดียวกันทั้ง 3 หน้าย่อยของกลุ่ม PropFirm (Overview/Trade History/Calendar) — v5.29: จำค่าไว้ผ่าน localStorage เหมือนฝั่ง Live
+  let savedPfAcct = '';
+  try { savedPfAcct = localStorage.getItem('pfAcctFilter') || ''; } catch(e) { /* storage unavailable */ }
   const pfAccts = [...new Set(trades.filter(t => t.account_type === 'propfirm' && t.source_account).map(t => t.source_account))];
   [['pf-facct', null], ['pfhist-facct', null], ['pfcal-facct', null]].forEach(([id]) => {
     const sel = document.getElementById(id);
     if (!sel) return;
-    const cur = sel.value;
+    const cur = sel.value || savedPfAcct;
     sel.innerHTML = `<option value="">${T('filter.allacct')}</option>` + pfAccts.map(a => `<option>${a}</option>`).join('');
-    if (cur) sel.value = cur;
+    if (cur && pfAccts.includes(cur)) sel.value = cur;
   });
   // sync PropFirm history pair dropdown
   const pfHistPairSel = document.getElementById('pfhist-fp');
@@ -3090,6 +3079,7 @@ function syncLiveAcctFilter(val) {
     const el = document.getElementById(id);
     if (el) el.value = val;
   });
+  try { localStorage.setItem('liveAcctFilter', val); } catch(e) { /* storage unavailable — filter still works for this session */ }
   renderOverview();
   if (histTab === 'mt5') renderHistory();
   renderCalendar();
@@ -3100,6 +3090,7 @@ function syncPfAcctFilter(val) {
     const el = document.getElementById(id);
     if (el) el.value = val;
   });
+  try { localStorage.setItem('pfAcctFilter', val); } catch(e) { /* storage unavailable — filter still works for this session */ }
   renderPropfirm();
   renderPfHistory();
   renderPfCalendar();
