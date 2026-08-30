@@ -65,6 +65,31 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .note-card-date{font-size:11px;color:var(--text3)}
 .note-card-preview{font-size:12px;color:var(--text2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;line-height:1.5}
 .note-card-actions{display:flex;justify-content:flex-end;gap:6px;margin-top:auto}
+
+/* Lot Size Calculator */
+.lc-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:800px){.lc-grid{grid-template-columns:1fr}}
+.lc-panel{padding:22px 24px}
+.lc-panel-title{font-size:14px;font-weight:600;margin-bottom:18px;display:flex;align-items:center;gap:8px;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+.lc-unit-toggle{display:flex;gap:4px;background:var(--bg3);border-radius:8px;padding:3px}
+.lc-unit-btn{border:none;background:transparent;color:var(--text2);font-size:10.5px;font-weight:600;padding:4px 10px;border-radius:6px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+.lc-unit-btn.active{background:var(--accent);color:#fff}
+.lc-hint{font-size:11px;color:var(--text3);margin-top:6px;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+.lc-warn{background:var(--amber-bg);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:10px 14px;font-size:11.5px;color:var(--amber);margin-top:4px;display:none;line-height:1.6;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+.lc-warn.show{display:block}
+.lc-result-hero{text-align:center;padding:8px 0 24px}
+.lc-result-label{font-size:12px;color:var(--text2);margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+.lc-result-value{font-size:44px;font-weight:800;color:var(--accent)}
+.lc-result-unit{font-size:14px;color:var(--text2);margin-top:4px;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+.lc-breakdown{border-top:1px solid var(--border);padding-top:18px}
+.lc-bd-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;font-size:13px;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+.lc-bd-row .k{color:var(--text2)}
+.lc-bd-row .v{font-weight:600}
+.lc-bd-row .v.neg{color:var(--red)}
+.lc-bd-row .v.accent{color:var(--amber)}
+.lc-formula{margin-top:14px;padding:14px 16px;background:var(--bg3);border-radius:var(--radius);font-size:11.5px;color:var(--text2);line-height:1.7;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+.lc-empty-hint{text-align:center;padding:40px 20px;color:var(--text3);font-size:13px;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+.lc-empty-hint svg{width:36px;height:36px;color:var(--text3);margin-bottom:12px}
 .save-btn{padding:11px 28px;background:var(--accent);border:none;border-radius:var(--radius);color:#fff;font-size:13px;font-weight:500;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,sans-serif;transition:opacity .15s}
 .export-btn{padding:9px 18px;border:none;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,sans-serif;transition:opacity .15s}
 .export-btn:hover{opacity:.85}
@@ -206,7 +231,8 @@ tr:hover td{background:rgba(255,255,255,.02)}
 [data-view='1'] [onclick*="openNoteModal"],
 [data-view='1'] [onclick*="delNote"],
 [data-view='1'] [onclick*="delNoteCard"],
-[data-view='1'] [onclick*="openNoteEditFromView"] { display:none !important; }
+[data-view='1'] [onclick*="openNoteEditFromView"],
+[data-view='1'] [onclick*="openGoalModal"] { display:none !important; }
 
 
 [data-view='1'] .nav-item[onclick*="'add'"] { display:none !important; }
@@ -294,7 +320,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
 [data-theme="nightfall"] .overview-section{margin-bottom:20px}
 [data-theme="nightfall"] .overview-section-title{font-family:'Sora',sans-serif!important;font-weight:600!important;font-size:15px;border-bottom:none;padding-bottom:0;margin-bottom:14px;color:var(--text)!important}
 [data-theme="nightfall"] .stats-grid{gap:16px!important;margin-bottom:20px!important}
-[data-theme="nightfall"] .stat-card,[data-theme="nightfall"] .chart-half,[data-theme="nightfall"] .modal-box,[data-theme="nightfall"] .note-card{
+[data-theme="nightfall"] .stat-card,[data-theme="nightfall"] .chart-half,[data-theme="nightfall"] .modal-box,[data-theme="nightfall"] .note-card,[data-theme="nightfall"] .lc-panel{
   background:rgba(255,255,255,0.045)!important;
   border:1px solid rgba(255,255,255,0.09)!important;
   border-radius:18px!important;
@@ -377,6 +403,10 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <div class="nav-item" data-page="notes" onclick="showPage('notes')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
         <span data-i18n="nav.notes">Note</span>
+      </div>
+      <div class="nav-item" data-page="lotcalc" onclick="showPage('lotcalc')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 2h16v20H4z"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="8.01" y2="10"/><line x1="12" y1="10" x2="12.01" y2="10"/><line x1="16" y1="10" x2="16.01" y2="10"/><line x1="8" y1="14" x2="8.01" y2="14"/><line x1="12" y1="14" x2="12.01" y2="14"/><line x1="16" y1="14" x2="16.01" y2="14"/><line x1="8" y1="18" x2="16" y2="18"/></svg>
+        <span data-i18n="nav.lotcalc">คำนวณ Lot Size</span>
       </div>
       <div class="nav-item" data-page="account" onclick="showPage('account')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
@@ -576,6 +606,56 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <div id="notes-empty" class="empty-state" style="display:none"><span data-i18n="empty.notes">ยังไม่มี Note</span></div>
     </div>
 
+    <div id="page-lotcalc" class="page">
+      <div class="page-title" data-i18n="nav.lotcalc">คำนวณ Lot Size</div>
+      <div style="font-size:13px;color:var(--text2);margin:-12px 0 20px;font-family:-apple-system,BlinkMacSystemFont,sans-serif" data-i18n="lc.sub">คำนวณขนาด position ตามความเสี่ยงที่ยอมรับได้ — ไม่บันทึกข้อมูล คำนวณฝั่งเบราว์เซอร์ล้วนๆ</div>
+      <div class="lc-grid">
+        <div class="lc-panel">
+          <div class="lc-panel-title">📐 <span data-i18n="lc.inputtitle">กรอกข้อมูล</span></div>
+
+          <div class="fg" style="margin-bottom:16px">
+            <label data-i18n="lc.pair">คู่เงิน</label>
+            <select id="lc-pair" onchange="onPairChange()">
+              <option value="XAUUSD">XAUUSD</option>
+              <option value="USTEC">USTEC</option>
+              <option value="GBPUSD">GBPUSD</option>
+              <option value="EURUSD">EURUSD</option>
+              <option value="USDJPY">USDJPY</option>
+            </select>
+          </div>
+
+          <div class="fg" style="margin-bottom:16px">
+            <label data-i18n="lc.capital">เงินทุน ($)</label>
+            <input type="number" id="lc-capital" placeholder="เช่น 1000" value="1000" oninput="calcLot()"/>
+          </div>
+
+          <div class="fg" style="margin-bottom:16px">
+            <label data-i18n="lc.risk">ความเสี่ยงที่ยอมรับ (%)</label>
+            <input type="number" id="lc-risk" placeholder="เช่น 1" value="1" step="0.1" oninput="calcLot()"/>
+          </div>
+
+          <div class="fg" style="margin-bottom:4px">
+            <label style="display:flex;justify-content:space-between;align-items:center">
+              <span data-i18n="lc.sl">Stop Loss</span>
+              <span class="lc-unit-toggle">
+                <button type="button" id="lc-unit-pips" onclick="setSlUnit('pips')" class="lc-unit-btn" data-i18n="lc.pips">Pips</button>
+                <button type="button" id="lc-unit-points" onclick="setSlUnit('points')" class="lc-unit-btn active" data-i18n="lc.points">Points (5 หลัก)</button>
+              </span>
+            </label>
+            <input type="number" id="lc-sl" placeholder="เช่น 200" value="200" oninput="calcLot()"/>
+            <div class="lc-hint" id="lc-unit-hint" data-i18n="lc.pointshint">โหมด Points (5 หลัก): ใส่ตัวเลข SL ตรงจากที่เห็นใน MT5 ได้เลย — ระบบหาร 10 ให้อัตโนมัติ (ค่ามาตรฐานของ broker 5 หลัก)</div>
+          </div>
+
+          <div class="lc-warn" id="lc-warn"></div>
+        </div>
+
+        <div class="lc-panel" id="lc-result-panel">
+          <div class="lc-panel-title">📊 <span data-i18n="lc.resulttitle">ผลลัพธ์</span></div>
+          <div id="lc-result-content"></div>
+        </div>
+      </div>
+    </div>
+
     <div id="page-account" class="page">
       <div class="page-title" data-i18n="nav.account">บัญชี</div>
       <div class="metrics" id="acc-metrics" style="grid-template-columns:repeat(4,1fr)">
@@ -749,6 +829,8 @@ tr:hover td{background:rgba(255,255,255,.02)}
             </div>
           </div>
         </div>
+        <!-- Weekly Goal Bar -->
+        <div id="cal-goal-bar" style="padding:14px 16px;border-bottom:1px solid var(--border)"></div>
         <!-- Day Headers (dynamic) -->
         <div id="cal-day-headers" style="display:grid;grid-template-columns:repeat(7,1fr) 110px;border-bottom:1px solid var(--border)"></div>
         <!-- Calendar Grid (built by renderCalendar) -->
@@ -894,6 +976,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
             </div>
           </div>
         </div>
+        <div id="pfcal-goal-bar" style="padding:14px 16px;border-bottom:1px solid var(--border)"></div>
         <div id="pfcal-day-headers" style="display:grid;grid-template-columns:repeat(7,1fr) 110px;border-bottom:1px solid var(--border)"></div>
         <div id="pfcal-grid" style="display:grid;grid-template-columns:repeat(7,1fr) 110px"></div>
         <div id="pfcal-day-panel" style="display:none;border-top:1px solid var(--border);padding:16px 20px">
@@ -999,6 +1082,20 @@ tr:hover td{background:rgba(255,255,255,.02)}
     <div style="margin-top:20px;display:flex;gap:10px">
       <button class="save-btn" onclick="openNoteEditFromView()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2)"><span data-i18n="det.edit">✎ แก้ไข</span></button>
       <button class="save-btn" id="note-view-del-btn" data-del-note="" onclick="delNote(noteViewId)" style="background:rgba(255,77,106,0.08);border:1px solid var(--red);color:var(--red)"><span data-i18n="btn.delete">🗑 ลบ</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- Weekly Goal Modal -->
+<div class="modal-bg" id="goal-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal-box" style="max-width:400px">
+    <div class="modal-hdr">
+      <span class="modal-title" data-i18n="goal.modaltitle">ตั้งเป้าหมายสัปดาห์นี้</span>
+      <button class="modal-close" onclick="document.getElementById('goal-modal').classList.remove('open')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="fg full"><label data-i18n="goal.amount">เป้าหมาย ($)</label><input type="number" id="goal-m-amount" data-i18n-ph="goal.amountph" placeholder="เช่น 300" step="any"/></div>
+      <div class="fg full"><button class="save-btn" onclick="saveGoalModal()"><span data-i18n="goal.save">บันทึกเป้าหมาย</span></button></div>
     </div>
   </div>
 </div>
@@ -1232,7 +1329,22 @@ const I18N = {
     'nav.overview':'ภาพรวม','nav.history':'ประวัติการเทรด','nav.calendar':'ปฏิทิน',
     'nav.missed':'เทรดที่พลาด','nav.account':'บัญชี','nav.settings':'การตั้งค่า',
     'nav.propfirm':'PropFirm','nav.notes':'Note',
-    'nav.liveaccount':'Live Account','nav.general':'ทั่วไป',
+    'nav.liveaccount':'Live Account','nav.general':'ทั่วไป','nav.lotcalc':'คำนวณ Lot Size',
+    'goal.modaltitle':'ตั้งเป้าหมายสัปดาห์นี้','goal.amount':'เป้าหมาย ($)','goal.amountph':'เช่น 300','goal.save':'บันทึกเป้าหมาย',
+    'goal.noneyet':'ยังไม่ได้ตั้งเป้าหมายสัปดาห์นี้','goal.setbtn':'+ ตั้งเป้าหมาย','goal.label':'เป้า','goal.editbtn':'แก้ไขเป้าหมาย',
+    'goal.fillamount':'กรุณากรอกจำนวนเงินเป้าหมาย',
+    'lc.sub':'คำนวณขนาด position ตามความเสี่ยงที่ยอมรับได้ — ไม่บันทึกข้อมูล คำนวณฝั่งเบราว์เซอร์ล้วนๆ',
+    'lc.inputtitle':'กรอกข้อมูล','lc.resulttitle':'ผลลัพธ์',
+    'lc.pair':'คู่เงิน','lc.capital':'เงินทุน ($)','lc.risk':'ความเสี่ยงที่ยอมรับ (%)','lc.sl':'Stop Loss',
+    'lc.pips':'Pips','lc.points':'Points (5 หลัก)',
+    'lc.pipshint':'1 pip = ค่ามาตรฐาน (ถ้า MT5 คุณโชว์ทศนิยม 5 หลัก เช่น 1.08420 ให้กด "Points" แทน — 1 pip = 10 points)',
+    'lc.pointshint':'โหมด Points (5 หลัก): ใส่ตัวเลข SL ตรงจากที่เห็นใน MT5 ได้เลย — ระบบหาร 10 ให้อัตโนมัติ (ค่ามาตรฐานของ broker 5 หลัก)',
+    'lc.emptyhint':'กรอกข้อมูลด้านซ้ายให้ครบ ผลลัพธ์จะขึ้นที่นี่อัตโนมัติ',
+    'lc.suggested':'Lot Size ที่แนะนำ','lc.riskaccept':'ความเสี่ยงที่ยอมรับ','lc.pipvalue':'Pip Value / 1.00 lot',
+    'lc.roundednote':'ปัดลงจาก',
+    'lc.warn.xauusd':'แต่ละโบรกนิยาม pip/point ของทองไม่เหมือนกัน (บาง MT5 pip = $1/lot, บางที่ต่างไป) กรุณาเทียบกับ MT5 ของคุณอีกครั้งก่อนใช้จริง',
+    'lc.warn.ustec':'ค่านี้อ้างอิงจากการเทียบกับ MT5 จริงของคุณ (0.1 lot / 1000 point = $1) — ถ้าเปลี่ยน broker ควรเช็คซ้ำ',
+    'lc.warn.usdjpy':'คำนวณจากราคาประมาณการ ~155 — ถ้าราคาตลาดขยับไปมากจากนี้ ตัวเลขจะคลาดเคลื่อนได้บ้าง',
     'pf.empty':'ยังไม่มีเทรดที่ติด tag PropFirm',
     'pf.emptysub':'รันสคริปต์ sync ใหม่ แล้วเลือก PropFirm ในหน้า input ที่ขึ้นมา',
     'sync.btn':'⟳ Sync',
@@ -1332,7 +1444,22 @@ const I18N = {
     'nav.overview':'Overview','nav.history':'Trade History','nav.calendar':'Calendar',
     'nav.missed':'Missed Trade','nav.account':'Account','nav.settings':'Settings','nav.notes':'Note',
     'nav.propfirm':'PropFirm',
-    'nav.liveaccount':'Live Account','nav.general':'General',
+    'nav.liveaccount':'Live Account','nav.general':'General','nav.lotcalc':'Lot Size Calculator',
+    'goal.modaltitle':'Set This Week\u2019s Goal','goal.amount':'Goal ($)','goal.amountph':'e.g. 300','goal.save':'Save Goal',
+    'goal.noneyet':'No goal set for this week yet','goal.setbtn':'+ Set Goal','goal.label':'Goal','goal.editbtn':'Edit goal',
+    'goal.fillamount':'Please enter a goal amount',
+    'lc.sub':'Calculate position size based on your accepted risk — nothing is saved, all calculation happens in your browser.',
+    'lc.inputtitle':'Enter Details','lc.resulttitle':'Result',
+    'lc.pair':'Pair','lc.capital':'Capital ($)','lc.risk':'Accepted Risk (%)','lc.sl':'Stop Loss',
+    'lc.pips':'Pips','lc.points':'Points (5-digit)',
+    'lc.pipshint':'1 pip = standard unit (if your MT5 shows 5 decimals, e.g. 1.08420, use "Points" instead — 1 pip = 10 points)',
+    'lc.pointshint':'Points mode (5-digit): enter the SL number exactly as shown in MT5 — it gets divided by 10 automatically (standard for 5-digit brokers)',
+    'lc.emptyhint':'Fill in the fields on the left — the result will appear here automatically.',
+    'lc.suggested':'Suggested Lot Size','lc.riskaccept':'Accepted Risk','lc.pipvalue':'Pip Value / 1.00 lot',
+    'lc.roundednote':'Rounded down from',
+    'lc.warn.xauusd':'Every broker defines gold pip/point differently (some MT5 use $1/lot, others differ) — please double-check against your own MT5 before trading.',
+    'lc.warn.ustec':'This value is based on your own MT5 comparison test (0.1 lot / 1000 points = $1) — re-verify if you switch brokers.',
+    'lc.warn.usdjpy':'Calculated from an approximate price of ~155 — if the market has moved a lot from this, the number may be slightly off.',
     'pf.empty':'No PropFirm-tagged trades yet',
     'pf.emptysub':'Re-run the sync script and pick PropFirm in the input dialog',
     'sync.btn':'⟳ Sync',
@@ -1512,12 +1639,13 @@ let accounts = [];
 async function loadAll() {
   setS('spin', 'loading...');
   try {
-    const [tRows, sRows, aRows, mRows, nRows] = await Promise.all([
+    const [tRows, sRows, aRows, mRows, nRows, wgRows] = await Promise.all([
       sbGet('trades', 'order=id.desc'),
       sbGet('settings', 'id=eq.1'),
       sbGet('accounts', 'order=date.desc'),
       sbGet('missed_trades', 'order=id.desc'),
-      sbGet('notes', 'order=id.desc')
+      sbGet('notes', 'order=id.desc'),
+      sbGet('weekly_goals', 'order=id.desc')
     ]);
     trades = (tRows || []).map(r => ({ ...r, images: r.images ? JSON.parse(r.images) : [] }));
     if (sRows && sRows.length) {
@@ -1529,6 +1657,7 @@ async function loadAll() {
     accounts = aRows || [];
     missedTrades = (mRows || []).map(r => ({ ...r, images: r.images ? JSON.parse(r.images) : [] }));
     notes = (nRows || []).map(r => ({ ...r, images: r.images ? JSON.parse(r.images) : [] }));
+    weeklyGoals = wgRows || [];
     setS('ok', `connected · ${trades.length} trades`);
     autoBackup();
     applySettings();
@@ -1542,6 +1671,7 @@ async function loadAll() {
     if (activePage === 'history') { if (histTab === 'mt5') renderHistory(); else renderTable(); }
     if (activePage === 'missed') renderMissed();
     if (activePage === 'notes') renderNotes();
+    if (activePage === 'lotcalc') onPairChange();
     if (activePage === 'account') renderAccount();
     if (activePage === 'calendar') renderCalendar();
     if (activePage === 'settings') { renderPairTags(); renderStrategyTags(); renderAccountTags(); }
@@ -1786,6 +1916,7 @@ async function delMissed(id) {
 
 // ---- Notes (journal ทั่วไป ไม่ผูกกับเทรด) ----
 let notes = [], notePending = [], noteExistingImgs = [], noteEditId = null;
+let weeklyGoals = [];
 let noteViewId = null, noteViewImgs = [], noteViewIdx = 0;
 
 function handleNoteImgs(input) {
@@ -1973,6 +2104,79 @@ async function delNote(id) {
       if (btn) btn.textContent = '🗑 ' + T('btn.delete');
     }, 3000);
   }
+}
+
+// ---- Lot Size Calculator (คำนวณล้วนๆ ฝั่งเบราว์เซอร์ ไม่บันทึกลง Supabase) ----
+// pipValue ต่อ 1.00 lot ($) — ค่าคงที่ ผ่านการเทียบกับ MT5 จริงของผู้ใช้แล้วทุกคู่ (USDJPY อิงราคาประมาณการ ~155)
+const LC_PIP_INFO = {
+  XAUUSD: { pipValue: 1, warnKey: 'lc.warn.xauusd' },
+  USTEC: { pipValue: 0.01, warnKey: 'lc.warn.ustec' },
+  GBPUSD: { pipValue: 10 },
+  EURUSD: { pipValue: 10 },
+  USDJPY: { pipValue: 6.45, warnKey: 'lc.warn.usdjpy' }
+};
+
+function onPairChange() {
+  const pair = document.getElementById('lc-pair').value;
+  const info = LC_PIP_INFO[pair];
+  const warnEl = document.getElementById('lc-warn');
+  warnEl.classList.remove('show');
+  if (info.warnKey) {
+    warnEl.textContent = '⚠ ' + T(info.warnKey);
+    warnEl.classList.add('show');
+  }
+  calcLot();
+}
+
+let lcSlUnit = 'points';
+function setSlUnit(u) {
+  lcSlUnit = u;
+  document.getElementById('lc-unit-pips').classList.toggle('active', u === 'pips');
+  document.getElementById('lc-unit-points').classList.toggle('active', u === 'points');
+  document.getElementById('lc-unit-hint').textContent = u === 'pips' ? T('lc.pipshint') : T('lc.pointshint');
+  calcLot();
+}
+
+function calcLot() {
+  const capital = parseFloat(document.getElementById('lc-capital').value) || 0;
+  const riskPct = parseFloat(document.getElementById('lc-risk').value) || 0;
+  const slInputRaw = parseFloat(document.getElementById('lc-sl').value) || 0;
+  const slPips = slInputRaw / (lcSlUnit === 'points' ? 10 : 1);
+  const slDisplay = lcSlUnit === 'points' ? `${slInputRaw} points (= ${slPips} pips)` : `${slPips} pips`;
+  const pair = document.getElementById('lc-pair').value;
+  const pipValuePerLot = LC_PIP_INFO[pair].pipValue;
+  const content = document.getElementById('lc-result-content');
+
+  if (!capital || !riskPct || !slPips) {
+    content.innerHTML = `<div class="lc-empty-hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M12 8v8"/></svg>
+      <div>${T('lc.emptyhint')}</div>
+    </div>`;
+    return;
+  }
+
+  const riskAmount = capital * (riskPct / 100);
+  const lotSizeRaw = riskAmount / (slPips * pipValuePerLot);
+  const lotSize = Math.floor(lotSizeRaw * 100) / 100; // ปัดลงเสมอ (floor) — กันไม่ให้เสี่ยงเกินเป้าที่ตั้งไว้
+
+  const roundedNote = lotSizeRaw > lotSize
+    ? `<div style="margin-top:10px;font-size:11px;color:var(--text3)">* ${T('lc.roundednote')} ${lotSizeRaw.toFixed(3)} lot → $${riskAmount.toFixed(2)}</div>`
+    : '';
+
+  content.innerHTML = `
+    <div class="lc-result-hero">
+      <div class="lc-result-label">${T('lc.suggested')}</div>
+      <div class="lc-result-value">${lotSize.toFixed(2)}</div>
+      <div class="lc-result-unit">lot (${pair})</div>
+    </div>
+    <div class="lc-breakdown">
+      <div class="lc-bd-row"><span class="k">${T('lc.capital')}</span><span class="v">$${capital.toLocaleString()}</span></div>
+      <div class="lc-bd-row"><span class="k">${T('lc.riskaccept')}</span><span class="v neg">$${riskAmount.toFixed(2)} (${riskPct}%)</span></div>
+      <div class="lc-bd-row"><span class="k">${T('lc.sl')}</span><span class="v">${slDisplay}</span></div>
+      <div class="lc-bd-row"><span class="k">${T('lc.pipvalue')}</span><span class="v accent">$${pipValuePerLot.toFixed(2)}</span></div>
+      <div class="lc-formula">Lot = ${T('lc.riskaccept')} ÷ (SL × Pip Value)<br>Lot = $${riskAmount.toFixed(2)} ÷ (${slPips} × $${pipValuePerLot.toFixed(2)})<br>Lot = <b style="color:var(--text)">${lotSize.toFixed(2)}</b>${roundedNote}</div>
+    </div>
+  `;
 }
 
 let accSortCol = 'date', accSortDir = 'desc';
@@ -2408,6 +2612,7 @@ function showPage(n) {
   if (n === 'history') { if (histTab === 'mt5') renderHistory(); else renderTable(); }
   if (n === 'missed') renderMissed();
   if (n === 'notes') renderNotes();
+  if (n === 'lotcalc') onPairChange();
   if (n === 'account') renderAccount();
   if (n === 'calendar') renderCalendar();
   if (n === 'propfirm') renderPropfirm();
@@ -3523,6 +3728,7 @@ function renderPfCalendar() {
   pnlEl.textContent = calFmtPnl(totalPnl);
   pnlEl.style.color = totalPnl > 0 ? 'var(--green)' : totalPnl < 0 ? 'var(--red)' : 'var(--text2)';
   document.getElementById('pfcal-total-trades').textContent = totalCount;
+  renderWeekGoal('propfirm');
 
   const dayMap = {};
   mTrades.forEach(t => {
@@ -3620,7 +3826,7 @@ document.getElementById('f-date').value = new Date().toISOString().split('T')[0]
 document.getElementById('new-pair').addEventListener('keydown', e => { if (e.key === 'Enter') addPair(); });
 document.getElementById('new-strategy').addEventListener('keydown', e => { if (e.key === 'Enter') addStrategy(); });
 document.getElementById('new-account').addEventListener('keydown', e => { if (e.key === 'Enter') addAccountSetting(); });
-const validPages = ['overview','history','calendar','missed','notes','account','settings','propfirm','pfhistory','pfcalendar'];
+const validPages = ['overview','history','calendar','missed','notes','lotcalc','account','settings','propfirm','pfhistory','pfcalendar'];
 const _lp = localStorage.getItem('lastPage');
 const lastPage = IS_VIEW ? 'overview' : (validPages.includes(_lp) ? _lp : 'overview');
 showPage(lastPage);
@@ -3809,6 +4015,101 @@ function calFmtPnl(val) {
   return (val < 0 ? '-' : '') + str + '$';
 }
 
+// ---- Weekly Goal (Calendar — Live/PropFirm แยกกัน) ----
+function getWeekStart(d) {
+  const dt = new Date(d || new Date());
+  dt.setDate(dt.getDate() - dt.getDay());
+  return dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0');
+}
+function getWeekEndDate(weekStartStr) {
+  const d = new Date(weekStartStr);
+  d.setDate(d.getDate() + 6);
+  return d;
+}
+function findWeeklyGoal(accountType, weekStart) {
+  return weeklyGoals.find(g => g.account_type === accountType && g.week_start === weekStart) || null;
+}
+function computeWeekPnl(accountType, facctId, weekStart) {
+  const facct = document.getElementById(facctId)?.value || '';
+  const weekEndDate = getWeekEndDate(weekStart);
+  const weekEndStr = weekEndDate.getFullYear() + '-' + String(weekEndDate.getMonth()+1).padStart(2,'0') + '-' + String(weekEndDate.getDate()).padStart(2,'0');
+  return trades.filter(t => {
+    if (!t.date || t.pnl === null || t.pnl === '') return false;
+    if (accountType === 'propfirm' && t.account_type !== 'propfirm') return false;
+    if (accountType === 'live' && t.account_type === 'propfirm') return false;
+    if (facct && t.source_account !== facct) return false;
+    return t.date >= weekStart && t.date <= weekEndStr;
+  }).reduce((a, t) => a + parseFloat(t.pnl || 0), 0);
+}
+
+let goalModalAccountType = 'live';
+function renderWeekGoal(accountType) {
+  const barId = accountType === 'live' ? 'cal-goal-bar' : 'pfcal-goal-bar';
+  const facctId = accountType === 'live' ? 'cal-facct' : 'pfcal-facct';
+  const bar = document.getElementById(barId);
+  if (!bar) return;
+  const weekStart = getWeekStart();
+  const weekEndDate = getWeekEndDate(weekStart);
+  const startD = new Date(weekStart);
+  const fmt = d => d.getDate() + '/' + (d.getMonth() + 1);
+  const goal = findWeeklyGoal(accountType, weekStart);
+  const pnl = computeWeekPnl(accountType, facctId, weekStart);
+
+  if (!goal) {
+    bar.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <span style="font-size:12px;color:var(--text3);font-family:-apple-system,BlinkMacSystemFont,sans-serif">${T('goal.noneyet')} (${fmt(startD)}\u2013${fmt(weekEndDate)})</span>
+      <button onclick="openGoalModal('${accountType}')" style="padding:6px 14px;background:var(--accent);border:none;border-radius:var(--radius);color:#fff;font-size:11.5px;cursor:pointer">${T('goal.setbtn')}</button>
+    </div>`;
+    return;
+  }
+
+  const pct = goal.goal_amount > 0 ? Math.max(0, Math.min(100, (pnl / goal.goal_amount) * 100)) : 0;
+  const pnlColor = pnl >= 0 ? 'var(--green)' : 'var(--red)';
+  bar.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;flex-wrap:wrap">
+      <span style="font-size:12.5px;font-family:-apple-system,BlinkMacSystemFont,sans-serif">
+        <span style="color:var(--text2)">${T('ov.thisweek')} (${fmt(startD)}\u2013${fmt(weekEndDate)}):</span>
+        <b style="color:${pnlColor}">${pnl >= 0 ? '+' : ''}${pnl.toFixed(2)}$</b>
+        <span style="color:var(--text2)"> / ${T('goal.label')} ${goal.goal_amount}$ (${pct.toFixed(0)}%)</span>
+      </span>
+      <button onclick="openGoalModal('${accountType}')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px" title="${T('goal.editbtn')}">\u270e</button>
+    </div>
+    <div style="height:6px;background:var(--bg3);border-radius:100px;overflow:hidden">
+      <div style="height:100%;width:${pct}%;background:${pnl >= goal.goal_amount ? 'var(--green)' : 'var(--accent)'};border-radius:100px;transition:width .3s"></div>
+    </div>`;
+}
+
+function openGoalModal(accountType) {
+  goalModalAccountType = accountType;
+  const weekStart = getWeekStart();
+  const goal = findWeeklyGoal(accountType, weekStart);
+  document.getElementById('goal-m-amount').value = goal ? goal.goal_amount : '';
+  document.getElementById('goal-modal').classList.add('open');
+}
+
+async function saveGoalModal() {
+  const amount = parseFloat(document.getElementById('goal-m-amount').value);
+  if (!amount || amount <= 0) { toast(T('goal.fillamount')); return; }
+  const weekStart = getWeekStart();
+  const existing = findWeeklyGoal(goalModalAccountType, weekStart);
+  const row = { id: existing ? existing.id : Date.now(), week_start: weekStart, account_type: goalModalAccountType, goal_amount: amount };
+  try {
+    if (existing) {
+      const ok = await sbUpdate('weekly_goals', existing.id, row);
+      if (!ok) throw new Error('update failed');
+      const idx = weeklyGoals.findIndex(g => g.id === existing.id);
+      if (idx >= 0) weeklyGoals[idx] = row;
+    } else {
+      const inserted = await sbInsert('weekly_goals', row);
+      if (!inserted) throw new Error('insert failed');
+      weeklyGoals.unshift(row);
+    }
+    document.getElementById('goal-modal').classList.remove('open');
+    renderWeekGoal(goalModalAccountType);
+    toast(T('js.edited'));
+  } catch(e) { toast(T('js.savefail2') + ': ' + e.message); }
+}
+
 function renderCalendar() {
   const year = calendarYear, month = calendarMonth;
   const L = CAL_L[calLang];
@@ -3828,6 +4129,7 @@ function renderCalendar() {
   pnlEl.textContent = calFmtPnl(totalPnl);
   pnlEl.style.color = totalPnl > 0 ? 'var(--green)' : totalPnl < 0 ? 'var(--red)' : 'var(--text2)';
   document.getElementById('cal-total-trades').textContent = totalCount;
+  renderWeekGoal('live');
 
   // Build day map: 'YYYY-MM-DD' → { count, pnl }
   const dayMap = {};
