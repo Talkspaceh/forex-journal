@@ -1090,7 +1090,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
 <div class="modal-bg" id="goal-modal" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="modal-box" style="max-width:400px">
     <div class="modal-hdr">
-      <span class="modal-title" data-i18n="goal.modaltitle">ตั้งเป้าหมายสัปดาห์นี้</span>
+      <span class="modal-title" id="goal-modal-title">ตั้งเป้าหมายสัปดาห์นี้</span>
       <button class="modal-close" onclick="document.getElementById('goal-modal').classList.remove('open')">✕</button>
     </div>
     <div class="form-grid">
@@ -1333,6 +1333,8 @@ const I18N = {
     'goal.modaltitle':'ตั้งเป้าหมายสัปดาห์นี้','goal.amount':'เป้าหมาย ($)','goal.amountph':'เช่น 300','goal.save':'บันทึกเป้าหมาย',
     'goal.noneyet':'ยังไม่ได้ตั้งเป้าหมายสัปดาห์นี้','goal.setbtn':'+ ตั้งเป้าหมาย','goal.label':'เป้า','goal.editbtn':'แก้ไขเป้าหมาย',
     'goal.fillamount':'กรุณากรอกจำนวนเงินเป้าหมาย',
+    'goal.modaltitlemonth':'ตั้งเป้าหมายเดือนนี้','goal.thismonth':'เดือนนี้','goal.noneyetmonth':'ยังไม่ได้ตั้งเป้าหมายเดือนนี้',
+    'goal.weektab':'รายสัปดาห์','goal.monthtab':'รายเดือน',
     'lc.sub':'คำนวณขนาด position ตามความเสี่ยงที่ยอมรับได้ — ไม่บันทึกข้อมูล คำนวณฝั่งเบราว์เซอร์ล้วนๆ',
     'lc.inputtitle':'กรอกข้อมูล','lc.resulttitle':'ผลลัพธ์',
     'lc.pair':'คู่เงิน','lc.capital':'เงินทุน ($)','lc.risk':'ความเสี่ยงที่ยอมรับ (%)','lc.sl':'Stop Loss',
@@ -1448,6 +1450,8 @@ const I18N = {
     'goal.modaltitle':'Set This Week\u2019s Goal','goal.amount':'Goal ($)','goal.amountph':'e.g. 300','goal.save':'Save Goal',
     'goal.noneyet':'No goal set for this week yet','goal.setbtn':'+ Set Goal','goal.label':'Goal','goal.editbtn':'Edit goal',
     'goal.fillamount':'Please enter a goal amount',
+    'goal.modaltitlemonth':'Set This Month’s Goal','goal.thismonth':'This Month','goal.noneyetmonth':'No goal set for this month yet',
+    'goal.weektab':'Weekly','goal.monthtab':'Monthly',
     'lc.sub':'Calculate position size based on your accepted risk — nothing is saved, all calculation happens in your browser.',
     'lc.inputtitle':'Enter Details','lc.resulttitle':'Result',
     'lc.pair':'Pair','lc.capital':'Capital ($)','lc.risk':'Accepted Risk (%)','lc.sl':'Stop Loss',
@@ -3728,7 +3732,7 @@ function renderPfCalendar() {
   pnlEl.textContent = calFmtPnl(totalPnl);
   pnlEl.style.color = totalPnl > 0 ? 'var(--green)' : totalPnl < 0 ? 'var(--red)' : 'var(--text2)';
   document.getElementById('pfcal-total-trades').textContent = totalCount;
-  renderWeekGoal('propfirm');
+  renderGoalBar('propfirm');
 
   const dayMap = {};
   mTrades.forEach(t => {
@@ -4015,7 +4019,7 @@ function calFmtPnl(val) {
   return (val < 0 ? '-' : '') + str + '$';
 }
 
-// ---- Weekly Goal (Calendar — Live/PropFirm แยกกัน) ----
+// ---- Goal (Calendar — Live/PropFirm แยกกัน, รองรับทั้งรายสัปดาห์และรายเดือน) ----
 function getWeekStart(d) {
   const dt = new Date(d || new Date());
   dt.setDate(dt.getDate() - dt.getDay());
@@ -4026,73 +4030,105 @@ function getWeekEndDate(weekStartStr) {
   d.setDate(d.getDate() + 6);
   return d;
 }
-function findWeeklyGoal(accountType, weekStart) {
-  return weeklyGoals.find(g => g.account_type === accountType && g.week_start === weekStart) || null;
+function getMonthStart(d) {
+  const dt = new Date(d || new Date());
+  return dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-01';
 }
-function computeWeekPnl(accountType, facctId, weekStart) {
+function getMonthEndDate(monthStartStr) {
+  const d = new Date(monthStartStr);
+  return new Date(d.getFullYear(), d.getMonth() + 1, 0); // วันสุดท้ายของเดือน
+}
+function getPeriodStart(periodType) {
+  return periodType === 'month' ? getMonthStart() : getWeekStart();
+}
+function getPeriodEndDate(periodType, periodStart) {
+  return periodType === 'month' ? getMonthEndDate(periodStart) : getWeekEndDate(periodStart);
+}
+function findGoal(accountType, periodType, periodStart) {
+  return weeklyGoals.find(g => g.account_type === accountType && g.period_type === periodType && g.week_start === periodStart) || null;
+}
+function computePeriodPnl(accountType, facctId, periodType, periodStart) {
   const facct = document.getElementById(facctId)?.value || '';
-  const weekEndDate = getWeekEndDate(weekStart);
-  const weekEndStr = weekEndDate.getFullYear() + '-' + String(weekEndDate.getMonth()+1).padStart(2,'0') + '-' + String(weekEndDate.getDate()).padStart(2,'0');
+  const endDate = getPeriodEndDate(periodType, periodStart);
+  const endStr = endDate.getFullYear() + '-' + String(endDate.getMonth()+1).padStart(2,'0') + '-' + String(endDate.getDate()).padStart(2,'0');
   return trades.filter(t => {
     if (!t.date || t.pnl === null || t.pnl === '') return false;
     if (accountType === 'propfirm' && t.account_type !== 'propfirm') return false;
     if (accountType === 'live' && t.account_type === 'propfirm') return false;
     if (facct && t.source_account !== facct) return false;
-    return t.date >= weekStart && t.date <= weekEndStr;
+    return t.date >= periodStart && t.date <= endStr;
   }).reduce((a, t) => a + parseFloat(t.pnl || 0), 0);
 }
 
-let goalModalAccountType = 'live';
-function renderWeekGoal(accountType) {
+let goalModalAccountType = 'live', goalModalPeriodType = 'week';
+let calGoalView = { live: 'week', propfirm: 'week' }; // แต่ละปฏิทินจำไว้ว่ากำลังดูมุมมองไหนอยู่ (สลับได้ ไม่ต้องโชว์ 2 แถบพร้อมกัน)
+
+function switchGoalView(accountType, periodType) {
+  calGoalView[accountType] = periodType;
+  renderGoalBar(accountType);
+}
+
+function renderGoalBar(accountType) {
+  const periodType = calGoalView[accountType];
   const barId = accountType === 'live' ? 'cal-goal-bar' : 'pfcal-goal-bar';
   const facctId = accountType === 'live' ? 'cal-facct' : 'pfcal-facct';
   const bar = document.getElementById(barId);
   if (!bar) return;
-  const weekStart = getWeekStart();
-  const weekEndDate = getWeekEndDate(weekStart);
-  const startD = new Date(weekStart);
+  const periodStart = getPeriodStart(periodType);
+  const endDate = getPeriodEndDate(periodType, periodStart);
+  const startD = new Date(periodStart);
   const fmt = d => d.getDate() + '/' + (d.getMonth() + 1);
-  const goal = findWeeklyGoal(accountType, weekStart);
-  const pnl = computeWeekPnl(accountType, facctId, weekStart);
+  const labelKey = periodType === 'month' ? 'goal.thismonth' : 'ov.thisweek';
+  const goal = findGoal(accountType, periodType, periodStart);
+  const pnl = computePeriodPnl(accountType, facctId, periodType, periodStart);
+
+  const activeBtn = 'border:none;background:var(--accent);color:#fff;font-size:11px;font-weight:600;padding:5px 12px;border-radius:6px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,sans-serif';
+  const inactiveBtn = 'border:none;background:transparent;color:var(--text2);font-size:11px;font-weight:600;padding:5px 12px;border-radius:6px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,sans-serif';
+  const toggleHtml = `<div style="display:flex;gap:4px;background:var(--bg3);border-radius:9px;padding:3px;width:fit-content;margin-bottom:10px">
+      <button onclick="switchGoalView('${accountType}','week')" style="${periodType === 'week' ? activeBtn : inactiveBtn}">${T('goal.weektab')}</button>
+      <button onclick="switchGoalView('${accountType}','month')" style="${periodType === 'month' ? activeBtn : inactiveBtn}">${T('goal.monthtab')}</button>
+    </div>`;
 
   if (!goal) {
-    bar.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
-      <span style="font-size:12px;color:var(--text3);font-family:-apple-system,BlinkMacSystemFont,sans-serif">${T('goal.noneyet')} (${fmt(startD)}\u2013${fmt(weekEndDate)})</span>
-      <button onclick="openGoalModal('${accountType}')" style="padding:6px 14px;background:var(--accent);border:none;border-radius:var(--radius);color:#fff;font-size:11.5px;cursor:pointer">${T('goal.setbtn')}</button>
+    bar.innerHTML = toggleHtml + `<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <span style="font-size:12px;color:var(--text3);font-family:-apple-system,BlinkMacSystemFont,sans-serif">${T(periodType === 'month' ? 'goal.noneyetmonth' : 'goal.noneyet')} (${fmt(startD)}\u2013${fmt(endDate)})</span>
+      <button onclick="openGoalModal('${accountType}','${periodType}')" style="padding:6px 14px;background:var(--accent);border:none;border-radius:var(--radius);color:#fff;font-size:11.5px;cursor:pointer">${T('goal.setbtn')}</button>
     </div>`;
     return;
   }
 
   const pct = goal.goal_amount > 0 ? Math.max(0, Math.min(100, (pnl / goal.goal_amount) * 100)) : 0;
   const pnlColor = pnl >= 0 ? 'var(--green)' : 'var(--red)';
-  bar.innerHTML = `
+  bar.innerHTML = toggleHtml + `
     <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;flex-wrap:wrap">
       <span style="font-size:12.5px;font-family:-apple-system,BlinkMacSystemFont,sans-serif">
-        <span style="color:var(--text2)">${T('ov.thisweek')} (${fmt(startD)}\u2013${fmt(weekEndDate)}):</span>
+        <span style="color:var(--text2)">${T(labelKey)} (${fmt(startD)}\u2013${fmt(endDate)}):</span>
         <b style="color:${pnlColor}">${pnl >= 0 ? '+' : ''}${pnl.toFixed(2)}$</b>
         <span style="color:var(--text2)"> / ${T('goal.label')} ${goal.goal_amount}$ (${pct.toFixed(0)}%)</span>
       </span>
-      <button onclick="openGoalModal('${accountType}')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px" title="${T('goal.editbtn')}">\u270e</button>
+      <button onclick="openGoalModal('${accountType}','${periodType}')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px" title="${T('goal.editbtn')}">\u270e</button>
     </div>
     <div style="height:6px;background:var(--bg3);border-radius:100px;overflow:hidden">
       <div style="height:100%;width:${pct}%;background:${pnl >= goal.goal_amount ? 'var(--green)' : 'var(--accent)'};border-radius:100px;transition:width .3s"></div>
     </div>`;
 }
 
-function openGoalModal(accountType) {
+function openGoalModal(accountType, periodType) {
   goalModalAccountType = accountType;
-  const weekStart = getWeekStart();
-  const goal = findWeeklyGoal(accountType, weekStart);
+  goalModalPeriodType = periodType;
+  const periodStart = getPeriodStart(periodType);
+  const goal = findGoal(accountType, periodType, periodStart);
   document.getElementById('goal-m-amount').value = goal ? goal.goal_amount : '';
+  document.getElementById('goal-modal-title').textContent = periodType === 'month' ? T('goal.modaltitlemonth') : T('goal.modaltitle');
   document.getElementById('goal-modal').classList.add('open');
 }
 
 async function saveGoalModal() {
   const amount = parseFloat(document.getElementById('goal-m-amount').value);
   if (!amount || amount <= 0) { toast(T('goal.fillamount')); return; }
-  const weekStart = getWeekStart();
-  const existing = findWeeklyGoal(goalModalAccountType, weekStart);
-  const row = { id: existing ? existing.id : Date.now(), week_start: weekStart, account_type: goalModalAccountType, goal_amount: amount };
+  const periodStart = getPeriodStart(goalModalPeriodType);
+  const existing = findGoal(goalModalAccountType, goalModalPeriodType, periodStart);
+  const row = { id: existing ? existing.id : Date.now(), week_start: periodStart, account_type: goalModalAccountType, period_type: goalModalPeriodType, goal_amount: amount };
   try {
     if (existing) {
       const ok = await sbUpdate('weekly_goals', existing.id, row);
@@ -4105,7 +4141,7 @@ async function saveGoalModal() {
       weeklyGoals.unshift(row);
     }
     document.getElementById('goal-modal').classList.remove('open');
-    renderWeekGoal(goalModalAccountType);
+    renderGoalBar(goalModalAccountType);
     toast(T('js.edited'));
   } catch(e) { toast(T('js.savefail2') + ': ' + e.message); }
 }
@@ -4129,7 +4165,7 @@ function renderCalendar() {
   pnlEl.textContent = calFmtPnl(totalPnl);
   pnlEl.style.color = totalPnl > 0 ? 'var(--green)' : totalPnl < 0 ? 'var(--red)' : 'var(--text2)';
   document.getElementById('cal-total-trades').textContent = totalCount;
-  renderWeekGoal('live');
+  renderGoalBar('live');
 
   // Build day map: 'YYYY-MM-DD' → { count, pnl }
   const dayMap = {};
