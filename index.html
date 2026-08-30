@@ -1921,6 +1921,8 @@ async function delMissed(id) {
 // ---- Notes (journal ทั่วไป ไม่ผูกกับเทรด) ----
 let notes = [], notePending = [], noteExistingImgs = [], noteEditId = null;
 let weeklyGoals = [];
+let goalModalAccountType = 'live', goalModalPeriodType = 'week';
+let calGoalView = { live: 'week', propfirm: 'week' }; // แต่ละปฏิทินจำไว้ว่ากำลังดูมุมมองไหนอยู่ (สลับได้ ไม่ต้องโชว์ 2 แถบพร้อมกัน)
 let noteViewId = null, noteViewImgs = [], noteViewIdx = 0;
 
 function handleNoteImgs(input) {
@@ -4059,9 +4061,6 @@ function computePeriodPnl(accountType, facctId, periodType, periodStart) {
     return t.date >= periodStart && t.date <= endStr;
   }).reduce((a, t) => a + parseFloat(t.pnl || 0), 0);
 }
-
-let goalModalAccountType = 'live', goalModalPeriodType = 'week';
-let calGoalView = { live: 'week', propfirm: 'week' }; // แต่ละปฏิทินจำไว้ว่ากำลังดูมุมมองไหนอยู่ (สลับได้ ไม่ต้องโชว์ 2 แถบพร้อมกัน)
 
 function switchGoalView(accountType, periodType) {
   calGoalView[accountType] = periodType;
