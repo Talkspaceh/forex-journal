@@ -811,26 +811,28 @@ tr:hover td{background:rgba(255,255,255,.02)}
 
     <div id="page-calendar" class="page">
       <div class="page-title" style="margin-bottom:20px"><span class="crumb"><span data-i18n="nav.liveaccount">Live Account</span> /</span><span data-i18n="nav.calendar">ปฏิทิน</span></div>
-      <div style="background:var(--bg2);border:1px solid var(--card-bdr);border-radius:var(--radius-lg);overflow:hidden">
+      <div style="background:var(--bg2);border:1px solid var(--card-bdr);border-radius:var(--radius-lg);overflow:hidden;max-width:1575px;margin:0 auto">
         <!-- Calendar Header -->
         <div style="display:flex;align-items:center;padding:11px 16px;border-bottom:1px solid var(--border)">
           <button onclick="changeCalendarMonth(-1)" style="background:none;border:1px solid var(--border2);border-radius:var(--radius);color:var(--text2);width:28px;height:28px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">&#8249;</button>
           <span id="cal-month-title" style="margin:0 12px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:500;min-width:160px;text-align:center">—</span>
           <button onclick="changeCalendarMonth(1)" style="background:none;border:1px solid var(--border2);border-radius:var(--radius);color:var(--text2);width:28px;height:28px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">&#8250;</button>
           <select id="cal-facct" onchange="syncLiveAcctFilter(this.value)" style="margin-left:14px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);padding:8px 12px;font-size:12px;outline:none;font-family:-apple-system,BlinkMacSystemFont,sans-serif"><option value="" data-i18n="filter.allacct">ทุกบัญชี</option></select>
-          <div style="margin-left:auto;display:flex;align-items:center;gap:22px">
-            <div style="display:flex;align-items:baseline;gap:5px">
-              <span style="font-size:11px;color:var(--text2);font-family:-apple-system,BlinkMacSystemFont,sans-serif">P/L:</span>
-              <span id="cal-total-pnl" style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:500;color:var(--text2)">—</span>
+        </div>
+        <!-- Weekly Goal Bar (+ P/L / Trades summary on the same row) -->
+        <div style="padding:14px 16px 14px 24px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:28px;flex-shrink:0;border:1px solid var(--border2);border-radius:var(--radius-lg);padding:14px 24px;background:var(--bg3)">
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <span style="font-size:12px;color:var(--text2);font-family:-apple-system,BlinkMacSystemFont,sans-serif">Total P&amp;L</span>
+              <span id="cal-total-pnl" style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:20px;font-weight:600;color:var(--text2)">—</span>
             </div>
-            <div style="display:flex;align-items:baseline;gap:5px">
-              <span style="font-size:11px;color:var(--text2);font-family:-apple-system,BlinkMacSystemFont,sans-serif">Trades:</span>
-              <span id="cal-total-trades" style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:500;color:var(--text)">0</span>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <span style="font-size:12px;color:var(--text2);font-family:-apple-system,BlinkMacSystemFont,sans-serif">Trades</span>
+              <span id="cal-total-trades" style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:20px;font-weight:600;color:var(--text)">0</span>
             </div>
           </div>
+          <div id="cal-goal-bar" style="flex:1;min-width:220px"></div>
         </div>
-        <!-- Weekly Goal Bar -->
-        <div id="cal-goal-bar" style="padding:14px 16px;border-bottom:1px solid var(--border)"></div>
         <!-- Day Headers (dynamic) -->
         <div id="cal-day-headers" style="display:grid;grid-template-columns:repeat(7,1fr) 110px;border-bottom:1px solid var(--border)"></div>
         <!-- Calendar Grid (built by renderCalendar) -->
@@ -959,24 +961,26 @@ tr:hover td{background:rgba(255,255,255,.02)}
 
     <div id="page-pfcalendar" class="page">
       <div class="page-title" style="margin-bottom:20px"><span class="crumb"><span data-i18n="nav.propfirm">PropFirm</span> /</span><span data-i18n="nav.calendar">ปฏิทิน</span></div>
-      <div style="background:var(--bg2);border:1px solid var(--card-bdr);border-radius:var(--radius-lg);overflow:hidden">
+      <div style="background:var(--bg2);border:1px solid var(--card-bdr);border-radius:var(--radius-lg);overflow:hidden;max-width:1575px;margin:0 auto">
         <div style="display:flex;align-items:center;padding:11px 16px;border-bottom:1px solid var(--border)">
           <button onclick="changePfCalendarMonth(-1)" style="background:none;border:1px solid var(--border2);border-radius:var(--radius);color:var(--text2);width:28px;height:28px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">&#8249;</button>
           <span id="pfcal-month-title" style="margin:0 12px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:500;min-width:160px;text-align:center">—</span>
           <button onclick="changePfCalendarMonth(1)" style="background:none;border:1px solid var(--border2);border-radius:var(--radius);color:var(--text2);width:28px;height:28px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">&#8250;</button>
           <select id="pfcal-facct" onchange="syncPfAcctFilter(this.value)" style="margin-left:14px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);padding:8px 12px;font-size:12px;outline:none;font-family:-apple-system,BlinkMacSystemFont,sans-serif"><option value="" data-i18n="filter.allacct">ทุกบัญชี</option></select>
-          <div style="margin-left:auto;display:flex;align-items:center;gap:22px">
-            <div style="display:flex;align-items:baseline;gap:5px">
-              <span style="font-size:11px;color:var(--text2);font-family:-apple-system,BlinkMacSystemFont,sans-serif">P/L:</span>
-              <span id="pfcal-total-pnl" style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:500;color:var(--text2)">—</span>
+        </div>
+        <div style="padding:14px 16px 14px 24px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:28px;flex-shrink:0;border:1px solid var(--border2);border-radius:var(--radius-lg);padding:14px 24px;background:var(--bg3)">
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <span style="font-size:12px;color:var(--text2);font-family:-apple-system,BlinkMacSystemFont,sans-serif">Total P&amp;L</span>
+              <span id="pfcal-total-pnl" style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:20px;font-weight:600;color:var(--text2)">—</span>
             </div>
-            <div style="display:flex;align-items:baseline;gap:5px">
-              <span style="font-size:11px;color:var(--text2);font-family:-apple-system,BlinkMacSystemFont,sans-serif">Trades:</span>
-              <span id="pfcal-total-trades" style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:500;color:var(--text)">0</span>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <span style="font-size:12px;color:var(--text2);font-family:-apple-system,BlinkMacSystemFont,sans-serif">Trades</span>
+              <span id="pfcal-total-trades" style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:20px;font-weight:600;color:var(--text)">0</span>
             </div>
           </div>
+          <div id="pfcal-goal-bar" style="flex:1;min-width:220px"></div>
         </div>
-        <div id="pfcal-goal-bar" style="padding:14px 16px;border-bottom:1px solid var(--border)"></div>
         <div id="pfcal-day-headers" style="display:grid;grid-template-columns:repeat(7,1fr) 110px;border-bottom:1px solid var(--border)"></div>
         <div id="pfcal-grid" style="display:grid;grid-template-columns:repeat(7,1fr) 110px"></div>
         <div id="pfcal-day-panel" style="display:none;border-top:1px solid var(--border);padding:16px 20px">
@@ -3775,18 +3779,18 @@ function renderPfCalendar() {
       let bg = 'transparent';
       if (inMonth && data) bg = data.pnl > 0 ? 'var(--cal-pos-bg)' : 'var(--cal-neg-bg)';
 
-      cell.style.cssText = 'background:' + bg + ';border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:8px 10px;aspect-ratio:2;box-sizing:border-box;position:relative;display:flex;align-items:center;justify-content:center' + (inMonth ? ';cursor:pointer' : '');
+      cell.style.cssText = 'background:' + bg + ';border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:7px 9px;aspect-ratio:2.5;box-sizing:border-box;position:relative;display:flex;align-items:center;justify-content:center' + (inMonth ? ';cursor:pointer' : '');
 
       const dayColor = inMonth ? 'var(--text)' : 'var(--text3)';
       const isToday = ds === todayStr;
-      let html = '<div style="position:absolute;top:6px;left:8px;font-size:13px;color:' + dayColor + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;display:flex;align-items:center;gap:5px">' + cur.getDate() + (isToday ? ' <span style="font-size:9px;background:var(--accent);color:#fff;padding:1px 5px;border-radius:3px;font-weight:500">Today</span>' : '') + '</div>';
+      let html = '<div style="position:absolute;top:5px;left:7px;font-size:12px;color:' + dayColor + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;display:flex;align-items:center;gap:5px">' + cur.getDate() + (isToday ? ' <span style="font-size:8.5px;background:var(--accent);color:#fff;padding:1px 4px;border-radius:3px;font-weight:500">Today</span>' : '') + '</div>';
 
       if (inMonth && data) {
         const pc = data.pnl >= 0 ? 'var(--green)' : 'var(--red)';
         const tradeLabel = data.count === 1 ? 'trade' : 'trades';
         html += '<div style="text-align:center">'
-          + '<div style="font-size:13px;color:' + pc + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500">' + data.count + ' ' + tradeLabel + '</div>'
-          + '<div style="font-size:15px;color:' + pc + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500">' + calFmtPnl(data.pnl) + '</div>'
+          + '<div style="font-size:12px;color:' + pc + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500">' + data.count + ' ' + tradeLabel + '</div>'
+          + '<div style="font-size:14px;color:' + pc + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500">' + calFmtPnl(data.pnl) + '</div>'
           + '</div>';
       }
 
@@ -3797,11 +3801,11 @@ function renderPfCalendar() {
 
     const sumCell = document.createElement('div');
     sumCell.className = 'cal-day-cell';
-    sumCell.style.cssText = 'border-bottom:1px solid var(--border);padding:8px 10px;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg3);box-sizing:border-box' + (wCount > 0 ? ';cursor:pointer' : '');
+    sumCell.style.cssText = 'border-bottom:1px solid var(--border);padding:6px 8px;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg3);box-sizing:border-box' + (wCount > 0 ? ';cursor:pointer' : '');
     if (wCount > 0) {
       const wc = wPnl >= 0 ? 'var(--green)' : 'var(--red)';
-      sumCell.innerHTML = '<div style="font-size:13px;color:var(--text);margin-bottom:4px;text-align:center;font-family:-apple-system,BlinkMacSystemFont,sans-serif">' + wCount + ' ' + L.trades + '</div>'
-        + '<div style="font-size:18px;font-weight:500;color:' + wc + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;text-align:center">' + calFmtPnl(wPnl) + '</div>';
+      sumCell.innerHTML = '<div style="font-size:11.5px;color:var(--text);margin-bottom:3px;text-align:center;font-family:-apple-system,BlinkMacSystemFont,sans-serif">' + wCount + ' ' + L.trades + '</div>'
+        + '<div style="font-size:16px;font-weight:500;color:' + wc + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;text-align:center">' + calFmtPnl(wPnl) + '</div>';
       const captured = weekDates.slice();
       sumCell.onclick = () => showPfWeekTrades(captured);
     }
@@ -4209,18 +4213,18 @@ function renderCalendar() {
       let bg = 'transparent';
       if (inMonth && data) bg = data.pnl > 0 ? 'var(--cal-pos-bg)' : 'var(--cal-neg-bg)';
 
-      cell.style.cssText = 'background:' + bg + ';border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:8px 10px;aspect-ratio:2;box-sizing:border-box;position:relative;display:flex;align-items:center;justify-content:center' + (inMonth ? ';cursor:pointer' : '');
+      cell.style.cssText = 'background:' + bg + ';border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:7px 9px;aspect-ratio:2.5;box-sizing:border-box;position:relative;display:flex;align-items:center;justify-content:center' + (inMonth ? ';cursor:pointer' : '');
 
       const dayColor = inMonth ? 'var(--text)' : 'var(--text3)';
       const isToday = ds === todayStr;
-      let html = '<div style="position:absolute;top:6px;left:8px;font-size:13px;color:' + dayColor + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;display:flex;align-items:center;gap:5px">' + cur.getDate() + (isToday ? ' <span style="font-size:9px;background:var(--accent);color:#fff;padding:1px 5px;border-radius:3px;font-weight:500">Today</span>' : '') + '</div>';
+      let html = '<div style="position:absolute;top:5px;left:7px;font-size:12px;color:' + dayColor + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;display:flex;align-items:center;gap:5px">' + cur.getDate() + (isToday ? ' <span style="font-size:8.5px;background:var(--accent);color:#fff;padding:1px 4px;border-radius:3px;font-weight:500">Today</span>' : '') + '</div>';
 
       if (inMonth && data) {
         const pc = data.pnl >= 0 ? 'var(--green)' : 'var(--red)';
         const tradeLabel = data.count === 1 ? 'trade' : 'trades';
         html += '<div style="text-align:center">'
-          + '<div style="font-size:13px;color:' + pc + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500">' + data.count + ' ' + tradeLabel + '</div>'
-          + '<div style="font-size:15px;color:' + pc + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500">' + calFmtPnl(data.pnl) + '</div>'
+          + '<div style="font-size:12px;color:' + pc + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500">' + data.count + ' ' + tradeLabel + '</div>'
+          + '<div style="font-size:14px;color:' + pc + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500">' + calFmtPnl(data.pnl) + '</div>'
           + '</div>';
       }
 
@@ -4232,11 +4236,11 @@ function renderCalendar() {
     // Weekly summary cell
     const sumCell = document.createElement('div');
     sumCell.className = 'cal-day-cell';
-    sumCell.style.cssText = 'border-bottom:1px solid var(--border);padding:8px 10px;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg3);box-sizing:border-box' + (wCount > 0 ? ';cursor:pointer' : '');
+    sumCell.style.cssText = 'border-bottom:1px solid var(--border);padding:6px 8px;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg3);box-sizing:border-box' + (wCount > 0 ? ';cursor:pointer' : '');
     if (wCount > 0) {
       const wc = wPnl >= 0 ? 'var(--green)' : 'var(--red)';
-      sumCell.innerHTML = '<div style="font-size:13px;color:var(--text);margin-bottom:4px;text-align:center;font-family:-apple-system,BlinkMacSystemFont,sans-serif">' + wCount + ' ' + L.trades + '</div>'
-        + '<div style="font-size:18px;font-weight:500;color:' + wc + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;text-align:center">' + calFmtPnl(wPnl) + '</div>';
+      sumCell.innerHTML = '<div style="font-size:11.5px;color:var(--text);margin-bottom:3px;text-align:center;font-family:-apple-system,BlinkMacSystemFont,sans-serif">' + wCount + ' ' + L.trades + '</div>'
+        + '<div style="font-size:16px;font-weight:500;color:' + wc + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;text-align:center">' + calFmtPnl(wPnl) + '</div>';
       const captured = weekDates.slice();
       sumCell.onclick = () => showWeekTrades(captured);
     }
