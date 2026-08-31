@@ -19,10 +19,10 @@
 <style>
 :root{--bg:#0d0f1a;--bg2:#171225;--bg3:#1c1330;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);--text:#eef0f7;--text2:#9599b3;--text3:#5c6080;--green:#34d399;--green-bg:rgba(52,211,153,0.1);--red:#fb7185;--red-bg:rgba(251,113,133,0.1);--accent:#8b7bff;--accent-bg:rgba(139,123,255,0.14);--purple:#8b7bff;--purple-bg:rgba(139,123,255,0.1);--amber:#4fd1c5;--amber-bg:rgba(79,209,197,0.1);--cal-pos-bg:rgba(52,211,153,0.3);--cal-neg-bg:rgba(251,113,133,0.3);--chart-grid:rgba(255,255,255,0.06);--chart-tick:#5c6080;--buy-box-bg:rgba(52,211,153,0.08);--buy-box-bdr:rgba(52,211,153,0.25);--sell-box-bg:rgba(251,113,133,0.08);--sell-box-bdr:rgba(251,113,133,0.25);--card-bdr:rgba(255,255,255,0.09);--radius:8px;--radius-lg:12px}
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;overflow-x:hidden}
 .shell{display:flex;height:100vh;height:100dvh;overflow:hidden}
 .sidebar{width:240px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);padding-left:env(safe-area-inset-left)}
-.main{flex:1;overflow-y:auto;padding-top:env(safe-area-inset-top);padding-right:env(safe-area-inset-right)}
+.main{flex:1;overflow-y:auto;overflow-x:hidden;min-width:0;padding-top:env(safe-area-inset-top);padding-right:env(safe-area-inset-right)}
 .logo{padding:20px 16px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:11px}
 .brand-mark{display:none}
 .logo-text{font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;font-weight:500;letter-spacing:.05em}
@@ -259,8 +259,12 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .cal-day-cell.cal-day-active,.cal-day-cell.pfcal-day-active{outline:2px solid var(--accent);outline-offset:-2px;z-index:1;position:relative}
 @media(max-width:640px){
   .sidebar{width:56px}
-  .logo-text,.logo-sub,.nav-item span,.sync-status span,.sync-btn{display:none}
+  .logo-text,.logo-sub,.nav-item span,.sync-status span,.sync-btn,.nav-label{display:none}
   .nav-item{justify-content:center;padding:12px}
+  .acc-segswitch{flex-direction:column!important;padding:2px!important;margin:0 4px 10px!important}
+  .acc-seg-btn{font-size:8px!important;padding:6px 2px!important;line-height:1.15;white-space:normal;word-break:break-word}
+  .acc-seg-thumb{display:none}
+  .acc-seg-btn.active{background:var(--accent);border-radius:7px}
   .page{padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom))}
   .form-grid{grid-template-columns:1fr}
   .metrics{grid-template-columns:1fr 1fr}
@@ -281,6 +285,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
   table{font-size:11px}
   th{padding:7px 8px;font-size:9.5px}
   td{padding:6px 8px}
+  .buysell-grid{grid-template-columns:1fr!important}
 }
 
 
@@ -466,8 +471,8 @@ tr:hover td{background:rgba(255,255,255,.02)}
           <div class="stat-card"><div class="stat-label" data-i18n="stat.wl">ชนะ / แพ้</div><div class="stat-val" id="ov-wl">—</div></div>
         </div>
         <!-- BUY / SELL -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div style="background:var(--buy-box-bg);border:1px solid var(--buy-box-bdr);border-radius:var(--radius-lg);padding:14px">
+        <div class="buysell-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;min-width:0">
+          <div style="background:var(--buy-box-bg);border:1px solid var(--buy-box-bdr);border-radius:var(--radius-lg);padding:14px;min-width:0">
             <div style="font-size:11px;color:var(--green);font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500;margin-bottom:10px;text-align:center">BUY</div>
             <div class="stats-grid" style="grid-template-columns:1fr 1fr;gap:8px">
               <div class="stat-card"><div class="stat-label" data-i18n="stat.winrate">Win Rate</div><div class="stat-val" id="ov-wr-buy">—</div><div class="stat-sub" id="ov-wl-buy">—</div></div>
@@ -476,7 +481,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
               <div class="stat-card"><div class="stat-label" data-i18n="stat.highloss">Highest Loss</div><div class="stat-val neg" id="ov-loss-buy">—</div></div>
             </div>
           </div>
-          <div style="background:var(--sell-box-bg);border:1px solid var(--sell-box-bdr);border-radius:var(--radius-lg);padding:14px">
+          <div style="background:var(--sell-box-bg);border:1px solid var(--sell-box-bdr);border-radius:var(--radius-lg);padding:14px;min-width:0">
             <div style="font-size:11px;color:var(--red);font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500;margin-bottom:10px;text-align:center">SELL</div>
             <div class="stats-grid" style="grid-template-columns:1fr 1fr;gap:8px">
               <div class="stat-card"><div class="stat-label" data-i18n="stat.winrate">Win Rate</div><div class="stat-val" id="ov-wr-sell">—</div><div class="stat-sub" id="ov-wl-sell">—</div></div>
@@ -518,8 +523,8 @@ tr:hover td{background:rgba(255,255,255,.02)}
         </div>
         <!-- Session Breakdown -->
         <div id="hist-session-breakdown" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px"></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-          <div style="background:var(--buy-box-bg);border:1px solid var(--buy-box-bdr);border-radius:var(--radius-lg);padding:14px">
+        <div class="buysell-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;min-width:0">
+          <div style="background:var(--buy-box-bg);border:1px solid var(--buy-box-bdr);border-radius:var(--radius-lg);padding:14px;min-width:0">
             <div style="font-size:11px;color:var(--green);font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500;margin-bottom:10px;text-align:center">BUY</div>
             <div class="stats-grid" style="grid-template-columns:1fr 1fr;gap:8px">
               <div class="stat-card"><div class="stat-label">Win Rate</div><div class="stat-val" id="hist-wr-buy">—</div><div class="stat-sub" id="hist-wl-buy">—</div></div>
@@ -528,7 +533,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
               <div class="stat-card"><div class="stat-label" data-i18n="stat.highloss">Highest Loss</div><div class="stat-val neg" id="hist-loss-buy">—</div></div>
             </div>
           </div>
-          <div style="background:var(--sell-box-bg);border:1px solid var(--sell-box-bdr);border-radius:var(--radius-lg);padding:14px">
+          <div style="background:var(--sell-box-bg);border:1px solid var(--sell-box-bdr);border-radius:var(--radius-lg);padding:14px;min-width:0">
             <div style="font-size:11px;color:var(--red);font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500;margin-bottom:10px;text-align:center">SELL</div>
             <div class="stats-grid" style="grid-template-columns:1fr 1fr;gap:8px">
               <div class="stat-card"><div class="stat-label">Win Rate</div><div class="stat-val" id="hist-wr-sell">—</div><div class="stat-sub" id="hist-wl-sell">—</div></div>
@@ -888,8 +893,8 @@ tr:hover td{background:rgba(255,255,255,.02)}
             <div class="stat-card"><div class="stat-label" data-i18n="stat.total">Trade ทั้งหมด</div><div class="stat-val" id="pf-total">—</div></div>
             <div class="stat-card"><div class="stat-label" data-i18n="stat.wl">ชนะ / แพ้</div><div class="stat-val" id="pf-wl">—</div></div>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-            <div style="background:var(--buy-box-bg);border:1px solid var(--buy-box-bdr);border-radius:var(--radius-lg);padding:14px">
+          <div class="buysell-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;min-width:0">
+            <div style="background:var(--buy-box-bg);border:1px solid var(--buy-box-bdr);border-radius:var(--radius-lg);padding:14px;min-width:0">
               <div style="font-size:11px;color:var(--green);font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500;margin-bottom:10px;text-align:center">BUY</div>
               <div class="stats-grid" style="grid-template-columns:1fr 1fr;gap:8px">
                 <div class="stat-card"><div class="stat-label" data-i18n="stat.winrate">Win Rate</div><div class="stat-val" id="pf-wr-buy">—</div><div class="stat-sub" id="pf-wl-buy">—</div></div>
@@ -898,7 +903,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
                 <div class="stat-card"><div class="stat-label" data-i18n="stat.highloss">Highest Loss</div><div class="stat-val neg" id="pf-loss-buy">—</div></div>
               </div>
             </div>
-            <div style="background:var(--sell-box-bg);border:1px solid var(--sell-box-bdr);border-radius:var(--radius-lg);padding:14px">
+            <div style="background:var(--sell-box-bg);border:1px solid var(--sell-box-bdr);border-radius:var(--radius-lg);padding:14px;min-width:0">
               <div style="font-size:11px;color:var(--red);font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500;margin-bottom:10px;text-align:center">SELL</div>
               <div class="stats-grid" style="grid-template-columns:1fr 1fr;gap:8px">
                 <div class="stat-card"><div class="stat-label" data-i18n="stat.winrate">Win Rate</div><div class="stat-val" id="pf-wr-sell">—</div><div class="stat-sub" id="pf-wl-sell">—</div></div>
@@ -930,8 +935,8 @@ tr:hover td{background:rgba(255,255,255,.02)}
         <div class="stat-card"><div class="stat-label" data-i18n="stat.wl">ชนะ / แพ้</div><div class="stat-val" id="pfhist-wl">—</div></div>
       </div>
       <div id="pfhist-session-breakdown" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-        <div style="background:var(--buy-box-bg);border:1px solid var(--buy-box-bdr);border-radius:var(--radius-lg);padding:14px">
+      <div class="buysell-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;min-width:0">
+        <div style="background:var(--buy-box-bg);border:1px solid var(--buy-box-bdr);border-radius:var(--radius-lg);padding:14px;min-width:0">
           <div style="font-size:11px;color:var(--green);font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500;margin-bottom:10px;text-align:center">BUY</div>
           <div class="stats-grid" style="grid-template-columns:1fr 1fr;gap:8px">
             <div class="stat-card"><div class="stat-label">Win Rate</div><div class="stat-val" id="pfhist-wr-buy">—</div><div class="stat-sub" id="pfhist-wl-buy">—</div></div>
@@ -940,7 +945,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
             <div class="stat-card"><div class="stat-label" data-i18n="stat.highloss">Highest Loss</div><div class="stat-val neg" id="pfhist-loss-buy">—</div></div>
           </div>
         </div>
-        <div style="background:var(--sell-box-bg);border:1px solid var(--sell-box-bdr);border-radius:var(--radius-lg);padding:14px">
+        <div style="background:var(--sell-box-bg);border:1px solid var(--sell-box-bdr);border-radius:var(--radius-lg);padding:14px;min-width:0">
           <div style="font-size:11px;color:var(--red);font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500;margin-bottom:10px;text-align:center">SELL</div>
           <div class="stats-grid" style="grid-template-columns:1fr 1fr;gap:8px">
             <div class="stat-card"><div class="stat-label">Win Rate</div><div class="stat-val" id="pfhist-wr-sell">—</div><div class="stat-sub" id="pfhist-wl-sell">—</div></div>
@@ -1147,7 +1152,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <div class="fg"><label data-i18n="th.amtthb">จำนวน (฿)</label><input type="number" id="acc-m-thb" data-i18n-ph="ph.amtthb" placeholder="เช่น 1571 หรือ -1000" step="any"/></div>
       <div style="grid-column:1/-1;border-top:1px solid var(--border);padding-top:12px;margin-top:2px">
         <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;font-family:-apple-system,BlinkMacSystemFont,sans-serif;margin-bottom:10px" data-i18n="lbl.exrate">อัตราแลกเปลี่ยน</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="buysell-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;min-width:0">
           <div class="fg">
             <label data-i18n="lbl.ratedepfull">ค่าเงิน วันที่ฝาก (฿/$)</label>
             <div style="position:relative">
