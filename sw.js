@@ -1,6 +1,6 @@
 // FX Journal Service Worker
 // ⚠️ ทุกครั้งที่แก้ index.html ต้อง bump เลขเวอร์ชันนี้ ไม่งั้นเบราว์เซอร์จะยังใช้ไฟล์แคชเก่าอยู่
-const APP_VERSION = 'v5.35';
+const APP_VERSION = 'v5.39';
 const CACHE_NAME = 'fxjournal-' + APP_VERSION;
 
 // ไฟล์ static ที่ precache ตอนติดตั้ง (ไม่รวมข้อมูลเทรดใดๆ)

@@ -193,6 +193,30 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .add-row button{padding:8px 16px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text2);font-size:12px;cursor:pointer;white-space:nowrap;transition:all .15s;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
 .add-row button:hover{border-color:var(--accent);color:var(--accent)}
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:998;align-items:center;justify-content:center;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+
+/* Bottom Tab Bar (มือถือเท่านั้น) */
+.bottom-tabbar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--bg2);border-top:1px solid var(--border);align-items:center;justify-content:space-around;padding:6px 4px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -2px 12px rgba(0,0,0,.3)}
+.bt-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--text3);cursor:pointer;padding:4px 8px;border-radius:8px;transition:color .15s;flex:1;min-width:0}
+.bt-item svg{width:22px;height:22px;flex-shrink:0}
+.bt-item span{font-size:9.5px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.bt-item.active{color:var(--accent)}
+.bt-fab{width:48px;height:48px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;margin-top:-22px;box-shadow:0 4px 14px rgba(139,123,255,.5);cursor:pointer;border:4px solid var(--bg2)}
+.bt-fab svg{width:22px;height:22px}
+[data-theme="nightfall"] .bt-fab{background:linear-gradient(135deg,var(--accent),var(--amber))}
+
+/* More Sheet (มือถือเท่านั้น) */
+.more-sheet-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:997;align-items:flex-end;justify-content:center}
+.more-sheet-bg.open{display:flex}
+.more-sheet{background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:640px;padding:10px 16px calc(20px + env(safe-area-inset-bottom));max-height:80vh;overflow-y:auto;box-sizing:border-box}
+.more-sheet-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:4px auto 14px}
+.more-sheet-acc{margin-bottom:8px}
+.more-sheet-item{display:flex;align-items:center;gap:14px;padding:14px 8px;color:var(--text);cursor:pointer;border-radius:10px;transition:background .15s}
+.more-sheet-item:active{background:var(--bg3)}
+.more-sheet-item svg{width:20px;height:20px;color:var(--text2);flex-shrink:0}
+.more-sheet-item span{font-size:14px;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+@media(max-width:640px){
+  .bottom-tabbar{display:flex}
+}
 .modal-bg.open{display:flex}
 .modal-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:24px;max-width:700px;width:95%;max-height:92vh;overflow-y:auto}
 .modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
@@ -258,23 +282,22 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .cal-day-cell:hover{filter:brightness(1.15)}
 .cal-day-cell.cal-day-active,.cal-day-cell.pfcal-day-active{outline:2px solid var(--accent);outline-offset:-2px;z-index:1;position:relative}
 @media(max-width:640px){
-  .sidebar{width:56px}
-  .logo-text,.logo-sub,.nav-item span,.sync-status span,.sync-btn,.nav-label{display:none}
-  .nav-item{justify-content:center;padding:12px}
-  .acc-segswitch{flex-direction:column!important;padding:2px!important;margin:0 4px 10px!important}
-  .acc-seg-btn{font-size:8px!important;padding:6px 2px!important;line-height:1.15;white-space:normal;word-break:break-word}
-  .acc-seg-thumb{display:none}
-  .acc-seg-btn.active{background:var(--accent);border-radius:7px}
+  .sidebar{display:none}
+  .main{width:100%;padding-bottom:calc(72px + env(safe-area-inset-bottom))!important}
   .page{padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom))}
   .form-grid{grid-template-columns:1fr}
-  .metrics{grid-template-columns:1fr 1fr}
+  .metrics{grid-template-columns:1fr 1fr!important}
   .detail-grid{grid-template-columns:1fr}
+  .stats-grid[style*="repeat(4"]{grid-template-columns:repeat(2,1fr)!important}
+  #hist-session-breakdown,#pfhist-session-breakdown{grid-template-columns:repeat(2,1fr)!important}
+  #acc-month-summary [style*="repeat(3,1fr)"]{grid-template-columns:repeat(2,1fr)!important}
+  #cal-day-headers,#cal-grid,#pfcal-day-headers,#pfcal-grid{grid-template-columns:repeat(5,minmax(0,1fr)) 60px!important}
 }
 
 @media(max-width:480px){
   .page{padding:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom))}
   [data-theme="nightfall"] .page-title{font-size:20px!important}
-  .metrics{grid-template-columns:1fr;gap:8px}
+  .metrics{grid-template-columns:1fr!important;gap:8px}
   .stat-card{padding:12px 14px}
   [data-theme="nightfall"] .stat-val{font-size:21px!important}
   .filter-row{gap:6px}
@@ -286,6 +309,13 @@ tr:hover td{background:rgba(255,255,255,.02)}
   th{padding:7px 8px;font-size:9.5px}
   td{padding:6px 8px}
   .buysell-grid{grid-template-columns:1fr!important}
+  .stats-grid[style*="repeat(4"]{grid-template-columns:1fr!important}
+  #hist-session-breakdown,#pfhist-session-breakdown{grid-template-columns:1fr!important}
+  #acc-month-summary [style*="repeat(3,1fr)"]{grid-template-columns:1fr!important}
+  #cal-day-headers,#cal-grid,#pfcal-day-headers,#pfcal-grid{grid-template-columns:repeat(5,minmax(0,1fr)) 42px!important;font-size:10px}
+  .cal-month-title{min-width:0!important;font-size:12px!important;margin:0 6px!important}
+  .cal-header-row select{margin-left:0!important;padding:6px 8px!important;font-size:11px!important}
+  #cal-day-headers>*:last-child,#pfcal-day-headers>*:last-child{font-size:8px!important;padding:4px 2px!important;overflow:hidden}
 }
 
 
@@ -841,9 +871,9 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <div class="page-title" style="margin-bottom:20px"><span class="crumb"><span data-i18n="nav.liveaccount">Live Account</span> /</span><span data-i18n="nav.calendar">ปฏิทิน</span></div>
       <div style="background:var(--bg2);border:1px solid var(--card-bdr);border-radius:var(--radius-lg);overflow:hidden;max-width:1575px;margin:0 auto">
         <!-- Calendar Header -->
-        <div style="display:flex;align-items:center;padding:11px 16px;border-bottom:1px solid var(--border)">
+        <div class="cal-header-row" style="display:flex;align-items:center;padding:11px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px">
           <button onclick="changeCalendarMonth(-1)" style="background:none;border:1px solid var(--border2);border-radius:var(--radius);color:var(--text2);width:28px;height:28px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">&#8249;</button>
-          <span id="cal-month-title" style="margin:0 12px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:500;min-width:160px;text-align:center">—</span>
+          <span id="cal-month-title" class="cal-month-title" style="margin:0 12px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:500;min-width:160px;text-align:center">—</span>
           <button onclick="changeCalendarMonth(1)" style="background:none;border:1px solid var(--border2);border-radius:var(--radius);color:var(--text2);width:28px;height:28px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">&#8250;</button>
           <select id="cal-facct" onchange="syncLiveAcctFilter(this.value)" style="margin-left:14px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);padding:8px 12px;font-size:12px;outline:none;font-family:-apple-system,BlinkMacSystemFont,sans-serif"><option value="" data-i18n="filter.allacct">ทุกบัญชี</option></select>
         </div>
@@ -862,9 +892,9 @@ tr:hover td{background:rgba(255,255,255,.02)}
           <div id="cal-goal-bar" style="flex:1;min-width:220px"></div>
         </div>
         <!-- Day Headers (dynamic) -->
-        <div id="cal-day-headers" style="display:grid;grid-template-columns:repeat(7,1fr) 110px;border-bottom:1px solid var(--border)"></div>
+        <div id="cal-day-headers" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) 110px;border-bottom:1px solid var(--border)"></div>
         <!-- Calendar Grid (built by renderCalendar) -->
-        <div id="cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr) 110px"></div>
+        <div id="cal-grid" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) 110px"></div>
         <!-- Day Trades Panel -->
         <div id="cal-day-panel" style="display:none;border-top:1px solid var(--border);padding:16px 20px">
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
@@ -990,9 +1020,9 @@ tr:hover td{background:rgba(255,255,255,.02)}
     <div id="page-pfcalendar" class="page">
       <div class="page-title" style="margin-bottom:20px"><span class="crumb"><span data-i18n="nav.propfirm">PropFirm</span> /</span><span data-i18n="nav.calendar">ปฏิทิน</span></div>
       <div style="background:var(--bg2);border:1px solid var(--card-bdr);border-radius:var(--radius-lg);overflow:hidden;max-width:1575px;margin:0 auto">
-        <div style="display:flex;align-items:center;padding:11px 16px;border-bottom:1px solid var(--border)">
+        <div class="cal-header-row" style="display:flex;align-items:center;padding:11px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px">
           <button onclick="changePfCalendarMonth(-1)" style="background:none;border:1px solid var(--border2);border-radius:var(--radius);color:var(--text2);width:28px;height:28px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">&#8249;</button>
-          <span id="pfcal-month-title" style="margin:0 12px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:500;min-width:160px;text-align:center">—</span>
+          <span id="pfcal-month-title" class="cal-month-title" style="margin:0 12px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:500;min-width:160px;text-align:center">—</span>
           <button onclick="changePfCalendarMonth(1)" style="background:none;border:1px solid var(--border2);border-radius:var(--radius);color:var(--text2);width:28px;height:28px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">&#8250;</button>
           <select id="pfcal-facct" onchange="syncPfAcctFilter(this.value)" style="margin-left:14px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text);padding:8px 12px;font-size:12px;outline:none;font-family:-apple-system,BlinkMacSystemFont,sans-serif"><option value="" data-i18n="filter.allacct">ทุกบัญชี</option></select>
         </div>
@@ -1009,8 +1039,8 @@ tr:hover td{background:rgba(255,255,255,.02)}
           </div>
           <div id="pfcal-goal-bar" style="flex:1;min-width:220px"></div>
         </div>
-        <div id="pfcal-day-headers" style="display:grid;grid-template-columns:repeat(7,1fr) 110px;border-bottom:1px solid var(--border)"></div>
-        <div id="pfcal-grid" style="display:grid;grid-template-columns:repeat(7,1fr) 110px"></div>
+        <div id="pfcal-day-headers" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) 110px;border-bottom:1px solid var(--border)"></div>
+        <div id="pfcal-grid" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) 110px"></div>
         <div id="pfcal-day-panel" style="display:none;border-top:1px solid var(--border);padding:16px 20px">
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
             <span id="pfcal-day-panel-date" style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;font-weight:500;color:var(--text)"></span>
@@ -1203,6 +1233,63 @@ tr:hover td{background:rgba(255,255,255,.02)}
   </div>
 </div>
 
+<!-- Bottom Tab Bar (เฉพาะจอมือถือ ≤640px) -->
+<nav class="bottom-tabbar" id="bottom-tabbar">
+  <div class="bt-item" data-bt="home" onclick="btNavAcc(1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    <span data-i18n="nav.overview">ภาพรวม</span>
+  </div>
+  <div class="bt-item" data-bt="trades" onclick="btNavAcc(2)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4"/><polyline points="3 16 3 11 8 11"/></svg>
+    <span data-i18n="nav.history">ประวัติการเทรด</span>
+  </div>
+  <div class="bt-fab" onclick="openAddTradeModal(accGroup === 'pf' ? 'propfirm' : undefined)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </div>
+  <div class="bt-item" data-bt="calendar" onclick="btNavAcc(3)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <span data-i18n="nav.calendar">ปฏิทิน</span>
+  </div>
+  <div class="bt-item" data-bt="more" onclick="openMoreSheet()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+    <span data-i18n="nav.more">เพิ่มเติม</span>
+  </div>
+</nav>
+
+<!-- More Sheet (bottom sheet เฉพาะจอมือถือ) -->
+<div class="more-sheet-bg" id="more-sheet-bg" onclick="if(event.target===this)closeMoreSheet()">
+  <div class="more-sheet">
+    <div class="more-sheet-handle"></div>
+    <div class="more-sheet-acc">
+      <div class="acc-segswitch" id="acc-segswitch-more">
+        <div class="acc-seg-thumb" id="acc-seg-thumb-more"></div>
+        <button class="acc-seg-btn" data-acc="live" onclick="btSetAccGroup('live')" data-i18n="nav.liveaccount">Live Account</button>
+        <button class="acc-seg-btn" data-acc="pf" onclick="btSetAccGroup('pf')" data-i18n="nav.propfirm">PropFirm</button>
+      </div>
+    </div>
+    <div class="more-sheet-item" onclick="btShowPage('missed')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      <span data-i18n="nav.missed">Missed Trade</span>
+    </div>
+    <div class="more-sheet-item" onclick="btShowPage('notes')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+      <span data-i18n="nav.notes">Note</span>
+    </div>
+    <div class="more-sheet-item" onclick="btShowPage('lotcalc')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 2h16v20H4z"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="8.01" y2="10"/><line x1="12" y1="10" x2="12.01" y2="10"/><line x1="16" y1="10" x2="16.01" y2="10"/><line x1="8" y1="14" x2="8.01" y2="14"/><line x1="12" y1="14" x2="12.01" y2="14"/><line x1="16" y1="14" x2="16.01" y2="14"/><line x1="8" y1="18" x2="16" y2="18"/></svg>
+      <span data-i18n="nav.lotcalc">คำนวณ Lot Size</span>
+    </div>
+    <div class="more-sheet-item" onclick="btShowPage('account')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      <span data-i18n="nav.account">บัญชี</span>
+    </div>
+    <div class="more-sheet-item" onclick="btShowPage('settings')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span data-i18n="nav.settings">การตั้งค่า</span>
+    </div>
+  </div>
+</div>
+
 <!-- Edit Modal -->
 <div class="modal-bg" id="add-trade-modal" onclick="addTradeBgClick(event)">
   <div class="modal-box">
@@ -1359,7 +1446,7 @@ let selectedPfCalDay = null;
 const I18N = {
   th: {
     'nav.overview':'ภาพรวม','nav.history':'ประวัติการเทรด','nav.calendar':'ปฏิทิน',
-    'nav.missed':'เทรดที่พลาด','nav.account':'บัญชี','nav.settings':'การตั้งค่า',
+    'nav.missed':'เทรดที่พลาด','nav.account':'บัญชี','nav.settings':'การตั้งค่า','nav.more':'เพิ่มเติม',
     'nav.propfirm':'PropFirm','nav.notes':'Note',
     'nav.liveaccount':'Live Account','nav.general':'ทั่วไป','nav.lotcalc':'คำนวณ Lot Size',
     'goal.modaltitle':'ตั้งเป้าหมายสัปดาห์นี้','goal.amount':'เป้าหมาย ($)','goal.amountph':'เช่น 300','goal.save':'บันทึกเป้าหมาย',
@@ -1367,6 +1454,8 @@ const I18N = {
     'goal.fillamount':'กรุณากรอกจำนวนเงินเป้าหมาย',
     'goal.modaltitlemonth':'ตั้งเป้าหมายเดือนนี้','goal.thismonth':'เดือนนี้','goal.noneyetmonth':'ยังไม่ได้ตั้งเป้าหมายเดือนนี้',
     'goal.weektab':'รายสัปดาห์','goal.monthtab':'รายเดือน',
+    'goal.reached':'ถึงเป้าหมายแล้ว! 🎉','goal.needtoday':'วันนี้ต้องได้','goal.neednextday':'วันเทรดถัดไปต้องได้',
+    'goal.daysleft':'วันเทรดที่เหลือ','goal.noneleft':'หมดวันเทรดของงวดนี้แล้ว',
     'lc.sub':'คำนวณขนาด position ตามความเสี่ยงที่ยอมรับได้ — ไม่บันทึกข้อมูล คำนวณฝั่งเบราว์เซอร์ล้วนๆ',
     'lc.inputtitle':'กรอกข้อมูล','lc.resulttitle':'ผลลัพธ์',
     'lc.pair':'คู่เงิน','lc.capital':'เงินทุน ($)','lc.risk':'ความเสี่ยงที่ยอมรับ (%)','lc.sl':'Stop Loss',
@@ -1476,7 +1565,7 @@ const I18N = {
   },
   en: {
     'nav.overview':'Overview','nav.history':'Trade History','nav.calendar':'Calendar',
-    'nav.missed':'Missed Trade','nav.account':'Account','nav.settings':'Settings','nav.notes':'Note',
+    'nav.missed':'Missed Trade','nav.account':'Account','nav.settings':'Settings','nav.notes':'Note','nav.more':'More',
     'nav.propfirm':'PropFirm',
     'nav.liveaccount':'Live Account','nav.general':'General','nav.lotcalc':'Lot Size Calculator',
     'goal.modaltitle':'Set This Week\u2019s Goal','goal.amount':'Goal ($)','goal.amountph':'e.g. 300','goal.save':'Save Goal',
@@ -1484,6 +1573,8 @@ const I18N = {
     'goal.fillamount':'Please enter a goal amount',
     'goal.modaltitlemonth':'Set This Month’s Goal','goal.thismonth':'This Month','goal.noneyetmonth':'No goal set for this month yet',
     'goal.weektab':'Weekly','goal.monthtab':'Monthly',
+    'goal.reached':'Goal reached! 🎉','goal.needtoday':'Need today','goal.neednextday':'Need next trading day',
+    'goal.daysleft':'trading days left','goal.noneleft':'No trading days left this period',
     'lc.sub':'Calculate position size based on your accepted risk — nothing is saved, all calculation happens in your browser.',
     'lc.inputtitle':'Enter Details','lc.resulttitle':'Result',
     'lc.pair':'Pair','lc.capital':'Capital ($)','lc.risk':'Accepted Risk (%)','lc.sl':'Stop Loss',
@@ -2620,8 +2711,7 @@ function navAccPage(idx) {
 }
 function setAccGroupVisual(g) {
   document.querySelectorAll('.acc-seg-btn').forEach(b => b.classList.toggle('active', b.dataset.acc === g));
-  const thumb = document.getElementById('acc-seg-thumb');
-  if (thumb) thumb.classList.toggle('right', g === 'pf');
+  document.querySelectorAll('.acc-seg-thumb').forEach(thumb => thumb.classList.toggle('right', g === 'pf'));
 }
 function setAccGroup(g) {
   const changed = accGroup !== g;
@@ -2647,6 +2737,16 @@ function syncAccGroupFromPage(n) {
   }
   updateAccNavTargets();
 }
+function updateBottomTabActive(n) {
+  const map = {overview:'home', propfirm:'home', history:'trades', pfhistory:'trades', calendar:'calendar', pfcalendar:'calendar'};
+  const key = map[n] || null;
+  document.querySelectorAll('.bt-item').forEach(el => el.classList.toggle('active', !!key && el.dataset.bt === key));
+}
+function btNavAcc(idx) { navAccPage(idx); }
+function btShowPage(n) { showPage(n); closeMoreSheet(); }
+function btSetAccGroup(g) { setAccGroup(g); closeMoreSheet(); }
+function openMoreSheet() { document.getElementById('more-sheet-bg').classList.add('open'); }
+function closeMoreSheet() { document.getElementById('more-sheet-bg').classList.remove('open'); }
 function showPage(n) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
@@ -2654,6 +2754,7 @@ function showPage(n) {
   if (['overview','history','calendar','propfirm','pfhistory','pfcalendar'].includes(n)) syncAccGroupFromPage(n);
   const navEl = document.querySelector('.nav-item[data-page="'+n+'"]');
   if (navEl) { navEl.classList.add('active'); }
+  updateBottomTabActive(n);
   localStorage.setItem('lastPage', n);
   if (n === 'overview') renderOverview();
   if (n === 'history') { if (histTab === 'mt5') renderHistory(); else renderTable(); }
@@ -3745,7 +3846,7 @@ function buildPfCalHeaders() {
   const el = document.getElementById('pfcal-day-headers');
   if (!el) return;
   const s = "padding:7px 6px;font-size:11px;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,sans-serif;text-align:center;border-right:1px solid var(--border);letter-spacing:.04em;line-height:1.5";
-  el.innerHTML = L.days.map(d => `<div style="${s}">${d}</div>`).join('')
+  el.innerHTML = L.days.slice(1,6).map(d => `<div style="${s}">${d}</div>`).join('')
     + `<div style="padding:7px 6px;font-size:10px;color:var(--accent);font-family:-apple-system,BlinkMacSystemFont,sans-serif;text-align:center;letter-spacing:.04em;line-height:1.5">${L.summary}</div>`;
 }
 
@@ -3832,7 +3933,7 @@ function renderPfCalendar() {
       }
 
       cell.innerHTML = html;
-      grid.appendChild(cell);
+      if (d !== 0 && d !== 6) grid.appendChild(cell);
       cur.setDate(cur.getDate() + 1);
     }
 
@@ -4046,7 +4147,7 @@ function buildCalHeaders() {
   const el = document.getElementById('cal-day-headers');
   if (!el) return;
   const s = "padding:7px 6px;font-size:11px;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,sans-serif;text-align:center;border-right:1px solid var(--border);letter-spacing:.04em;line-height:1.5";
-  el.innerHTML = L.days.map(d => `<div style="${s}">${d}</div>`).join('')
+  el.innerHTML = L.days.slice(1,6).map(d => `<div style="${s}">${d}</div>`).join('')
     + `<div style="padding:7px 6px;font-size:10px;color:var(--accent);font-family:-apple-system,BlinkMacSystemFont,sans-serif;text-align:center;letter-spacing:.04em;line-height:1.5">${L.summary}</div>`;
 }
 function changeCalendarMonth(dir) {
@@ -4086,6 +4187,17 @@ function getPeriodStart(periodType) {
 }
 function getPeriodEndDate(periodType, periodStart) {
   return periodType === 'month' ? getMonthEndDate(periodStart) : getWeekEndDate(periodStart);
+}
+function countWeekdaysInclusive(fromDate, toDate) {
+  let count = 0;
+  const d = new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate());
+  const end = new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate());
+  while (d <= end) {
+    const day = d.getDay();
+    if (day !== 0 && day !== 6) count++;
+    d.setDate(d.getDate() + 1);
+  }
+  return count;
 }
 function findGoal(accountType, periodType, periodStart) {
   return weeklyGoals.find(g => g.account_type === accountType && g.period_type === periodType && g.week_start === periodStart) || null;
@@ -4139,6 +4251,30 @@ function renderGoalBar(accountType) {
 
   const pct = goal.goal_amount > 0 ? Math.max(0, Math.min(100, (pnl / goal.goal_amount) * 100)) : 0;
   const pnlColor = pnl >= 0 ? 'var(--green)' : 'var(--red)';
+
+  // ---- คำนวณเป้าที่ต้องได้ต่อวัน (นับเฉพาะ จ-ศ) ----
+  let targetLineHtml = '';
+  const remainGoal = goal.goal_amount - pnl;
+  if (remainGoal <= 0) {
+    targetLineHtml = `<div style="font-size:12px;color:var(--green);font-family:-apple-system,BlinkMacSystemFont,sans-serif;margin-top:6px;font-weight:500">${T('goal.reached')}</div>`;
+  } else {
+    const now = new Date();
+    let startCount = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const isWeekend0 = startCount.getDay() === 0 || startCount.getDay() === 6;
+    while (startCount.getDay() === 0 || startCount.getDay() === 6) startCount.setDate(startCount.getDate() + 1);
+    if (startCount > endDate) {
+      targetLineHtml = `<div style="font-size:12px;color:var(--text3);font-family:-apple-system,BlinkMacSystemFont,sans-serif;margin-top:6px">${T('goal.noneleft')}</div>`;
+    } else {
+      const remainDays = countWeekdaysInclusive(startCount, endDate);
+      const perDay = remainDays > 0 ? remainGoal / remainDays : remainGoal;
+      const dayLabel = isWeekend0 ? T('goal.neednextday') : T('goal.needtoday');
+      targetLineHtml = `<div style="font-size:12px;color:var(--text2);font-family:-apple-system,BlinkMacSystemFont,sans-serif;margin-top:6px">
+        ${dayLabel}: <b style="color:var(--accent)">+${perDay.toFixed(2)}$</b>
+        <span style="color:var(--text3)">(${remainDays} ${T('goal.daysleft')})</span>
+      </div>`;
+    }
+  }
+
   bar.innerHTML = toggleHtml + `
     <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;flex-wrap:wrap">
       <span style="font-size:12.5px;font-family:-apple-system,BlinkMacSystemFont,sans-serif">
@@ -4150,7 +4286,8 @@ function renderGoalBar(accountType) {
     </div>
     <div style="height:6px;background:var(--bg3);border-radius:100px;overflow:hidden">
       <div style="height:100%;width:${pct}%;background:${pnl >= goal.goal_amount ? 'var(--green)' : 'var(--accent)'};border-radius:100px;transition:width .3s"></div>
-    </div>`;
+    </div>
+    ${targetLineHtml}`;
 }
 
 function openGoalModal(accountType, periodType) {
@@ -4266,7 +4403,7 @@ function renderCalendar() {
       }
 
       cell.innerHTML = html;
-      grid.appendChild(cell);
+      if (d !== 0 && d !== 6) grid.appendChild(cell);
       cur.setDate(cur.getDate() + 1);
     }
 
