@@ -2054,7 +2054,10 @@ async function delMissed(id) {
 let notes = [], notePending = [], noteExistingImgs = [], noteEditId = null;
 let weeklyGoals = [];
 let goalModalAccountType = 'live', goalModalPeriodType = 'week';
-let calGoalView = { live: 'week', propfirm: 'week' }; // แต่ละปฏิทินจำไว้ว่ากำลังดูมุมมองไหนอยู่ (สลับได้ ไม่ต้องโชว์ 2 แถบพร้อมกัน)
+let calGoalView = {
+  live: localStorage.getItem('calGoalView_live') || 'week',
+  propfirm: localStorage.getItem('calGoalView_propfirm') || 'week'
+}; // แต่ละปฏิทินจำไว้ว่ากำลังดูมุมมองไหนอยู่ (สลับได้ ไม่ต้องโชว์ 2 แถบพร้อมกัน) — บันทึกลง localStorage กันรีเซ็ตตอน refresh
 let noteViewId = null, noteViewImgs = [], noteViewIdx = 0;
 
 function handleNoteImgs(input) {
@@ -4217,6 +4220,7 @@ function computePeriodPnl(accountType, facctId, periodType, periodStart) {
 
 function switchGoalView(accountType, periodType) {
   calGoalView[accountType] = periodType;
+  localStorage.setItem('calGoalView_' + accountType, periodType);
   renderGoalBar(accountType);
 }
 
