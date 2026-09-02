@@ -291,7 +291,11 @@ tr:hover td{background:rgba(255,255,255,.02)}
   .stats-grid[style*="repeat(4"]{grid-template-columns:repeat(2,1fr)!important}
   #hist-session-breakdown,#pfhist-session-breakdown{grid-template-columns:repeat(2,1fr)!important}
   #acc-month-summary [style*="repeat(3,1fr)"]{grid-template-columns:repeat(2,1fr)!important}
-  #cal-day-headers,#cal-grid,#pfcal-day-headers,#pfcal-grid{grid-template-columns:repeat(5,minmax(0,1fr)) 60px!important}
+  #cal-day-headers,#cal-grid,#pfcal-day-headers,#pfcal-grid{grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:6px!important}
+  .cal-summary-cell,.cal-summary-header{display:none!important}
+  #cal-day-headers>div,#pfcal-day-headers>div{border-right:none!important}
+  .cal-day-cell{border-radius:12px!important;border:none!important;aspect-ratio:1!important}
+  .cal-day-cell[style*="background:transparent"]{background:var(--bg3)!important}
 }
 
 @media(max-width:480px){
@@ -312,10 +316,10 @@ tr:hover td{background:rgba(255,255,255,.02)}
   .stats-grid[style*="repeat(4"]{grid-template-columns:1fr!important}
   #hist-session-breakdown,#pfhist-session-breakdown{grid-template-columns:1fr!important}
   #acc-month-summary [style*="repeat(3,1fr)"]{grid-template-columns:1fr!important}
-  #cal-day-headers,#cal-grid,#pfcal-day-headers,#pfcal-grid{grid-template-columns:repeat(5,minmax(0,1fr)) 42px!important;font-size:10px}
+  #cal-day-headers,#cal-grid,#pfcal-day-headers,#pfcal-grid{grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:4px!important;font-size:10px}
   .cal-month-title{min-width:0!important;font-size:12px!important;margin:0 6px!important}
   .cal-header-row select{margin-left:0!important;padding:6px 8px!important;font-size:11px!important}
-  #cal-day-headers>*:last-child,#pfcal-day-headers>*:last-child{font-size:8px!important;padding:4px 2px!important;overflow:hidden}
+  .cal-day-cell{aspect-ratio:.85!important}
 }
 
 
@@ -3850,7 +3854,7 @@ function buildPfCalHeaders() {
   if (!el) return;
   const s = "padding:7px 6px;font-size:11px;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,sans-serif;text-align:center;border-right:1px solid var(--border);letter-spacing:.04em;line-height:1.5";
   el.innerHTML = L.days.slice(1,6).map(d => `<div style="${s}">${d}</div>`).join('')
-    + `<div style="padding:7px 6px;font-size:10px;color:var(--accent);font-family:-apple-system,BlinkMacSystemFont,sans-serif;text-align:center;letter-spacing:.04em;line-height:1.5">${L.summary}</div>`;
+    + `<div class="cal-summary-header" style="padding:7px 6px;font-size:10px;color:var(--accent);font-family:-apple-system,BlinkMacSystemFont,sans-serif;text-align:center;letter-spacing:.04em;line-height:1.5">${L.summary}</div>`;
 }
 
 function changePfCalendarMonth(dir) {
@@ -3933,6 +3937,8 @@ function renderPfCalendar() {
           + '<div style="font-size:12px;color:' + pc + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500">' + data.count + ' ' + tradeLabel + '</div>'
           + '<div style="font-size:14px;color:' + pc + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500">' + calFmtPnl(data.pnl) + '</div>'
           + '</div>';
+      } else if (inMonth) {
+        html += '<div class="cal-empty-dash" style="text-align:center;font-size:13px;color:var(--text3);opacity:.5">—</div>';
       }
 
       cell.innerHTML = html;
@@ -3941,7 +3947,7 @@ function renderPfCalendar() {
     }
 
     const sumCell = document.createElement('div');
-    sumCell.className = 'cal-day-cell';
+    sumCell.className = 'cal-day-cell cal-summary-cell';
     sumCell.style.cssText = 'border-bottom:1px solid var(--border);padding:6px 8px;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg3);box-sizing:border-box' + (wCount > 0 ? ';cursor:pointer' : '');
     if (wCount > 0) {
       const wc = wPnl >= 0 ? 'var(--green)' : 'var(--red)';
@@ -4151,7 +4157,7 @@ function buildCalHeaders() {
   if (!el) return;
   const s = "padding:7px 6px;font-size:11px;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,sans-serif;text-align:center;border-right:1px solid var(--border);letter-spacing:.04em;line-height:1.5";
   el.innerHTML = L.days.slice(1,6).map(d => `<div style="${s}">${d}</div>`).join('')
-    + `<div style="padding:7px 6px;font-size:10px;color:var(--accent);font-family:-apple-system,BlinkMacSystemFont,sans-serif;text-align:center;letter-spacing:.04em;line-height:1.5">${L.summary}</div>`;
+    + `<div class="cal-summary-header" style="padding:7px 6px;font-size:10px;color:var(--accent);font-family:-apple-system,BlinkMacSystemFont,sans-serif;text-align:center;letter-spacing:.04em;line-height:1.5">${L.summary}</div>`;
 }
 function changeCalendarMonth(dir) {
   calendarMonth += dir;
@@ -4404,6 +4410,8 @@ function renderCalendar() {
           + '<div style="font-size:12px;color:' + pc + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500">' + data.count + ' ' + tradeLabel + '</div>'
           + '<div style="font-size:14px;color:' + pc + ';font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500">' + calFmtPnl(data.pnl) + '</div>'
           + '</div>';
+      } else if (inMonth) {
+        html += '<div class="cal-empty-dash" style="text-align:center;font-size:13px;color:var(--text3);opacity:.5">—</div>';
       }
 
       cell.innerHTML = html;
@@ -4413,7 +4421,7 @@ function renderCalendar() {
 
     // Weekly summary cell
     const sumCell = document.createElement('div');
-    sumCell.className = 'cal-day-cell';
+    sumCell.className = 'cal-day-cell cal-summary-cell';
     sumCell.style.cssText = 'border-bottom:1px solid var(--border);padding:6px 8px;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg3);box-sizing:border-box' + (wCount > 0 ? ';cursor:pointer' : '');
     if (wCount > 0) {
       const wc = wPnl >= 0 ? 'var(--green)' : 'var(--red)';
